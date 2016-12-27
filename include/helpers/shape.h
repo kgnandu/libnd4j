@@ -881,9 +881,20 @@ namespace shape {
     __host__ __device__
 #endif
 
-    INLINEDEF int tensorsAlongDimension(int *shapeInfo, int *dimension, int dimensionLength);
+    INLINEDEF int tensorsAlongDimension(int *shapeInfo,
+                                        int *dimension,
+                                        int dimensionLength);
 
+/**
+ * Computes the number
+ * of tensors along
+ * a given dimension
+ */
+#ifdef __CUDACC__
+    __host__ __device__
+#endif
 
+    INLINEDEF int slices(int *shapeInfo);
 
 /**
  * Returns the tensor along dimension
@@ -1519,11 +1530,6 @@ namespace shape {
             int *leftOverIndexes = new int[leftOverIndexLen];
 #endif
 
-            //indexes not specified in the tad indexes
-
-            //every coordinate starts as zero
-            memset(ret,0,sizeof(int) * rank);
-
             //find the length of the elements we
             //are iterating over
             int len = 1;
@@ -2026,39 +2032,83 @@ namespace shape {
                     this->createTadShape();
                     int tadLength = shape::prod(tadShape,tadRank);
                     int permuteLength = shape::length(shapeInfo);
+                    int *finalDimensions = new int[dimensionLength];
+                    for(int j = dimensionLength - 1; j >=0 ; j--)
+                        finalDimensions[j] = j;
                     if(tadRank == dimensionLength && shape::prod(tadShape,tadRank) && tadLength == permuteLength) {
                         //obtain a view of a slice to determine what to return
                         int *sliceShape = shape::slice(shape::shapeOf(shapeInfo));
                         if(dimensionLength == 1 && shape::isRowVector(this->tadShape,tadRank)) {
-                            if(dimensionLength == 1 && shape::isRowVector(sliceShape,shape::rank(shapeInfo))) {
-                                int *ret = shape::sliceShapeBuffer(shapeInfo,ptrManager);
-                                if(ptrManager == nullptr) {
+                            if (dimensionLength == 1 && shape::isRowVector(sliceShape, shape::rank(shapeInfo))) {
+                                int *ret = shape::sliceShapeBuffer(shapeInfo, ptrManager);
+                                if (ptrManager == nullptr) {
                                     delete[] shapeInfo;
                                 }
-                            }
-                            else {
 
+                                int finalDims[2] = {1, 0};
+                                shape::permuteShapeBufferInPlace(ret, finalDims, ret);
+                                return ret;
                             }
-
                         }
-                    }
-                    else {
-                        //copy starting from the tad shapes/strides that got permuted to the back
-                        int shapeOffset = shape::rank(shapeInfo) - originalDimensionLength;
-                        int *permutedShape = shape::shapeOf(toPermute) + shapeOffset;
-                        int *permutedStride = shape::stride(toPermute) + shapeOffset;
-                        //now that the dimensions are permuted, all of the tad shapes/strides are in the back
-                        //all we need to do is copy from the start of the tad dimensions to the end since they are
-                        //arranged in the right order
-                        shape::copyTo(originalDimensionLength, permutedStride, retStride);
-                        shape::copyTo(originalDimensionLength, permutedShape, retShape);
-                    }
+
+                        int length = shape::prod(this->tadShape,this->tadRank);
+                        int tensorLength = length;
+                        int lengthPerSlice = shape::lengthPerSlice(tadRank,tadShape,dimension,dimensionLength);
+                        int offset = index * tensorLength / lengthPerSlice;
+                        int sliceIdx = shape::sliceOffsetForTensor(tadRank,
+                                                                   index,shape::shapeOf(shapeInfo),
+                                                                   this->tensorShape,
+                                                                   this->tadRank,
+                                                                   dimension,dimensionLength);
+                        int *ret = shape::sliceShapeBuffer(shapeInfo,this->ptrManager);
+                        if(sliceIdx == 0 && length == lengthPerSlice) {
+                            ret2 = ret2.slice(offset);
+                            if(dimension.length == 1 && shape::isRowVector(this->tadShape,this->tadRank)) return ret2;
+                            return ret2.permutei(finalPermuteDims);
+                        }
+
+                        else if(length == lengthPerSlice) {
+                            offset -= shape::slices(ret) * (offset / shape::slices(ret));
+
+                            ret2 = ret2.slice(offset);
+                            if(dimension.length == 1 && shape::isRowVector(tadShape,tadRank)) return ret2;
+                            return ret2.permutei(finalPermuteDims);
+                        }
+
+                        while(ret2.length() > length) {
+                            sliceIdx = shape::sliceOffsetForTensor(tadRank,
+                                                                   index,shape::shapeOf(shapeInfo),
+                                                                   this->tensorShape,
+                                                                   this->tadRank,
+                                                                   dimension,dimensionLength);
+                            sliceIdx -= shape::slices(ret) * (sliceIdx / shape::slices(ret));
+                            ret2 = ret2.slice(sliceIdx);
+                        }
+
+                        if(dimensionLength == 1 && shape::isRowVector(tadShape,tadRank)) return ret2;
+                        return ret2.permutei(finalPermuteDims);
+
 
                 }
+                else {
+                    //copy starting from the tad shapes/strides that got permuted to the back
+                    int shapeOffset = shape::rank(shapeInfo) - originalDimensionLength;
+                    int *permutedShape = shape::shapeOf(toPermute) + shapeOffset;
+                    int *permutedStride = shape::stride(toPermute) + shapeOffset;
+                    //now that the dimensions are permuted, all of the tad shapes/strides are in the back
+                    //all we need to do is copy from the start of the tad dimensions to the end since they are
+                    //arranged in the right order
+                    shape::copyTo(originalDimensionLength, permutedStride, retStride);
+                    shape::copyTo(originalDimensionLength, permutedShape, retShape);
+                }
 
-                delete[] permuteIndexes;
-                delete[] toPermute;
+                delete[] finalDimensions;
             }
+
+
+            delete[] permuteIndexes;
+            delete[] toPermute;
+
             ret[shape::shapeInfoLength(rank) - 1] = shape::getOrder(rank,shape::shapeOf(ret),shape::stride(ret),1);
             if(wholeThing)
                 ret[shape::shapeInfoLength(rank) - 2] = 1;
@@ -4345,6 +4395,18 @@ __device__ int tadOffset(int *xInfo, int offset) {
         return ret;
     }
 
+    /**
+ * Computes the number
+ * of tensors along
+ * a given dimension
+ */
+#ifdef __CUDACC__
+        __host__ __device__
+#endif
+
+        INLINEDEF int slices(int *shapeInfo) {
+            return shape::shapeOf(shapeInfo)[0];
+        }
 /**
  * Computes the number
  * of tensors along
