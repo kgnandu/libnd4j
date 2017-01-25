@@ -229,6 +229,8 @@ template<typename OpType>
             __shared__ int numTads;
             __shared__ int *tadShape;
             __shared__ int *tadStride;
+            __shared__ char tadOrder;
+
             if (threadIdx.x == 0) {
           	    tadLength = shape::tadLength(xShapeInfo, dimension, dimensionLength);
                 tadEWS = shape::elementWiseStride(tadOnlyShapeInfo);
@@ -237,21 +239,25 @@ template<typename OpType>
 
                 tadShape = shape::shapeOf(tadOnlyShapeInfo);
                 tadStride = shape::stride(tadOnlyShapeInfo);
+                tadOrder = shape::order(tadOnlyShapeInfo);
             }
             __syncthreads();
 
-			if (dimensionLength > 1) {
+			if (dimensionLength > 1 || tadEWS < 1) {
                 int xCoord[MAX_RANK];
 
 				for (int r = blockIdx.x; r < numTads; r += gridDim.x) {
 					int tadOffsetForBlock = tadOffsets[r];
 
+					sPartials[threadIdx.x] = OpType::startingIndexValue(dx);
+
                     for(unsigned int i = threadIdx.x;i < tadLength; i += blockDim.x) {
-                        shape::ind2subC(tadRank,tadShape, i, xCoord);
+                       	shape::ind2sub(tadRank,tadShape, i, xCoord);
+
                         Nd4jIndex xOffset = shape::getOffset(tadOffsetForBlock, tadShape, tadStride, xCoord, tadRank);
 						IndexValue<T> comp {dx[xOffset], i};
 
-                    	sPartials[threadIdx.x] = OpType::update(sPartials[threadIdx.x],OpType::op(sPartials[threadIdx.x], comp,extraParams),extraParams);
+                    	sPartials[threadIdx.x] = OpType::update(sPartials[threadIdx.x], comp, extraParams);
                     }
 
                     __syncthreads();
@@ -425,7 +431,6 @@ template<typename OpType>
 
 					if (xElementWiseStride == 1) {
 						if(length < ELEMENT_THRESHOLD) {
-                            printf("branch A\n");
 // FIXME: proper reduction to be used here
 //#pragma omp simd
 							for (Nd4jIndex i = 0; i < length; i++) {
@@ -435,12 +440,10 @@ template<typename OpType>
 								startingIndex = OpType::update(startingIndex, curr, extraParams);
 
 							}
-                            printf("Final index: %i;\n", startingIndex.index);
 							return startingIndex.index;
 						}
 						else {
 							BlockInformation info(length, ELEMENT_THRESHOLD);
-                            printf("branch B\n");
 
 #pragma omp parallel num_threads(info.threads) if (info.threads > 1) default(shared)
 
@@ -567,47 +570,30 @@ template<typename OpType>
 					int *xStride = shape::stride(tadShapeShapeInfo);
 					int rank = shape::rank(tadShapeShapeInfo);
 
+
 #pragma omp  parallel for schedule(guided) if (resultLength > TAD_THRESHOLD) default(shared)
 					for(Nd4jIndex i = 0; i < resultLength; i++) {
 						int offset = tadOffsets[i];
-						int shapeIter[MAX_RANK];
-						int coord[MAX_RANK];
-						int dim;
-						int rankIter = rank;
-						int xStridesIter[MAX_RANK];
-						T *xPointer = x + offset;
-						IndexValue<T> indexValue = OpType::startingIndexValue(xPointer);
 
-						if(PrepareOneRawArrayIter<T>(rankIter,
-													 xShape,
-													 xPointer,
-													 xStride,
-													 &rankIter,
-													 shapeIter,
-													 &xPointer,
-													 xStridesIter) >= 0) {
-							ND4J_RAW_ITER_START(dim, rank, coord, shapeIter); {
-								/* Process the innermost dimension */
-								IndexValue<T> comp;
-								comp.index = shape::sub2Ind(rank,xShape,coord);
-								comp.value = xPointer[0];
-								indexValue = OpType::update(indexValue,comp,extraParams);
-							} ND4J_RAW_ITER_ONE_NEXT(dim,
-													 rank,
-													 coord,
-													 shapeIter,
-													 xPointer,
-													 xStridesIter);
-						}
-						else {
-							printf("Unable to prepare array\n");
-						}
 
-						result[i] = indexValue.index;
+                        IndexValue<T> indexValue = OpType::startingIndexValue(&x[offset]);
+
+                        int xCoord[MAX_RANK];
+
+                        for(int j = 0; j < tadLength; j++) {
+                            shape::ind2subC(rank,xShape, j, xCoord);
+                            Nd4jIndex xOffset = shape::getOffset(offset, xShape, xStride, xCoord, rank);
+
+                            IndexValue<T> comp;
+                            comp.index = j;
+                            comp.value = x[xOffset];
+                            indexValue = OpType::update(indexValue,comp,extraParams);
+                        }
+                        result[i] = indexValue.index;
 					}
 				} else {
 					int tadElementWiseStride = shape::elementWiseStride(tadOnlyShapeInfo);
-					const int tadLength = shape::length(tadOnlyShapeInfo);
+					//const int tadLength = shape::length(tadOnlyShapeInfo);
 
 #pragma omp parallel for schedule(guided) if (resultLength > TAD_THRESHOLD) default(shared)
 					for(Nd4jIndex i = 0;  i < resultLength; i++) {
