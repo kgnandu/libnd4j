@@ -49,7 +49,10 @@
         (46,simdOps::CompareAndReplace),\
         (56,simdOps::And),\
         (57,simdOps::Or),\
-        (58,simdOps::Xor)
+        (58,simdOps::Xor),\
+        (59,simdOps::Remainder),\
+        (60,simdOps::FMod)
+
 
 
 
@@ -221,8 +224,7 @@ template<typename OpType>
 		int resultRank = shape::rank(resultShapeBuffer);
 
 		Nd4jIndex n = shape::length(xShapeBuffer);
-		if(shape::elementWiseStride(xShapeBuffer) >= 1 && shape::elementWiseStride(yShapeBuffer) >= 1 && shape::elementWiseStride(resultShapeBuffer) >= 1 && shape::order(xShapeBuffer) == shape::order(yShapeBuffer) && shape::order(resultShapeBuffer) == shape::order(xShapeBuffer)) {
-
+		if(shape::elementWiseStride(xShapeBuffer) >= 1 && shape::elementWiseStride(yShapeBuffer) == shape::elementWiseStride(xShapeBuffer) && shape::elementWiseStride(yShapeBuffer) >= 1 && shape::elementWiseStride(resultShapeBuffer) >= 1 && shape::order(xShapeBuffer) == shape::order(yShapeBuffer) && shape::order(resultShapeBuffer) == shape::order(xShapeBuffer)) {
 			// TODO: this is wrong, and should be moved to host side
 			transformCuda<OpType>(
 					n,
