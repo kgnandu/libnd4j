@@ -36,7 +36,7 @@
 cudaDeviceProp *deviceProperties;
 cudaFuncAttributes *funcAttributes = new cudaFuncAttributes[64];
 int blockLimit = 128;
-int maxThreads = 512;
+int maxThreads = 768;
 bool allowedP2P = false;
 bool supportedP2P = false;
 #ifdef __EXPERIMENTAL__
@@ -45,7 +45,7 @@ bool experimentalSupport = true;
 bool experimentalSupport = false;
 #endif
 
-int minThreads = 32;
+int minThreads = 512;
 
 __constant__ char deviceConstantMemory[49152];
 
@@ -361,7 +361,7 @@ dim3 getReduceLaunchParams(int deviceId, int *xShapeInfo, int *tadShapeInfo, cud
 		}
 	} else{
 		// we have special case - reduction along all dimensions
-		tadLength = nd4j::math::nd4j_min<int>(shape::length(xShapeInfo), 768);
+		tadLength = nd4j::math::nd4j_min<int>(shape::length(xShapeInfo), 1024);
 		numTads = shape::length(xShapeInfo) / tadLength;
 	}
 
