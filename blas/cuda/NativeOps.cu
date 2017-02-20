@@ -4881,11 +4881,11 @@ int NativeOps::ompGetNumThreads() {
 }
 
 void NativeOps::setOmpNumThreads(int threads) {
-	if (threads > 1024)
-		threads = 1024;
-	if (threads < 32)
-		threads = 32;
-	maxThreads = threads;
+//	if (threads > 1024)
+//		threads = 1024;
+//	if (threads < 32)
+//		threads = 32;
+//	maxThreads = threads;
 }
 
 void NativeOps::enableVerboseMode(bool reallyEnable) {
@@ -5487,8 +5487,8 @@ bool NativeOps::isExperimentalEnabled() {
 }
 
 void NativeOps::setOmpMinThreads(int threads) {
-    minThreads = nd4j::math::nd4j_max<int>(32, threads);
-    minThreads = nd4j::math::nd4j_min<int>(maxThreads, minThreads);
+    //minThreads = nd4j::math::nd4j_max<int>(32, threads);
+    //minThreads = nd4j::math::nd4j_min<int>(maxThreads, minThreads);
 }
 
 int NativeOps::getDevice() {
