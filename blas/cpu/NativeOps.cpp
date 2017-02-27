@@ -1440,7 +1440,10 @@ void   NativeOps::execTransformHalf(
         int *resultIndexes) {
     // no-op
 }
-
+void   NativeOps::execDummyOperator(
+        Nd4jPointer *extraPointers) {
+            // "Dummy operator in process..."
+}
 
 
 template <typename T>

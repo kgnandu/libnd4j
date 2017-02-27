@@ -1033,6 +1033,7 @@ public:
                               int *xIndexes,
                               int *resultIndexes);
 
+    void   execDummyOperator(Nd4jPointer *extraPointers);
 
     /**
 * Append an input array
