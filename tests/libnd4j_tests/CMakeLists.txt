@@ -1,5 +1,5 @@
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-include_directories(../../include ../../include/helpers ../../include/loops ../../include/ops ../../include/types)
+include_directories(../../include ../../include/helpers ../../include/loops ../../include/ops ../../include/types ../../include/cnpy)
 if(LINUX)
     link_directories(/usr/local/lib)
     link_directories(/usr/lib)

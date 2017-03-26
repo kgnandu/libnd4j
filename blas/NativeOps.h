@@ -26,6 +26,7 @@
 
 #include <pointercast.h>
 #include <types/float16.h>
+#include <cnpy.h>
 
 //DO NOT REMOVE: THIS IS AN EDITOR SEMANTICS THING FOR CLION
 //IT DEFINES THE EXPORT MACRO FOR THE EDITOR AND THEN
@@ -1159,183 +1160,974 @@ public:
      */
     int freeDevice(Nd4jPointer pointer, Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @return
+     */
     int ompGetMaxThreads();
 
+    /**
+     *
+     * @return
+     */
     int ompGetNumThreads();
 
+    /**
+     *
+     * @param threads
+     */
     void setOmpNumThreads(int threads);
 
+    /**
+     *
+     * @param threads
+     */
     void setOmpMinThreads(int threads);
 
 
 
+
+    /**
+     *
+     * @return
+     */
     Nd4jPointer createContext();
 
+    /**
+     *
+     * @return
+     */
     Nd4jPointer createStream();
 
+    /**
+     *
+     * @return
+     */
     Nd4jPointer createEvent();
 
+    /**
+     *
+     * @param event
+     * @param stream
+     * @return
+     */
     int registerEvent(Nd4jPointer event, Nd4jPointer stream);
 
+    /**
+     *
+     * @param event
+     * @return
+     */
     int destroyEvent(Nd4jPointer event);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     int setDevice(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @return
+     */
     int getDevice();
 
+    /**
+     *
+     * @param stream
+     * @return
+     */
     int streamSynchronize(Nd4jPointer stream);
 
+    /**
+     *
+     * @param event
+     * @return
+     */
     int eventSynchronize(Nd4jPointer event);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     Nd4jIndex getDeviceFreeMemory(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     Nd4jIndex getDeviceTotalMemory(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     int getDeviceMajor(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     int getDeviceMinor(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @param ptrToDeviceId
+     * @return
+     */
     const char * getDeviceName(Nd4jPointer ptrToDeviceId);
 
+    /**
+     *
+     * @param dst
+     * @param src
+     * @param size
+     * @param flags
+     * @param reserved
+     * @return
+     */
     int memcpy(Nd4jPointer dst, Nd4jPointer src, Nd4jIndex size, int flags, Nd4jPointer reserved);
 
+    /**
+     *
+     * @param dst
+     * @param src
+     * @param size
+     * @param flags
+     * @param reserved
+     * @return
+     */
     int memcpyAsync(Nd4jPointer dst, Nd4jPointer src, Nd4jIndex size, int flags, Nd4jPointer reserved);
 
+    /**
+     *
+     * @param dst
+     * @param value
+     * @param size
+     * @param flags
+     * @param reserved
+     * @return
+     */
     int memset(Nd4jPointer dst, int value, Nd4jIndex size, int flags, Nd4jPointer reserved);
 
+    /**
+     *
+     * @param dst
+     * @param value
+     * @param size
+     * @param flags
+     * @param reserved
+     * @return
+     */
     int memsetAsync(Nd4jPointer dst, int value, Nd4jIndex size, int flags, Nd4jPointer reserved);
 
+    /**
+     *
+     * @param dst
+     * @param src
+     * @param size
+     * @param flags
+     * @param reserved
+     * @return
+     */
     int memcpyConstantAsync(Nd4jIndex dst, Nd4jPointer src, Nd4jIndex size, int flags, Nd4jPointer reserved);
 
+    /**
+     *
+     * @return
+     */
     Nd4jPointer getConstantSpace();
 
+    /**
+     *
+     * @return
+     */
     int getAvailableDevices();
 
+    /**
+     *
+     * @param reallyEnable
+     */
     void enableDebugMode(bool reallyEnable);
 
+    /**
+     *
+     * @param reallyEnable
+     */
     void enableVerboseMode(bool reallyEnable);
 
+    /**
+     *
+     * @param gridSize
+     */
     void setGridLimit(int gridSize);
 
+    /**
+     *
+     * @param xShapeInfo
+     * @param dimension
+     * @param dimensionLength
+     * @param targetBuffer
+     * @param offsetsBuffer
+     */
     void tadOnlyShapeInfo(int *xShapeInfo, int *dimension, int dimensionLength, int *targetBuffer, int *offsetsBuffer);
 
     /*
      * PullRow special op
      */
 
+    /**
+     *
+     * @param extraPointers
+     * @param x
+     * @param xShapeInfo
+     * @param z
+     * @param zShapeInfo
+     * @param n
+     * @param indexes
+     * @param tadShapeInfo
+     * @param tadOffsets
+     * @param zTadShapeInfo
+     * @param zTadOffsets
+     */
     void pullRowsHalf(Nd4jPointer *extraPointers, float16 *x, int *xShapeInfo, float16 *z, int *zShapeInfo, int n, int *indexes, int *tadShapeInfo, int *tadOffsets, int *zTadShapeInfo, int *zTadOffsets);
 
+    /**
+     *
+     * @param extraPointers
+     * @param x
+     * @param xShapeInfo
+     * @param z
+     * @param zShapeInfo
+     * @param n
+     * @param indexes
+     * @param tadShapeInfo
+     * @param tadOffsets
+     * @param zTadShapeInfo
+     * @param zTadOffsets
+     */
     void pullRowsFloat(Nd4jPointer *extraPointers, float *x, int *xShapeInfo, float* z, int *zShapeInfo, int n, int *indexes, int *tadShapeInfo, int *tadOffsets, int *zTadShapeInfo, int *zTadOffsets);
 
+    /**
+     *
+     * @param extraPointers
+     * @param x
+     * @param xShapeInfo
+     * @param z
+     * @param zShapeInfo
+     * @param n
+     * @param indexes
+     * @param tadShapeInfo
+     * @param tadOffsets
+     * @param zTadShapeInfo
+     * @param zTadOffsets
+     */
     void pullRowsDouble(Nd4jPointer *extraPointers, double *x, int *xShapeInfo, double *z, int *zShapeInfo, int n, int *indexes, int *tadShapeInfo, int *tadOffsets, int *zTadShapeInfo, int *zTadOffsets);
 
     /**
      * Array averaging op
      */
+     /**
+      *
+      * @param extras
+      * @param dx
+      * @param dz
+      * @param n
+      * @param length
+      * @param propagate
+      */
     void averageHalf(Nd4jPointer *extras, Nd4jPointer *dx, float16 *dz, int n, Nd4jIndex length, bool propagate);
 
+    /**
+     *
+     * @param extras
+     * @param dx
+     * @param dz
+     * @param n
+     * @param length
+     * @param propagate
+     */
     void averageFloat(Nd4jPointer *extras, Nd4jPointer *dx, float *dz, int n, Nd4jIndex length, bool propagate);
 
+    /**
+     *
+     * @param extras
+     * @param dx
+     * @param dz
+     * @param n
+     * @param length
+     * @param propagate
+     */
     void averageDouble(Nd4jPointer *extras, Nd4jPointer *dx, double *dz, int n, Nd4jIndex length, bool propagate);
 
 
     /**
      * P2P enabler
      */
+     /**
+      *
+      * @param enable
+      */
     void enableP2P(bool enable);
 
+    /**
+     *
+     */
     void checkP2P();
 
+    /**
+     *
+     * @return
+     */
     bool isP2PAvailable();
 
     /**
      * Shuffle methods
      */
 
+    /**
+     *
+     * @param extras
+     * @param dx
+     * @param xShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param N
+     * @param shuffleMap
+     * @param tadShapeInfo
+     * @param tadOffsets
+     */
     void shuffleDouble(Nd4jPointer *extras, Nd4jPointer *dx, Nd4jPointer *xShapeInfo, Nd4jPointer *dz, Nd4jPointer *zShapeInfo, int N, int *shuffleMap, Nd4jPointer *tadShapeInfo, Nd4jPointer *tadOffsets);
 
+    /**
+     *
+     * @param extras
+     * @param dx
+     * @param xShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param N
+     * @param shuffleMap
+     * @param tadShapeInfo
+     * @param tadOffsets
+     */
     void shuffleFloat(Nd4jPointer *extras, Nd4jPointer *dx, Nd4jPointer *xShapeInfo, Nd4jPointer *dz, Nd4jPointer *zShapeInfo, int N, int *shuffleMap, Nd4jPointer *tadShapeInfo, Nd4jPointer *tadOffsets);
 
+    /**
+     *
+     * @param extras
+     * @param dx
+     * @param xShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param N
+     * @param shuffleMap
+     * @param tadShapeInfo
+     * @param tadOffsets
+     */
     void shuffleHalf(Nd4jPointer *extras, Nd4jPointer *dx, Nd4jPointer *xShapeInfo, Nd4jPointer *dz, Nd4jPointer *zShapeInfo, int N, int *shuffleMap, Nd4jPointer *tadShapeInfo, Nd4jPointer *tadOffsets);
 
     /**
      * Type Conversions
      */
 
+    /**
+     *
+     * @param extras
+     * @param srcType
+     * @param x
+     * @param N
+     * @param dstType
+     * @param z
+     */
     void convertTypes(Nd4jPointer *extras, int srcType, Nd4jPointer x, long N, int dstType, Nd4jPointer z);
 
 
+    /**
+     *
+     * @return
+     */
     bool isExperimentalEnabled();
 
     /**
      * Aggregate
      */
+
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param arguments
+     * @param numArguments
+     * @param shapeArguments
+     * @param numShapeArguments
+     * @param indexArguments
+     * @param numIndexArguments
+     * @param intArrays
+     * @param numIntArrays
+     * @param realArguments
+     * @param numRealArguments
+     */
     void execAggregateFloat(Nd4jPointer *extraPointers,int opNum, float **arguments, int numArguments, int **shapeArguments, int numShapeArguments, int *indexArguments, int numIndexArguments, int **intArrays, int numIntArrays, float *realArguments, int numRealArguments);
 
-    void execAggregateDouble(Nd4jPointer *extraPointers,int opNum, double **arguments, int numArguments, int **shapeArguments, int numShapeArguments, int *indexArguments, int numIndexArguments, int **intArrays, int numIntArrays, double *realArguments, int numRealArguments);
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param arguments
+     * @param numArguments
+     * @param shapeArguments
+     * @param numShapeArguments
+     * @param indexArguments
+     * @param numIndexArguments
+     * @param intArrays
+     * @param numIntArrays
+     * @param realArguments
+     * @param numRealArguments
+     */
+    void execAggregateDouble(Nd4jPointer *extraPointers,
+                             int opNum,
+                             double **arguments,
+                             int numArguments,
+                             int **shapeArguments,
+                             int numShapeArguments,
+                             int *indexArguments,
+                             int numIndexArguments,
+                             int **intArrays,
+                             int numIntArrays,
+                             double *realArguments,
+                             int numRealArguments);
 
-    void execAggregateHalf(Nd4jPointer *extraPointers,int opNum, float16 **arguments, int numArguments, int **shapeArguments, int numShapeArguments, int *indexArguments, int numIndexArguments, int **intArrays, int numIntArrays, float16 *realArguments, int numRealArguments);
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param arguments
+     * @param numArguments
+     * @param shapeArguments
+     * @param numShapeArguments
+     * @param indexArguments
+     * @param numIndexArguments
+     * @param intArrays
+     * @param numIntArrays
+     * @param realArguments
+     * @param numRealArguments
+     */
+    void execAggregateHalf(Nd4jPointer *extraPointers,
+                           int opNum,
+                           float16 **arguments,
+                           int numArguments,
+                           int **shapeArguments,
+                           int numShapeArguments,
+                           int *indexArguments,
+                           int numIndexArguments,
+                           int **intArrays,
+                           int numIntArrays,
+                           float16 *realArguments,
+                           int numRealArguments);
 
 
+    /**
+     *
+     * @param extraPointers
+     * @param numAggregates
+     * @param opNum
+     * @param maxArgs
+     * @param maxShapes
+     * @param maxIntArrays
+     * @param maxIntArraySize
+     * @param maxIdx
+     * @param maxReals
+     * @param ptrToArguments
+     */
+    void execAggregateBatchFloat(Nd4jPointer *extraPointers,
+                                 int numAggregates,
+                                 int opNum,
+                                 int maxArgs,
+                                 int maxShapes,
+                                 int maxIntArrays,
+                                 int maxIntArraySize,
+                                 int maxIdx,
+                                 int maxReals,
+                                 void *ptrToArguments);
 
-    void execAggregateBatchFloat(Nd4jPointer *extraPointers, int numAggregates, int opNum, int maxArgs, int maxShapes, int maxIntArrays, int maxIntArraySize, int maxIdx, int maxReals, void *ptrToArguments);
+    /**
+     *
+     * @param extraPointers
+     * @param numAggregates
+     * @param opNum
+     * @param maxArgs
+     * @param maxShapes
+     * @param maxIntArrays
+     * @param maxIntArraySize
+     * @param maxIdx
+     * @param maxReals
+     * @param ptrToArguments
+     */
+    void execAggregateBatchDouble(Nd4jPointer *extraPointers,
+                                  int numAggregates,
+                                  int opNum,
+                                  int maxArgs,
+                                  int maxShapes,
+                                  int maxIntArrays,
+                                  int maxIntArraySize,
+                                  int maxIdx,
+                                  int maxReals,
+                                  void *ptrToArguments);
 
-    void execAggregateBatchDouble(Nd4jPointer *extraPointers, int numAggregates, int opNum, int maxArgs, int maxShapes, int maxIntArrays, int maxIntArraySize, int maxIdx, int maxReals, void *ptrToArguments);
-
-    void execAggregateBatchHalf(Nd4jPointer *extraPointers, int numAggregates, int opNum, int maxArgs, int maxShapes, int maxIntArrays, int maxIntArraySize, int maxIdx, int maxReals, void *ptrToArguments);
+    /**
+     *
+     * @param extraPointers
+     * @param numAggregates
+     * @param opNum
+     * @param maxArgs
+     * @param maxShapes
+     * @param maxIntArrays
+     * @param maxIntArraySize
+     * @param maxIdx
+     * @param maxReals
+     * @param ptrToArguments
+     */
+    void execAggregateBatchHalf(Nd4jPointer *extraPointers,
+                                int numAggregates,
+                                int opNum,
+                                int maxArgs,
+                                int maxShapes,
+                                int maxIntArrays,
+                                int maxIntArraySize,
+                                int maxIdx,
+                                int maxReals,
+                                void *ptrToArguments);
 
     /**
      * Random operations
      */
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomFloat(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float *z, int *zShapeBuffer, float *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param y
+     * @param yShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomFloat(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float *x, int *xShapeBuffer, float *y, int *yShapeBuffer, float *z, int *zShapeBuffer, float *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomFloat(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float *x, int *xShapeBuffer, float *z, int *zShapeBuffer, float *extraArguments);
 
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomDouble(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, double *z, int *zShapeBuffer, double *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param y
+     * @param yShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomDouble(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, double *x, int *xShapeBuffer, double *y, int *yShapeBuffer, double *z, int *zShapeBuffer, double *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomDouble(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, double *x, int *xShapeBuffer, double *z, int *zShapeBuffer, double *extraArguments);
 
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomHalf(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float16 *z, int *zShapeBuffer, float16 *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param y
+     * @param yShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomHalf(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float16 *x, int *xShapeBuffer, float16 *y, int *yShapeBuffer, float16 *z, int *zShapeBuffer, float16 *extraArguments);
 
+    /**
+     *
+     * @param extraPointers
+     * @param opNum
+     * @param state
+     * @param x
+     * @param xShapeBuffer
+     * @param z
+     * @param zShapeBuffer
+     * @param extraArguments
+     */
     void execRandomHalf(Nd4jPointer *extraPointers, int opNum, Nd4jPointer state, float16 *x, int *xShapeBuffer, float16 *z, int *zShapeBuffer, float16 *extraArguments);
 
 
 
+    /**
+     *
+     * @param extraPointers
+     * @param seed
+     * @param bufferSize
+     * @param ptrToBuffer
+     * @return
+     */
     Nd4jPointer initRandom(Nd4jPointer *extraPointers, long seed, long bufferSize, Nd4jPointer ptrToBuffer);
 
+    /**
+     *
+     * @param extraPointers
+     * @param seed
+     * @param ptrRandom
+     */
     void refreshBuffer(Nd4jPointer *extraPointers, long seed, Nd4jPointer ptrRandom);
 
+    /**
+     *
+     * @param extraPointers
+     * @param seed
+     * @param ptrRandom
+     */
     void reSeedBuffer(Nd4jPointer *extraPointers, long seed, Nd4jPointer ptrRandom);
 
+    /**
+     *
+     * @param ptrRandom
+     */
     void destroyRandom(Nd4jPointer ptrRandom);
 
     /**
      * Grid operations
      */
 
-    void execMetaPredicateStridedFloat(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, float *dx, int xStride, float *dy, int yStride, float *dz, int zStride, float *extraA, float *extraB, float scalarA, float scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xStride
+     * @param dy
+     * @param yStride
+     * @param dz
+     * @param zStride
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateStridedFloat(Nd4jPointer *extras,
+                                       const int opTypeA,
+                                       const int opNumA,
+                                       const int opTypeB,
+                                       const int opNumB,
+                                       long N,
+                                       float *dx,
+                                       int xStride,
+                                       float *dy,
+                                       int yStride,
+                                       float *dz,
+                                       int zStride,
+                                       float *extraA,
+                                       float *extraB,
+                                       float scalarA,
+                                       float scalarB);
 
-    void execMetaPredicateShapeFloat(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, float *dx, int *xShapeInfo, float *dy, int *yShapeInfo, float *dz, int *zShapeInfo, float *extraA, float *extraB, float scalarA, float scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xShapeInfo
+     * @param dy
+     * @param yShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateShapeFloat(Nd4jPointer *extras,
+                                     const int opTypeA,
+                                     const int opNumA,
+                                     const int opTypeB,
+                                     const int opNumB,
+                                     long N,
+                                     float *dx,
+                                     int *xShapeInfo,
+                                     float *dy,
+                                     int *yShapeInfo,
+                                     float *dz,
+                                     int *zShapeInfo,
+                                     float *extraA,
+                                     float *extraB,
+                                     float scalarA,
+                                     float scalarB);
 
-    void execMetaPredicateStridedDouble(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, double *dx, int xStride, double *dy, int yStride, double *dz, int zStride, double *extraA, double *extraB, double scalarA, double scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xStride
+     * @param dy
+     * @param yStride
+     * @param dz
+     * @param zStride
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateStridedDouble(Nd4jPointer *extras,
+                                        const int opTypeA,
+                                        const int opNumA,
+                                        const int opTypeB,
+                                        const int opNumB,
+                                        long N,
+                                        double *dx,
+                                        int xStride,
+                                        double *dy,
+                                        int yStride,
+                                        double *dz,
+                                        int zStride,
+                                        double *extraA,
+                                        double *extraB,
+                                        double scalarA,
+                                        double scalarB);
 
-    void execMetaPredicateShapeDouble(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, double *dx, int *xShapeInfo, double *dy, int *yShapeInfo, double *dz, int *zShapeInfo, double *extraA, double *extraB, double scalarA, double scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xShapeInfo
+     * @param dy
+     * @param yShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateShapeDouble(Nd4jPointer *extras,
+                                      const int opTypeA,
+                                      const int opNumA,
+                                      const int opTypeB,
+                                      const int opNumB,
+                                      long N,
+                                      double *dx,
+                                      int *xShapeInfo,
+                                      double *dy,
+                                      int *yShapeInfo,
+                                      double *dz,
+                                      int *zShapeInfo,
+                                      double *extraA,
+                                      double *extraB,
+                                      double scalarA,
+                                      double scalarB);
 
-    void execMetaPredicateStridedHalf(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, float16 *dx, int xStride, float16 *dy, int yStride, float16 *dz, int zStride, float16 *extraA, float16 *extraB, float scalarA, float scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xStride
+     * @param dy
+     * @param yStride
+     * @param dz
+     * @param zStride
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateStridedHalf(Nd4jPointer *extras,
+                                      const int opTypeA,
+                                      const int opNumA,
+                                      const int opTypeB,
+                                      const int opNumB,
+                                      long N,
+                                      float16 *dx,
+                                      int xStride,
+                                      float16 *dy,
+                                      int yStride,
+                                      float16 *dz,
+                                      int zStride,
+                                      float16 *extraA,
+                                      float16 *extraB,
+                                      float scalarA,
+                                      float scalarB);
 
-    void execMetaPredicateShapeHalf(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, long N, float16 *dx, int *xShapeInfo, float16 *dy, int *yShapeInfo, float16 *dz, int *zShapeInfo, float16 *extraA, float16 *extraB, float scalarA, float scalarB);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param N
+     * @param dx
+     * @param xShapeInfo
+     * @param dy
+     * @param yShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     */
+    void execMetaPredicateShapeHalf(Nd4jPointer *extras,
+                                    const int opTypeA,
+                                    const int opNumA,
+                                    const int opTypeB,
+                                    const int opNumB,
+                                    long N,
+                                    float16 *dx,
+                                    int *xShapeInfo,
+                                    float16 *dy,
+                                    int *yShapeInfo,
+                                    float16 *dz,
+                                    int *zShapeInfo,
+                                    float16 *extraA,
+                                    float16 *extraB,
+                                    float scalarA,
+                                    float scalarB);
 
 
-    void execMetaPredicateReduceFloat(Nd4jPointer *extras, const int opTypeA, const int opNumA, const int opTypeB, const int opNumB, float *dx, int *xShapeInfo, float *dy, int *yShapeInfo, float *dz, int *zShapeInfo, int *dimension, int dimensionLength, int *tadShapeInfo, int *tadOffsets, float *extraA, float *extraB, float scalarA, float scalarB, bool scalarReturned);
+    /**
+     *
+     * @param extras
+     * @param opTypeA
+     * @param opNumA
+     * @param opTypeB
+     * @param opNumB
+     * @param dx
+     * @param xShapeInfo
+     * @param dy
+     * @param yShapeInfo
+     * @param dz
+     * @param zShapeInfo
+     * @param dimension
+     * @param dimensionLength
+     * @param tadShapeInfo
+     * @param tadOffsets
+     * @param extraA
+     * @param extraB
+     * @param scalarA
+     * @param scalarB
+     * @param scalarReturned
+     */
+    void execMetaPredicateReduceFloat(Nd4jPointer *extras,
+                                      const int opTypeA,
+                                      const int opNumA,
+                                      const int opTypeB,
+                                      const int opNumB,
+                                      float *dx,
+                                      int *xShapeInfo,
+                                      float *dy,
+                                      int *yShapeInfo,
+                                      float *dz,
+                                      int *zShapeInfo,
+                                      int *dimension,
+                                      int dimensionLength,
+                                      int *tadShapeInfo,
+                                      int *tadOffsets,
+                                      float *extraA,
+                                      float *extraB,
+                                      float scalarA,
+                                      float scalarB,
+                                      bool scalarReturned);
+
+
+
 };
 
 
