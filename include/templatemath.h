@@ -108,6 +108,8 @@ template<typename T>
         math_def inline T nd4j_sin(T val);
 
 		template<typename T>
+		math_def inline T nd4j_sinh(T val);
+		template<typename T>
         math_def inline T softplus(T val) {
 			return nd4j_log<T>((T) 1.0f + nd4j_exp<T>(val));
 		}
@@ -121,7 +123,15 @@ template<typename T>
 
 		template<typename T>
         math_def inline T nd4j_tanh(T val);
-		template<typename T>
+        template<typename T>
+        math_def inline T nd4j_tan(T val);
+
+        template<typename T>
+        math_def inline T nd4j_tan(T val) {
+            return nd4j_log((val + 1 / (1 - val)) * 0.5);
+        }
+
+        template<typename T>
         math_def inline T nd4j_tanhderivative(T val) {
 			T tanh = nd4j_tanh(val);
 			return (T) 1.0f - tanh * tanh;
@@ -485,6 +495,33 @@ template<typename T>
 		}
 
 
+
+		template<>
+		math_def inline float16 nd4j_sinh<float16>(float16 val) {
+#ifdef NATIVE_HALFS
+			return hsin(val.data);
+#else
+			return (float16) sinh((float) val);
+#endif
+		}
+
+
+		template<>
+		math_def inline float nd4j_sinh<float>(float val) {
+			return sinhf(val);
+		}
+
+		template<>
+		math_def inline double nd4j_sinh<double>(double val) {
+			return sinh(val);
+		}
+
+		template<>
+		math_def inline int nd4j_sinh<int>(int val) {
+			return sinhf((float) val);
+		}
+
+
 		template<>
         math_def inline float16 nd4j_sqrt<float16>(float16 val) {
 #ifdef NATIVE_HALFS
@@ -529,6 +566,27 @@ template<typename T>
         math_def inline int nd4j_tanh<int>(int val) {
 			return tanhf((float) val);
 		}
+
+
+        template<>
+        math_def inline float16 nd4j_tan<float16>(float16 val) {
+            return (float16) tanf((float) val);
+        }
+
+
+        template<>
+        math_def inline float nd4j_tan<float>(float val) {
+            return tanf(val);
+        }
+
+        template<>
+        math_def inline double nd4j_tan<double>(double val) {
+            return tan(val);
+        }
+        template<>
+        math_def inline int nd4j_tan<int>(int val) {
+            return tanf((float) val);
+        }
 
 
         template<>
