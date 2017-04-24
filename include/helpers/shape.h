@@ -4916,6 +4916,7 @@ __device__ int tadOffset(int *xInfo, int offset) {
             return true;
         } else {
             printf("Unknown order for array!\n");
+            return false;
         }
     }
 }

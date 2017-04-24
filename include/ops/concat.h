@@ -24,6 +24,7 @@ void concatCpuGeneric(
 
     bool allC = true;
     bool allScalar = true;
+    bool allEqual = true;
 
     //nothing to concat
     if(numArrays == 1)
@@ -31,13 +32,17 @@ void concatCpuGeneric(
 
     //detect whether all arrays are c ordered or not
     //Also detect whether they are all scalars
+    // and detect if all lengths are equal
+    Nd4jIndex firstLength = shape::length(inputShapeInfoPointers[0]);
     for(int i = 0; i < numArrays; i++) {
         allC &= (shape::order(inputShapeInfoPointers[i]) == 'c');
         allScalar &= (shape::isScalar(inputShapeInfoPointers[i]));
+        allEqual &= (firstLength == shape::length(inputShapeInfoPointers[i]));
     }
 
     //we are merging all scalars
     if(allScalar) {
+#pragma omp parallel for num_threads(4) proc_bind(close)
         for(int i = 0; i < numArrays; i++) {
             result[i] = dataBuffers[i][0];
         }
@@ -49,17 +54,28 @@ void concatCpuGeneric(
 
 
     if(allC && dimension == 0 && shape::order(resultShapeInfo) == 'c') {
-        int currBuffer = 0;
-        int currBufferOffset = 0;
-        for(int i = 0; i <  length; i++) {
-            result[i] = dataBuffers[currBuffer][currBufferOffset++];
-            if(currBufferOffset >= shape::length(inputShapeInfoPointers[currBuffer])) {
-                currBuffer++;
-                currBufferOffset = 0;
-            }
-        }
+        if (allEqual) {
+#pragma omp parallel for num_threads(4) proc_bind(close)
+            for(int r = 0; r < numArrays; r++) {
 
-        return;
+#pragma omp simd
+                for (Nd4jIndex e = 0; e < firstLength; e++) {
+                    int offset = (r * firstLength) + e;
+                    result[offset] = dataBuffers[r][e];
+                }
+            }
+        } else {
+            int currBuffer = 0;
+            int currBufferOffset = 0;
+            for (int i = 0; i < length; i++) {
+                result[i] = dataBuffers[currBuffer][currBufferOffset++];
+                if (currBufferOffset >= shape::length(inputShapeInfoPointers[currBuffer])) {
+                    currBuffer++;
+                    currBufferOffset = 0;
+                }
+            }
+            return;
+        }
     }
 
     int resultStride = shape::elementWiseStride(resultShapeInfo);
