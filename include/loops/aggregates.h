@@ -65,12 +65,19 @@ namespace functions {
                     int *idxArg = helper.getIndexArguments(i);
                     T *realArg = helper.getRealArguments(i);
 
+                    // we assume that result array is stored as 0 argument
+                    T *result = arguments[0];
+                    T *x = arguments[1];
+                    T *extras = arguments[2];
+
+                    int *xShape = shapes[0];
+
                     for (int e = 0; e < maxIntArrays; e++) {
                         intArrays[e] = helper.getIntArrayArguments(i, e);
                     }
 
                     // TODO: call for Reduce function with PROPER params hehe
-                    functions::reduce::ReduceFunction<T>::template execScalar<OpClass>(nullptr, nullptr, nullptr);
+                    result[i] = functions::reduce::ReduceFunction<T>::template execScalar<OpClass>(x, xShape, extras);
 
                     delete [] intArrays;
                 }
