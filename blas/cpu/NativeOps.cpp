@@ -11,6 +11,7 @@
 #include <pairwise_util.h>
 #include <templatemath.h>
 #include <types/float8.h>
+#include <ops/ops.h>
 #include <loops/type_conversions.h>
 #include <loops/aggregates.h>
 #include <helpers/helper_ptrmap.h>
@@ -2466,6 +2467,18 @@ void NativeOps::execAggregateHalf(Nd4jPointer *extraPointers,int opNum,
 }
 
 
+void NativeOps::execAggregateBatchReduceFloat(Nd4jPointer *extraPointers,
+                                        int numAggregates,
+                                        int opNum,
+                                        int maxArgs,
+                                        int maxShapes,
+                                        int maxIntArrays,
+                                        int maxIntArraySize,
+                                        int maxIdx,
+                                        int maxReals,
+                                        void *ptrToArguments) {
+    functions::aggregate::AggregatedFunction<float>::template aggregateBatchReduceGeneric<simdOps::Mean<float>>(numAggregates, opNum, maxArgs, maxShapes, maxIntArrays, maxIntArraySize, maxIdx, maxReals, ptrToArguments);
+}
 
 void NativeOps::execAggregateBatchFloat(Nd4jPointer *extraPointers,
                                         int numAggregates,

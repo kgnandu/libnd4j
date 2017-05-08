@@ -2182,6 +2182,18 @@ public:
                                  int maxReals,
                                  void *ptrToArguments);
 
+
+    void execAggregateBatchReduceFloat(Nd4jPointer *extraPointers,
+                                 int numAggregates,
+                                 int opNum,
+                                 int maxArgs,
+                                 int maxShapes,
+                                 int maxIntArrays,
+                                 int maxIntArraySize,
+                                 int maxIdx,
+                                 int maxReals,
+                                 void *ptrToArguments);
+
     /**
      *
      * @param extraPointers

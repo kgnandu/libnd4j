@@ -5743,6 +5743,29 @@ void NativeOps::execAggregateHalf(Nd4jPointer *extraPointers,int opNum,
     checkCudaErrors(cudaStreamSynchronize(*stream));
 }
 
+
+void NativeOps::execAggregateBatchReduceFloat(Nd4jPointer *extraPointers,
+											  int numAggregates,
+											  int opNum,
+											  int maxArgs,
+											  int maxShapes,
+											  int maxIntArrays,
+											  int maxIntArraySize,
+											  int maxIdx,
+											  int maxReals,
+											  void *ptrToArguments) {
+	cudaStream_t *stream = reinterpret_cast<cudaStream_t *>(&extraPointers[1]);
+	int numBlocks = getDeviceId(extraPointers[2]);
+	int numThreads = getDeviceId(extraPointers[3]);
+	int shmem = getDeviceId(extraPointers[4]);
+
+	dim3 launchDims = dim3(numBlocks, numThreads, shmem);
+
+	DISPATCH_SIMPLE(aggregateBatchReduce, float, PARAMS(numAggregates, opNum, maxArgs, maxShapes, maxIntArrays, maxIntArraySize, maxIdx, maxReals, ptrToArguments), OPS_A(REDUCE_OPS))
+
+	checkCudaErrors(cudaStreamSynchronize(*stream));
+}
+
 void NativeOps::execAggregateBatchFloat(Nd4jPointer *extraPointers, int numAggregates, int opNum, int maxArgs, int maxShapes, int maxIntArrays, int maxIntArraySize, int maxIdx, int maxReals,  void *ptrToArguments) {
     // not implemented yet
     cudaStream_t *stream = reinterpret_cast<cudaStream_t *>(&extraPointers[1]);
