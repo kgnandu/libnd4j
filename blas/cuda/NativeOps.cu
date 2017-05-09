@@ -4824,6 +4824,8 @@ int NativeOps::memset(Nd4jPointer dst, int value, Nd4jIndex size, int flags, Nd4
 int NativeOps::memsetAsync(Nd4jPointer dst, int value, Nd4jIndex size, int flags, Nd4jPointer reserved) {
 	cudaStream_t *pStream = reinterpret_cast<cudaStream_t *>(&reserved);
 
+    checkCudaErrors(cudaStreamSynchronize(*pStream));
+
 	cudaError_t result = cudaMemsetAsync((void *) dst, value, (size_t) size, *pStream);
 	checkCudaErrors(result);
 	if (result != 0)
