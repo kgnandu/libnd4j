@@ -2477,7 +2477,7 @@ void NativeOps::execAggregateBatchReduceFloat(Nd4jPointer *extraPointers,
                                         int maxIdx,
                                         int maxReals,
                                         void *ptrToArguments) {
-    functions::aggregate::AggregatedFunction<float>::template aggregateBatchReduceGeneric<simdOps::Mean<float>>(numAggregates, opNum, maxArgs, maxShapes, maxIntArrays, maxIntArraySize, maxIdx, maxReals, ptrToArguments);
+    functions::aggregate::AggregatedFunction<float>::template aggregateBatchReduceGeneric<simdOps::Norm2<float>>(numAggregates, opNum, maxArgs, maxShapes, maxIntArrays, maxIntArraySize, maxIdx, maxReals, ptrToArguments);
 }
 
 void NativeOps::execAggregateBatchFloat(Nd4jPointer *extraPointers,
