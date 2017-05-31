@@ -17,7 +17,7 @@
 #include <loops/summarystatsreduce.h>
 #include <loops/random.h>
 
-#include <thread>
+//#include <thread>
 #include <map>
 #include <cuda.h>
 #include <cuda_runtime_api.h>
@@ -413,7 +413,7 @@ class ScalarShapeInformation {
 private:
 	nd4j::buffer::Buffer<int> *scalarDimension;
 	nd4j::buffer::Buffer<int> *scalarShapeInfo;
-	std::thread::id threadId;
+//	std::thread::id threadId;
 
 public:
 	ScalarShapeInformation(cudaStream_t stream) {
@@ -421,7 +421,7 @@ public:
 		scalarDimensionBuff[0] = MAX_DIMENSION;
 		scalarDimension = nd4j::buffer::createBuffer(scalarDimensionBuff,1, stream);
 		scalarShapeInfo = createScalarBuffer(stream);
-		threadId = std::this_thread::get_id();
+//		threadId = std::this_thread::get_id();
 
 	}
 	~ScalarShapeInformation() {
