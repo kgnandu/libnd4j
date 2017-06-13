@@ -2182,6 +2182,10 @@ void NativeOps::checkP2P() {
     // no-op
 }
 
+int NativeOps::deviceSynchronize() {
+    return 1;
+}
+
 template<typename T>
 void shuffleGeneric(T **dX, int **xShapeInfo, T **dZ, int **zShapeInfo, int N, int *shuffleMap, int **tadOnlyShapeInfo, int **tadOffsets) {
 

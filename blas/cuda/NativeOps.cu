@@ -4649,11 +4649,11 @@ Nd4jPointer NativeOps::mallocHost(Nd4jIndex memorySize, int flags) {
  * @param flags optional parameter
  */
 Nd4jPointer NativeOps::mallocDevice(Nd4jIndex memorySize, Nd4jPointer ptrToDeviceId, int flags) {
-	Nd4jPointer pointer;
+	Nd4jPointer pointer = malloc(sizeof(void *));
 	cudaError_t res = cudaMalloc((void **)&pointer, memorySize);
 	if (res != 0)
 		pointer = 0L;
-	return pointer;
+	return (Nd4jPointer) pointer;
 }
 
 /**
@@ -4837,8 +4837,17 @@ int NativeOps::destroyEvent(Nd4jPointer event) {
 	cudaError_t result = cudaEventDestroy(*pEvent);
 	checkCudaErrors(result);
 	if (result != 0)
-		return 0L;
+		return 0;
 	else return 1;
+}
+
+
+
+int NativeOps::deviceSynchronize() {
+    cudaError_t result = cudaDeviceSynchronize();
+    if (result != 0)
+        return 0;
+    else return 1;
 }
 
 int NativeOps::streamSynchronize(Nd4jPointer stream) {
