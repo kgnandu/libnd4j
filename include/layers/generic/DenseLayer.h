@@ -41,25 +41,33 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
  
 // back propagate
 template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
-    // delta = dL/dz
-    // epsilon = dL/da
-    // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
+            // delta = dL/dz
+            // epsilon = dL/da
+            // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
 
-    // temporary save output pointers
-    T *buffer = this->_output->_buffer;
-    int *shapeInfo = this->_output->_shapeInfo;
+    NDArray<T> *preOutput;
+    bool swapFlag = false;
+    if (!this->_preOutput->nonNull()) {
+        swapFlag = true;
+        // temporary save output pointers
+        //T *buffer = this->_output->_buffer;
+        //int *shapeInfo = this->_output->_shapeInfo;
 
-    NDArray<T> *preOutput = new NDArray<T>(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');
-    this->_output->replacePointers(preOutput->_buffer, preOutput->_shapeInfo);
-    this->feedForward();
+        preOutput = new NDArray<T>(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');
+        this->_output->replacePointers(preOutput->_buffer, preOutput->_shapeInfo);
+        this->feedForward();
 
-    // put buffers back
-    this->_output->replacePointers(buffer, shapeInfo);
+            // put buffers back
+        this->_output->replacePointers(nullptr, nullptr);
 
-    NDArray<T> *delta = new NDArray<T>(preOutput);
+        // temporary put preOutput to class field
+        this->_preOutput->replacePointers(preOutput->_buffer, preOutput->_shapeInfo);
+    }
+
+    NDArray<T> *delta = new NDArray<T>(this->_preOutput);
     // calculate/fill delta
 
-    ActivationsExecutioner<T>::template executeBP<AF>(preOutput, this->_epsilon, delta);
+    ActivationsExecutioner<T>::template executeBP<AF>(this->_preOutput, this->_epsilon, delta);
 
     // gradient_on_param = delta * next_output
     NDArray<T> *iT = this->_input->transpose();
@@ -77,13 +85,21 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
     this->gemmHelper(this->_params, delta, oT, (T) 1.0f, (T) 0.0f);
     //printf("O length: %i\n", this->_output->lengthOf());
     oT->transposei();
-    this->_output->assign(oT);
+    this->_epsilonNext->assign(oT);
 
-    delete preOutput;
     delete delta;
     delete sumArr;    
     delete oT;
     delete iT;
+
+    // delete if was allocated
+    if (swapFlag) {
+        this->_preOutput->replacePointers(nullptr, nullptr);
+        delete preOutput;
+    }
+
+    // forget _epsilonNext
+    this->_epsilonNext->replacePointers(nullptr, nullptr);
 
     return ND4J_STATUS_OK;
 }
@@ -95,7 +111,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() cons
     if (this->_gradientW == nullptr || this->_gradientB == nullptr || this->_bias == nullptr || !this->_gradientW->nonNull() || !this->_gradientB->nonNull() || !this->_bias->nonNull())
         return ND4J_STATUS_BAD_GRADIENTS;    
 
-    if (this->_output == nullptr || !this->_output->nonNull())
+    if (this->_epsilonNext == nullptr || !this->_epsilonNext->nonNull())
         return ND4J_STATUS_BAD_OUTPUT;
         
     if (!this->_gradientW->isSameShape(this->_params)) 
@@ -118,7 +134,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() cons
         return ND4J_STATUS_BAD_EPSILON;
 
     // batch comparison again
-    if (!this->_output->isSameShape(this->_input))
+    if (!this->_epsilonNext->isSameShape(this->_input))
         return ND4J_STATUS_BAD_OUTPUT;
 
     return ND4J_STATUS_OK;
@@ -196,33 +212,38 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateInput() const {
 // This method should valudate output parameters, and return TRUE if everything is ok, FALSE otherwise
 template<typename T, typename AF> int DenseLayer<T,AF>::validateOutput() const {
     // same as input validation here. we expect rank of output arra
-    if (this->_output == nullptr || this->_output->_buffer == nullptr || this->_output->_shapeInfo == nullptr)
-        return ND4J_STATUS_BAD_OUTPUT;
+    if (this->_epsilonNext->nonNull()) {
+        // TODO: check epsilon here
 
-    if (this->_output->rankOf() != 2)
-        return ND4J_STATUS_BAD_RANK;
+    } else {
+        if ((this->_output == nullptr || !this->_output->nonNull()))
+            return ND4J_STATUS_BAD_OUTPUT;
 
-    int *oShape = this->_output->shapeOf();
+        if (this->_output->rankOf() != 2)
+            return ND4J_STATUS_BAD_RANK;
 
-    // length of output along dimension 1 should match length of parameters, if parameters are set,
-    if (this->_params != nullptr && this->_params->nonNull()) {
-        int *wShape = this->_params->shapeOf();
+        int *oShape = this->_output->shapeOf();
 
-        // number of output features should match number of rows in params
-        if (oShape[1] != wShape[1]) {
-            return ND4J_STATUS_BAD_SHAPE;
+        // length of output along dimension 1 should match length of parameters, if parameters are set,
+        if (this->_params != nullptr && this->_params->nonNull()) {
+            int *wShape = this->_params->shapeOf();
+
+            // number of output features should match number of rows in params
+            if (oShape[1] != wShape[1]) {
+                return ND4J_STATUS_BAD_SHAPE;
+            }
         }
+
+
+        if (this->_input != nullptr && this->_input->nonNull()) {
+            int *iShape = this->_input->shapeOf();
+
+            // we check for input/output batchSize equality
+            if (oShape[0] != iShape[0])
+                return ND4J_STATUS_BAD_SHAPE;
+        }
+
     }
-
-
-    if (this->_input != nullptr && this->_input->nonNull()) {
-        int *iShape = this->_input->shapeOf();
-
-        // we check for input/output batchSize equality
-        if (oShape[0] != iShape[0])
-            return ND4J_STATUS_BAD_SHAPE;
-    }
-
     return ND4J_STATUS_OK;
 }
 

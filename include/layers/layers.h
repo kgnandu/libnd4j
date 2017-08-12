@@ -35,6 +35,8 @@ template <typename T> class INativeLayer {
         NDArray<T> *_mask;                   // the matrix of zeros and unities, takes into account possible different size of inputs, outer pixels are set to zeros in order to suit smaller inputs, the rest is unities
 
         NDArray<T> *_output;                // flattened multidimensional matrix of outputs
+        NDArray<T> *_epsilonNext;           // holder for epsilonNext
+        NDArray<T> *_preOutput;             // optional holder for FF activations
         
         NDArray<T> *_gradientW;              // flattened multidimensional matrix of weights gradients used in BP
         NDArray<T> *_gradientB;              // flattened multidimensional matrix of bias gradients used in BP
@@ -107,7 +109,7 @@ template <typename T> class INativeLayer {
         // This method should handle that. Maybe map (key-value), or something like that?           
         int configureLayerFF(T *input, int *inputShapeInfo, T*output, int *outputShapeInfo, T pDropOut, T pDropConnect, Nd4jPointer rngPointer);
 
-        int configureLayerBP(T *output, int *outputShapeInfo, T* gradientW, int *gradientWShapeInfo, T* gradientB, int *gradientBShapeInfo, T *epsilonPrev, int *epsilonShapeInfo);
+        int configureLayerBP(T *output, int *outputShapeInfo, T* gradientW, int *gradientWShapeInfo, T* gradientB, int *gradientBShapeInfo, T *epsilonPrev, int *epsilonShapeInfo, T *preOutput = nullptr, int *preOutputShapeInfo = nullptr);
 
         // This inline method allows to specify input data for layer
         // this output will be either activation of this layer, or error from next layer        
@@ -155,6 +157,8 @@ template <typename T> INativeLayer<T>::INativeLayer() {
     _output    = new NDArray<T>();
     _gradientW = new NDArray<T>();
     _gradientB = new NDArray<T>();
+    _epsilonNext = new NDArray<T>();
+    _preOutput = new NDArray<T>();
 
     _workspace = nullptr;
     _rng = nullptr;
@@ -175,6 +179,8 @@ template <typename T> INativeLayer<T>::~INativeLayer() {
     delete _mask;
     delete _output;
     delete _epsilon;
+    delete _epsilonNext;
+    delete _preOutput;
 }
 
 template <typename T> void INativeLayer<T>::gemmHelper(const NDArray<T> *A, const NDArray<T> *B, NDArray<T> *C, const T alpha, const T beta) {
@@ -291,8 +297,9 @@ template <typename T> void INativeLayer<T>::gemmHelper(T *A, int *aShapeInfo, T 
 
 
 template <typename T>
-int INativeLayer<T>::configureLayerBP(T *output, int *outputShapeInfo, T* gradientW, int *gradientWShapeInfo, T* gradientB, int *gradientBShapeInfo, T *epsilonPrev, int *epsilonShapeInfo) {
-    _output->replacePointers(output, outputShapeInfo);
+int INativeLayer<T>::configureLayerBP(T *epsilonNext, int *epsilonNextShapeInfo, T* gradientW, int *gradientWShapeInfo, T* gradientB, int *gradientBShapeInfo, T *epsilonPrev, int *epsilonShapeInfo, T *preOutput, int *preOutputShapeInfo) {
+    _epsilonNext->replacePointers(epsilonNext, epsilonNextShapeInfo);
+    _preOutput->replacePointers(preOutput, preOutputShapeInfo);
     _gradientW->replacePointers(gradientW, gradientWShapeInfo);
     _gradientB->replacePointers(gradientB, gradientBShapeInfo);
     _epsilon->replacePointers(epsilonPrev, epsilonShapeInfo);
