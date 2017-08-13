@@ -56,14 +56,17 @@ template <typename T> NDArray<T>::NDArray(const int length, const char order) {
 }
 
 
-// creates new NDArray with shape matching "other" array, do not copy "other" elements into new array
-template <typename T> NDArray<T>::NDArray(const NDArray<T> *other) {
+// creates new NDArray using shape information from "shape" array, set all elements in new array to be zeros
+template <typename T> NDArray<T>::NDArray(int* shape) {
    
-    _buffer = new T[other->lengthOf()];
-    memset(_buffer, 0, other->lengthOf() * sizeOfT());          // set all elements in new array to be zeros
+    int arrLength = shape::length(shape);
+    int shapeLength = shape::rank(shape)*2 + 4;
 
-    _shapeInfo = new int[other->rankOf()*2 + 4];             
-    memcpy(_shapeInfo, other->_shapeInfo, (other->rankOf()*2 + 4) * sizeof(int));     // copy shape information into new array
+    _buffer = new T[arrLength];
+    memset(_buffer, 0, arrLength*sizeOfT());          // set all elements in new array to be zeros
+ 
+    _shapeInfo = new int[shapeLength];             
+    memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
     _allocated = true;
 }
 

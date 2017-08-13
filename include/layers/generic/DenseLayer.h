@@ -26,7 +26,7 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
         // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
         inline virtual int validateInput() const;
 
-        // This method should valudate output parameters, and return TRUE if everything is ok, FALSE otherwise        
+        // This method should validate output parameters, and return TRUE if everything is ok, FALSE otherwise        
         inline virtual int validateOutput() const;
 
         // this method should validate memory/holders for BP pass
@@ -45,7 +45,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
             // epsilon = dL/da
             // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
 
-    NDArray<T> *preOutput;
+    NDArray<T> *preOutput = nullptr;
     bool swapFlag = false;
     if (!this->_preOutput->nonNull()) {
         swapFlag = true;
@@ -64,9 +64,9 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
         this->_preOutput->replacePointers(preOutput->_buffer, preOutput->_shapeInfo);
     }
 
-    NDArray<T> *delta = new NDArray<T>(this->_preOutput);
+    NDArray<T> *delta = new NDArray<T>(this->_preOutput->_shapeInfo);
+    
     // calculate/fill delta
-
     ActivationsExecutioner<T>::template executeBP<AF>(this->_preOutput, this->_epsilon, delta);
 
     // gradient_on_param = delta * next_output
@@ -103,7 +103,6 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
 
     return ND4J_STATUS_OK;
 }
-
 
 
 template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() const {

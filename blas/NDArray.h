@@ -20,8 +20,8 @@ template <typename T> class NDArray
         // this constructor creates NDArray as single row (dimension is 1xlength), memory for array is allocated in constructor 
         NDArray(const int length, const char order);
         
-        // this constructor creates new NDArray with shape matching "other" array, do not copy "other" elements into new array
-        NDArray(const NDArray<T> *other);
+        // creates new NDArray using shape information from "shape" array, set all elements in new array to be zeros
+        NDArray(int* shape);
 
         // this constructor creates new array using shape information contained in initializer_list argument
         NDArray(const char order, const std::initializer_list<int>& shape);
