@@ -184,7 +184,7 @@ template <typename T> INativeLayer<T>::~INativeLayer() {
 }
 
 template <typename T> void INativeLayer<T>::gemmHelper(const NDArray<T> *A, const NDArray<T> *B, NDArray<T> *C, const T alpha, const T beta) {
-    gemmHelper(A->_buffer, A->_shapeInfo, B->_buffer, B->_shapeInfo, C->_buffer, C->_shapeInfo, alpha, beta);
+    gemmHelper(A->getBuff(), A->getShape(), B->getBuff(), B->getShape(), C->getBuff(), C->getShape(), alpha, beta);
 }
 
 // perform C = alpha*A*B + beta*C
@@ -274,7 +274,7 @@ template <typename T> void INativeLayer<T>::gemmHelper(T *A, int *aShapeInfo, T 
 
     // we'll use platform-specific gemm here eventually. maybe tomorrow.
     // TODO: put proper _gemm here
-    nd4j::blas::GEMM<T>::op(rOrder, transA, transB, M, N, K, alpha, _A->_buffer, lda, _B->_buffer, ldb, beta, _C->_buffer, ldc);
+    nd4j::blas::GEMM<T>::op(rOrder, transA, transB, M, N, K, alpha, _A->getBuff(), lda, _B->getBuff(), ldb, beta, _C->getBuff(), ldc);
 
     if (cOrder != 'f') {
         tC->assign(_C);

@@ -5,30 +5,55 @@
 
 template <typename T> class NDArray 
 { 
-    public:
+    private:
         T    *_buffer;                   // pointer on flattened data array in memory
         int  *_shapeInfo;                // contains shape info:  matrix rank, numbers of elements per each dimension, dimensions strides, c-like or fortan-like order, element-wise-stride
         bool  _allocated;                // indicates whether user allocates memory for array by himself, in opposite case the memory must be allocated from outside 
 
-        
+    public:    
         // default constructor, do not allocate memory, memory for array is passed from outside 
         NDArray(T *buffer = nullptr, int *shapeInfo = nullptr);
 
+        // copy constructor
+        NDArray(const NDArray<T>& arr);
+    
         // this constructor creates 2D NDArray, memory for array is allocated in constructor 
-        NDArray(const int rows, const int columns, const char order);
+        explicit NDArray(const int rows, const int columns, const char order);
         
         // this constructor creates NDArray as single row (dimension is 1xlength), memory for array is allocated in constructor 
-        NDArray(const int length, const char order);
+        explicit NDArray(const int length, const char order);
         
         // creates new NDArray using shape information from "shape" array, set all elements in new array to be zeros
-        NDArray(int* shape);
+        explicit NDArray(const int* shape);
 
         // this constructor creates new array using shape information contained in initializer_list argument
-        NDArray(const char order, const std::initializer_list<int>& shape);
+        explicit NDArray(const char order, const std::initializer_list<int>& shape);
 
         // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)
-        void replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting = true);
+        void replacePointers(T* buffer, int* shapeInfo, bool releaseExisting = true);
+        
+        // assignment operator
+        NDArray<T>& operator=(const NDArray<T>& other);
 
+        // equality operator
+        bool operator==(const NDArray<T>& other);
+        
+        // set _buffer
+        void setBuff(const T* buff) 
+        { _buffer = buff; }
+        
+        // get _buffer
+        T* getBuff() const
+        { return _buffer; }
+    
+        // set _shapeInfo
+        void setShape(const int* shape) 
+        { _shapeInfo = shape; }
+
+        // get _shapeInfo
+        int* getShape() const
+        { return _shapeInfo; }
+        
         // This method returns order of this NDArray
         char ordering() const {
             return shape::order(_shapeInfo);
@@ -69,6 +94,9 @@ template <typename T> class NDArray
             return sizeof(T);
         }
 
+        // check two arrays whether they have the same shapes, arrays are considered to have the same shapes if they have the same ranks and corresponding dimensions
+        bool isSameShape(const NDArray<T>* other) const;            
+        
         // print information about array shape
         void printShapeInfo() const {
             //shape::printShapeInfo(_shapeInfo);
@@ -76,7 +104,7 @@ template <typename T> class NDArray
         }
 
         // This method assigns values of given NDArray to this one, wrt order
-        void assign(NDArray<T> *other);
+        void assign(const NDArray<T> *other);
 
         // This method assigns given value to all elements in this NDArray
         void assign(const T value);
@@ -84,8 +112,6 @@ template <typename T> class NDArray
         // This method returns new copy of this NDArray, optionally in different order
         NDArray<T>* dup(const char newOrder);
 
-        // Returns true if these two NDArrays have same shape
-        inline bool isSameShape(const NDArray<T> *other) const;
 
         // This method returns sum of all elements of this NDArray
         T sumNumber() const;
@@ -154,20 +180,6 @@ template <typename T> class NDArray
 
 
 
-
-// returns true if these two NDArrays have same shape
-// still the definition of inline function must be in header file
-template <typename T> inline bool NDArray<T>::isSameShape(const NDArray<T> *other) const {
-    
-    if (this->rankOf() != other->rankOf())
-        return false;
-    
-    for (int e = 0; e < this->rankOf(); e++)
-        if (this->shapeOf()[e] != other->shapeOf()[e]) 
-            return false;
-    
-    return true;
-}
 
 #endif
 

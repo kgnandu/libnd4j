@@ -11,6 +11,20 @@ template <typename T> NDArray<T>::NDArray(T *buffer, int *shapeInfo ) {
     _allocated = false;                                  // indicate that memory for array is passed from outside
 }
 
+// copy constructor
+template <typename T> NDArray<T>::NDArray(const NDArray<T>& other)
+{
+    int arrLength = shape::length(other._shapeInfo);
+    int shapeLength = shape::rank(other._shapeInfo)*2 + 4;
+    
+    _buffer = new T[arrLength];
+    memcpy(_buffer, other._buffer, arrLength*sizeOfT());      // copy other._buffer information into new array
+ 
+    _shapeInfo = new int[shapeLength];             
+    memcpy(_shapeInfo, other._shapeInfo, shapeLength*sizeof(int));     // copy shape information into new array
+    
+    _allocated = true;
+}
 
 // this constructor creates 2D NDArray, memory for array is allocated in this constructor 
 template <typename T> NDArray<T>::NDArray(const int rows, const int columns, const char order) {
@@ -57,10 +71,10 @@ template <typename T> NDArray<T>::NDArray(const int length, const char order) {
 
 
 // creates new NDArray using shape information from "shape" array, set all elements in new array to be zeros
-template <typename T> NDArray<T>::NDArray(int* shape) {
+template <typename T> NDArray<T>::NDArray(const int* shape) {
    
-    int arrLength = shape::length(shape);
-    int shapeLength = shape::rank(shape)*2 + 4;
+    int arrLength = shape::length(const_cast<int*>(shape));
+    int shapeLength = shape::rank(const_cast<int*>(shape))*2 + 4;
 
     _buffer = new T[arrLength];
     memset(_buffer, 0, arrLength*sizeOfT());          // set all elements in new array to be zeros
@@ -98,6 +112,36 @@ template <typename T> NDArray<T>::NDArray(const char order, const std::initializ
     delete[] shapeOf;
 }
 
+// assignment operator
+template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) {
+	if (this == &other) return *this;
+
+    if (other.lengthOf() != lengthOf())
+        throw std::invalid_argument("Assignment operator: lengths of arrays are mismatched!");
+
+    if (ordering() == other.ordering()) 
+        memcpy(_buffer, other._buffer, lengthOf()*sizeOfT());
+    else 
+        // now we invoke dup pwt against target buffer
+        NativeOpExcutioner<T>::execPairwiseTransform(1, _buffer, _shapeInfo, other._buffer, other._shapeInfo, _buffer, _shapeInfo, nullptr);
+    
+    return *this;
+}
+
+// equality operator
+template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) {
+    if(this == &other) 
+        return true;    
+
+    if (!shape::equalsStrict(_shapeInfo, other._shapeInfo))
+        return false;
+
+    for(int i=0; i<lengthOf(); ++i)
+        if(_buffer[i] != other._buffer[i])
+            return false;
+    
+    return true;
+}
 
 // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)
 template <typename T> void NDArray<T>::replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting) {
@@ -112,9 +156,24 @@ template <typename T> void NDArray<T>::replacePointers(T* buffer, int* shapeInfo
     _shapeInfo = shapeInfo;
 }
 
+// check two arrays whether they have the same shapes, arrays are considered to have the same shapes if they have the same rank and corresponding dimensions
+template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>* other) const {
+    int rank1 = shape::rank(_shapeInfo);
+    int rank2 = shape::rank(other->_shapeInfo);
+    if(rank1 != rank2)
+        return false;
+    
+    for(unsigned i=0; i<=rank1; ++i)
+        if(_shapeInfo[i] != other->_shapeInfo[i])
+            return false;
+
+    return true;
+}
+
 
 // This method assigns values of given NDArray to this one, wrt order
-template <typename T> void NDArray<T>::assign(NDArray<T> *other) {
+template <typename T> void NDArray<T>::assign(const NDArray<T> *other) {
+    if (this == other) return;
 
     if (other->lengthOf() != lengthOf())
         throw std::invalid_argument("Lengths of arrays are mismatched");
