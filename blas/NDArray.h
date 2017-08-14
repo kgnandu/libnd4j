@@ -170,3 +170,4 @@ template <typename T> inline bool NDArray<T>::isSameShape(const NDArray<T> *othe
 }
 
 #endif
+

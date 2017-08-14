@@ -10,22 +10,36 @@ public:
     int alpha = 0;
     int inputShape3D[10] = {3, 10, 10, 10, 100, 10, 1, 0, 1, 99};
     int inputShape2D[8] = {2, 10, 10, 10, 1, 0, 1, 99};
-
+    
     int outputShape2D[8] = {2, 10, 10, 10, 1, 0, 1, 99};
     int outputShape3D[10] = {3, 10, 10, 10, 100, 10, 1, 0, 1, 99};
 
     ////////////////
-    int batchInputShapeGood[8] = {2, 128, 784, 128, 1, 0, 1, 99};
-    int batchOutputShapeGood[8] = {2, 128, 1024, 128, 1, 0, 1, 99};
-    int paramsShapeGood[8] = {2, 784, 1024, 1, 1024, 0, 1, 102};
-    int biasShapeGood[8] = {2, 1, 1024, 1, 1024, 0, 1, 102};
-
-
+    int batchInputShapeGood[8] = {2, 128, 784, 784, 1, 0, 1, 99};
+    int batchOutputShapeGood[8] = {2, 128, 1024, 1024, 1, 0, 1, 99};
+    int paramsShapeGood[8] = {2, 784, 1024, 1, 784, 0, 1, 102};
+    int biasShapeGood[8] = {2, 1, 1024, 1, 1, 0, 1, 102};
     int batchInputShapeBad[8] = {2, 128, 781, 128, 1, 0, 1, 99};
     int batchOutputShapeBad[8] = {2, 32, 1024, 128, 1, 0, 1, 99};
     int paramsShapeBad[8] = {2, 783, 1024, 1, 1024, 0, 1, 102};
     int biasShapeBad[8] = {2, 1, 1025, 1, 1025, 0, 1, 102};
-
+    
+    // matrices dimensions
+    static const int M = 5;
+    static const int K = 4;
+    static const int N = 3;
+    // input matrix  
+    double I[M*K] = {13., 15., 11., 14., 3., 17., 17., 9., 15., 9., 11., 6., 17., 4., 8., 6., 18., 3., 1., 14.};
+    int shapeI[8] = {2, M, K, K, 1, 0, 1, 99};
+    // weight matrix
+    double W[K*N] = {12., 17., 9., 8., 17., 4., 1., 5., 20., 18., 7., 10.};
+    int shapeW[8] = {2, K, N, N, 1, 0, 1, 99};
+    // biases matrix (one row)
+    double B[1*N] = {8, 16, 2};
+    int shapeB[8] = {2, 1, N, N, 1, 0, 1, 99};
+    // pre-output matrix Z = I*W + B
+    double Z[M*N] = {547., 645., 539., 359., 504., 527., 379., 521., 453., 360., 455., 391., 501., 476., 336.};
+    int shapeZ[8] = {2, M, N, M, 1, 0, 1, 99};
 };
 
 
@@ -550,6 +564,20 @@ TEST_F(DenseLayerInputTest, FeedForwardTest2) {
 }
 
 
+
+// This test checks mathematics during FF step Z = IW + B, A = F(Z) 
+TEST_F(DenseLayerInputTest, FeedForwardTest3) {    
+    auto *output     = new NDArray<double>(M, N,'c');
+    auto *resultTrue = new NDArray<double>(Z, shapeZ);    
+    auto* denseLayer = new nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>>();
+    int result = denseLayer->setParameters(W, shapeW, B, shapeB);
+    result = denseLayer->configureLayerFF(I, shapeI, output->_buffer, output->_shapeInfo, 0.0f, 0.0f, nullptr);    
+    result = denseLayer->feedForward();
+    ASSERT_TRUE(resultTrue->equalsTo(output));
+}
+
+
+
 // back propagation test
 TEST_F(DenseLayerInputTest, BackPropagationTest1) {
 
@@ -607,3 +635,6 @@ TEST_F(DenseLayerInputTest, BackPropagationTest1) {
     delete gradWGood;
     delete gradBGood;
 }
+
+
+
