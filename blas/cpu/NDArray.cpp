@@ -147,8 +147,9 @@ template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const 
     if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
         return false;
 
+    T epsilon = (T) 1e-5f;                      // take into account the tolerance in arrays element-wise comparison    
     // we don't need extraparams for this op
-    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &EPSN, other._buffer, other._shapeInfo);   
+    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &epsilon, other._buffer, other._shapeInfo);   
 
     if (val > 0)
         return false;

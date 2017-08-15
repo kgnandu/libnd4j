@@ -29,17 +29,32 @@ public:
     static const int K = 4;
     static const int N = 3;
     // input matrix  
-    double I[M*K] = {13., 15., 11., 14., 3., 17., 17., 9., 15., 9., 11., 6., 17., 4., 8., 6., 18., 3., 1., 14.};
-    int shapeI[8] = {2, M, K, K, 1, 0, 1, 99};
+    double I[M*K]  = {13., 15., 11., 14., 3., 17., 17., 9., 15., 9., 11., 6., 17., 4., 8., 6., 18., 3., 1., 14.};
+    int shapeI[8]  = {2, M, K, K, 1, 0, 1, 99};
     // weight matrix
-    double W[K*N] = {12., 17., 9., 8., 17., 4., 1., 5., 20., 18., 7., 10.};
-    int shapeW[8] = {2, K, N, N, 1, 0, 1, 99};
+    double W[K*N]  = {12., 17., 9., 8., 17., 4., 1., 5., 20., 18., 7., 10.};
+    int shapeW[8]  = {2, K, N, N, 1, 0, 1, 99};
     // biases matrix (one row)
-    double B[1*N] = {8, 16, 2};
-    int shapeB[8] = {2, 1, N, N, 1, 0, 1, 99};
+    double B[1*N]  = {8, 16, 2};
+    int shapeB[8]  = {2, 1, N, N, 1, 0, 1, 99};
     // pre-output matrix Z = I*W + B
-    double Z[M*N] = {547., 645., 539., 359., 504., 527., 379., 521., 453., 360., 455., 391., 501., 476., 336.};
-    int shapeZ[8] = {2, M, N, M, 1, 0, 1, 99};
+    double Z[M*N]  = {547., 645., 539., 359., 504., 527., 379., 521., 453., 360., 455., 391., 501., 476., 336.};
+    int shapeZ[8]  = {2, M, N, M, 1, 0, 1, 99};
+    // epsilon matrix E
+    double E[M*N]  = { 16., 15., 7.0, 3.0, 6.0, 14.0, 1.0, 9.0, 8.0, 19.0, 13.0, 2.0, 11.0, 3.0, 1.0 };
+    int shapeE[8]  = {2, M, N, M, 1, 0, 1, 99};
+    // delta matrix 
+    double D[M*N]  = { 16., 15., 7.0, 3.0, 6.0, 14.0, 1.0, 9.0, 8.0, 19.0, 13.0, 2.0, 11.0, 3.0, 1.0 };
+    int shapeD[8]  = {2, M, N, M, 1, 0, 1, 99};
+    // weights gradients matrix
+    double Gw[K*N] = {753., 623., 305., 409., 469., 426., 401., 473., 420., 525., 438., 298.};
+    int shapeGw[8] = {2, K, N, N, 1, 0, 1, 99};
+    // biases gradients matrix (one row)
+    double Gb[1*N]  = {50., 46., 32.};
+    int shapeGb[8]  = {2, 1, N, N, 1, 0, 1, 99};
+    // next epsilon matrix 
+    double En[M*K]  = { 510., 411., 231., 463., 264., 182., 313., 236., 237., 193., 206., 161., 467., 381., 124., 453., 192., 143.,  46., 229.};
+    int shapeEn[8]  = {2, M, K, K, 1, 0, 1, 99};
 };
 
 
@@ -652,10 +667,9 @@ TEST_F(DenseLayerInputTest, BackPropagationTest1) {
 // This test checks mathematics during BP step 
 // D = E*dA/dZ, Gw=I^T*D, Gb = sum_over_0_dim_of D, En = D*W^T
 TEST_F(DenseLayerInputTest, BackPropagationTest2) {    
-
-    NDArray<double> finalMatrix(Z, shapeZ);    
+    
     nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> denseLayer;
-    // configure layer
+    // configure layer for FF
     NDArray<double> output(M, N,'c');  denseLayer.setOutput(&output);
     NDArray<double> input(I, shapeI);  denseLayer.setInput(&input);
     NDArray<double> params(W, shapeW); denseLayer.setParams(&params);
@@ -665,11 +679,17 @@ TEST_F(DenseLayerInputTest, BackPropagationTest2) {
     denseLayer.setDropOut(false);
     denseLayer.setDropConnect(false);
     denseLayer.setRng(nullptr);
+    // configure layer for BP
+    NDArray<double> gradientW(Gw, shapeGw);
+    NDArray<double> gradientB(Gb, shapeGb);
+    NDArray<double> epsilonNext(En, shapeEn);
+    NDArray<double> epsilon(E, shapeE); denseLayer.setEpsilon(&epsilon);
     // checks parameters consistency
     int result = denseLayer.validateParameters();
-    ASSERT_EQ(ND4J_STATUS_OK, result);
-    // run FF    
-    result = denseLayer.feedForward();
-    ASSERT_TRUE(finalMatrix.equalsTo(*denseLayer.getOutput()));
+    // run BF
+    result = denseLayer.backPropagate();
+    ASSERT_EQ(ND4J_STATUS_OK, result);        
+    ASSERT_TRUE(gradientW   == *denseLayer.getGradientW());
+    ASSERT_TRUE(gradientB   == *denseLayer.getGradientB());
+    ASSERT_TRUE(epsilonNext == *denseLayer.getEpsilonNext());
 }
-

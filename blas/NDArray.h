@@ -8,9 +8,7 @@ template <typename T> class NDArray
     private:
         T    *_buffer;                          // pointer on flattened data array in memory
         int  *_shapeInfo;                       // contains shape info:  matrix rank, numbers of elements per each dimension, dimensions strides, c-like or fortan-like order, element-wise-stride
-        bool  _allocated;                       // indicates whether user allocates memory for array by himself, in opposite case the memory must be allocated from outside 
-
-        static constexpr T EPSN = (T) 1e-5f;    // take into account the tolerance in arrays element-wise comparison    
+        bool  _allocated;                       // indicates whether user allocates memory for array by himself, in opposite case the memory must be allocated from outside       
         
     public:    
         // default constructor, do not allocate memory, memory for array is passed from outside 
@@ -151,7 +149,7 @@ template <typename T> class NDArray
         }
   
         // This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
-        bool equalsTo(const NDArray<T>& other, T eps = EPSN) const;
+        bool equalsTo(const NDArray<T>& other, T eps = (T)1e-5f) const;
    
         // Return value from linear buffer
         T getScalar(const Nd4jIndex i) const;
