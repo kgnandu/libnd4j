@@ -323,6 +323,21 @@ if [ "$CHIP" == "cuda" ] && [ -n "$CHIP_VERSION" ]; then
     esac
 fi
 
+OPENBLAS_PATH="/usr/local/"
+
+if [[ -n "${BUILD_PATH:-}" ]]; then
+    PREVIFS="$IFS"
+    IFS="$BUILD_PATH_SEPARATOR"
+    for P in $BUILD_PATH; do
+        if [[ -f "$P/include/openblas_config.h" ]]; then
+            OPENBLAS_PATH="$P"
+        fi
+    done
+    IFS="$PREVIFS"
+fi
+
+OPENBLAS_ARG="-DOPENBLAS_PATH=$OPENBLAS_PATH"
+
 mkbuilddir() {
     mkdir -p blasbuild
     cd blasbuild
@@ -351,5 +366,5 @@ echo EXPERIMENTAL = ${EXPERIMENTAL}
 echo LIBRARY TYPE    = "${LIBTYPE}"
 mkbuilddir
 pwd
-eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG"  "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
+eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG"  "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" "$OPENBLAS_ARG" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
 eval $MAKE_COMMAND && cd ../../..
