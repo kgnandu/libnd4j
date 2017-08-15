@@ -113,11 +113,11 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() cons
     if (this->_epsilonNext == nullptr || !this->_epsilonNext->nonNull())
         return ND4J_STATUS_BAD_OUTPUT;
         
-    if (!this->_gradientW->isSameShape(this->_params)) 
+    if (!this->_gradientW->isSameShape(*this->_params)) 
         return ND4J_STATUS_BAD_GRADIENTS;
     
 
-    if (!this->_gradientB->isSameShape(this->_bias))
+    if (!this->_gradientB->isSameShape(*this->_bias))
         return ND4J_STATUS_BAD_BIAS;
 
     // we're checking equality of input/epsilon batch size
@@ -133,7 +133,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() cons
         return ND4J_STATUS_BAD_EPSILON;
 
     // batch comparison again
-    if (!this->_epsilonNext->isSameShape(this->_input))
+    if (!this->_epsilonNext->isSameShape(*this->_input))
         return ND4J_STATUS_BAD_OUTPUT;
 
     return ND4J_STATUS_OK;

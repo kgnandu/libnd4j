@@ -129,17 +129,22 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
 }
 
 // equality operator
-template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) {
+template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const {
     if(this == &other) 
         return true;    
 
-    if (!shape::equalsStrict(_shapeInfo, other._shapeInfo))
+    if (lengthOf() != other.lengthOf())
         return false;
 
-    for(int i=0; i<lengthOf(); ++i)
-        if(_buffer[i] != other._buffer[i])
-            return false;
-    
+    if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
+        return false;
+
+    // we don't need extraparams for this op
+    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &EPSN, other._buffer, other._shapeInfo);   
+
+    if (val > 0)
+        return false;
+
     return true;
 }
 
@@ -157,14 +162,14 @@ template <typename T> void NDArray<T>::replacePointers(T* buffer, int* shapeInfo
 }
 
 // check two arrays whether they have the same shapes, arrays are considered to have the same shapes if they have the same rank and corresponding dimensions
-template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>* other) const {
+template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>& other) const {
     int rank1 = shape::rank(_shapeInfo);
-    int rank2 = shape::rank(other->_shapeInfo);
+    int rank2 = shape::rank(other._shapeInfo);
     if(rank1 != rank2)
         return false;
     
     for(unsigned i=0; i<=rank1; ++i)
-        if(_shapeInfo[i] != other->_shapeInfo[i])
+        if(_shapeInfo[i] != other._shapeInfo[i])
             return false;
 
     return true;
@@ -352,20 +357,16 @@ template <typename T> void NDArray<T>::transposei() {
 
 
 // This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
-template <typename T> bool NDArray<T>::equalsTo(const NDArray<T> *other, T eps) const {
+template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) const {
     
-    if (lengthOf() != other->lengthOf())
+    if (lengthOf() != other.lengthOf())
         return false;
 
-    if (!shape::equalsSoft(_shapeInfo, other->_shapeInfo))
+    if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
         return false;
-
-    T *extras = new T[1] {eps};
 
     // we don't need extraparams for this op
-    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, extras, other->_buffer, other->_shapeInfo);
-
-    delete[] extras;
+    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &eps, other._buffer, other._shapeInfo);    
 
     if (val > 0)
         return false;
@@ -399,7 +400,7 @@ template <typename T> T NDArray<T>::getScalar(const int i, const int j) const {
 
 
 // Returns value from 3D tensor by coordinates
-template <typename T> T NDArray<T>:: getScalar(const int i, const int j, const int k) const {
+template <typename T> T NDArray<T>::getScalar(const int i, const int j, const int k) const {
     // throw something here
     if (rankOf() != 3)
         throw std::invalid_argument("Requested index above limit");
@@ -413,7 +414,7 @@ template <typename T> T NDArray<T>:: getScalar(const int i, const int j, const i
 
 
 // This method sets value in linear buffer to position i
-template <typename T> void NDArray<T>:: putScalar(const Nd4jIndex i, const T value) {
+template <typename T> void NDArray<T>::putScalar(const Nd4jIndex i, const T value) {
     // throw something right here
     if (i >= shape::length(_shapeInfo))
         return;

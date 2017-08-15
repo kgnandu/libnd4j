@@ -119,13 +119,13 @@ TEST_F(DenseLayerInputTest, JointConfiguration1) {
 
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    ASSERT_TRUE(layer->_dropOut);
+    ASSERT_TRUE(layer->getDropOut());
 
-    ASSERT_TRUE(layer->_dropConnect);
+    ASSERT_TRUE(layer->getDropConnect());
 
-    ASSERT_EQ(0.5f, layer->_pDropOut);
+    ASSERT_EQ(0.5f, layer->getpDropOut());
 
-    ASSERT_EQ(0.1f, layer->_pDropConnect);
+    ASSERT_EQ(0.1f, layer->getpDropConnect());
 
     delete layer;
     delete[] output;
@@ -377,8 +377,8 @@ TEST_F(DenseLayerInputTest, DropOutTest1) {
 
 
     nd4j::layers::DenseLayer<float, nd4j::activations::Identity<float>> *layer = new nd4j::layers::DenseLayer<float, nd4j::activations::Identity<float>>();
-    layer->_rng = rng;
-    layer->_pDropOut = 0.5f;
+    layer->setRng(rng);
+    layer->setpDropOut(0.5f);
 
     auto *input = new NDArray<float>(5, 5, 'c');
     input->assign(13.0f);
@@ -400,7 +400,7 @@ TEST_F(DenseLayerInputTest, DropOutTest1) {
     }
     printf("\n");
 */
-    ASSERT_FALSE(input->equalsTo(exp));
+    ASSERT_FALSE(input->equalsTo(*exp));
 
     // for dropout inverted all values here should be either 0 (dropped out) or 26.0 (scaled by 2)
     for (int i = 0; i < input->lengthOf(); i++) {
@@ -417,8 +417,8 @@ TEST_F(DenseLayerInputTest, DropConnectTest1) {
 
 
     nd4j::layers::DenseLayer<float, nd4j::activations::Identity<float>> *layer = new nd4j::layers::DenseLayer<float, nd4j::activations::Identity<float>>();
-    layer->_rng = rng;
-    layer->_pDropConnect = 0.5f;
+    layer->setRng(rng);
+    layer->setpDropConnect(0.5f);
 
     auto *input = new NDArray<float>(5, 5, 'c');
     input->assign(13.0f);
@@ -441,7 +441,7 @@ TEST_F(DenseLayerInputTest, DropConnectTest1) {
     }
     printf("\n");
 */
-    ASSERT_FALSE(input->equalsTo(exp));
+    ASSERT_FALSE(input->equalsTo(*exp));
 
     // for dropout inverted all values here should be either 0 (dropped out) or 13.0 (retained value)
     for (int i = 0; i < input->lengthOf(); i++) {
@@ -503,7 +503,7 @@ TEST_F(DenseLayerInputTest, FeedForwardTest1) {
 
     printf("Output mean: %f\n", meanNumber);
 */
-    ASSERT_TRUE(exp->equalsTo(output));
+    ASSERT_TRUE(exp->equalsTo(*output));
 }
 
 // This test checks C input order, like this is the first layer in network
@@ -560,7 +560,7 @@ TEST_F(DenseLayerInputTest, FeedForwardTest2) {
 
     printf("Output mean: %f\n", meanNumber);
 */
-    ASSERT_TRUE(exp->equalsTo(output));
+    ASSERT_TRUE(exp->equalsTo(*output));
 }
 
 
@@ -573,7 +573,7 @@ TEST_F(DenseLayerInputTest, FeedForwardTest3) {
     int result = denseLayer->setParameters(W, shapeW, B, shapeB);
     result = denseLayer->configureLayerFF(I, shapeI, output->getBuff(), output->getShape(), 0.0f, 0.0f, nullptr);    
     result = denseLayer->feedForward();
-    ASSERT_TRUE(resultTrue->equalsTo(output));
+    ASSERT_TRUE(resultTrue->equalsTo(*output));
 }
 
 
@@ -646,6 +646,6 @@ TEST_F(DenseLayerInputTest, BackPropagationTest2) {
     int result = denseLayer->setParameters(W, shapeW, B, shapeB);
     result = denseLayer->configureLayerFF(I, shapeI, output->getBuff(), output->getShape(), 0.0f, 0.0f, nullptr);    
     result = denseLayer->feedForward();
-    ASSERT_TRUE(resultTrue->equalsTo(output));
+    ASSERT_TRUE(resultTrue->equalsTo(*output));
 }
 

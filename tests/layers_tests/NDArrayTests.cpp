@@ -110,13 +110,13 @@ TEST_F(NDArrayTest, EqualityTest1) {
 
 
 
-    ASSERT_TRUE(arrayA->equalsTo(arrayB, 1e-5));
+    ASSERT_TRUE(arrayA->equalsTo(*arrayB, 1e-5));
 
-    ASSERT_FALSE(arrayC->equalsTo(arrayB, 1e-5));
+    ASSERT_FALSE(arrayC->equalsTo(*arrayB, 1e-5));
 
-    ASSERT_FALSE(arrayD->equalsTo(arrayB, 1e-5));
+    ASSERT_FALSE(arrayD->equalsTo(*arrayB, 1e-5));
 
-    ASSERT_FALSE(arrayE->equalsTo(arrayB, 1e-5));
+    ASSERT_FALSE(arrayE->equalsTo(*arrayB, 1e-5));
 }
 
 
@@ -141,7 +141,7 @@ TEST_F(NDArrayTest, TestAddiRowVector) {
 
     array->addiRowVector(row);
 
-    ASSERT_TRUE(exp->equalsTo(array));
+    ASSERT_TRUE(exp->equalsTo(*array));
 }
 
 TEST_F(NDArrayTest, Test3D_1) {
@@ -236,7 +236,7 @@ TEST_F(NDArrayTest, TestTransform1) {
 
     array->applyTransform<simdOps::Abs<float>>();
 
-    ASSERT_TRUE(exp->equalsTo(array));
+    ASSERT_TRUE(exp->equalsTo(*array));
 }
 
 TEST_F(NDArrayTest, TestReduceScalar1) {

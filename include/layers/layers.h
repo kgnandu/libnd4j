@@ -21,38 +21,29 @@
 namespace nd4j {
 namespace layers {
 
-template <typename T> class INativeLayer {
-    public:
-
+template <typename T> class INativeLayer {    
+    protected:
         NDArray<T> *_params;                 // flattened rectangle matrix with parameters (weights)
-
         NDArray<T> *_bias;                   // flattened multidimensional matrix of biases
-
         NDArray<T> *_input;                  // flattened multidimensional matrix of inputs
-
         NDArray<T> *_epsilon;                // flattened multidimensional matrix of epsilons = dL/da, L - loss function, a - input/activation
-
         NDArray<T> *_mask;                   // the matrix of zeros and unities, takes into account possible different size of inputs, outer pixels are set to zeros in order to suit smaller inputs, the rest is unities
-
         NDArray<T> *_output;                // flattened multidimensional matrix of outputs
         NDArray<T> *_epsilonNext;           // holder for epsilonNext
         NDArray<T> *_preOutput;             // optional holder for FF activations
-        
         NDArray<T> *_gradientW;              // flattened multidimensional matrix of weights gradients used in BP
-        NDArray<T> *_gradientB;              // flattened multidimensional matrix of bias gradients used in BP
-        
+        NDArray<T> *_gradientB;              // flattened multidimensional matrix of bias gradients used in BP        
         Nd4jIndex _allocated;               // memory amount which is already used from workspace, more probably it would be just 0
         Nd4jIndex _length;                  // memory amount which is still available from workspace, (allocated + length) = total size of workspace
         void *_workspace;                   // if one is going to use additional memory, take it from workspace
-
-        nd4j::random::RandomBuffer *_rng;   // rng helper
-
+        nd4j::random::RandomBuffer* _rng;   // rng helper
         bool _dropOut;                      // corresponds to dropout applying
-        bool _dropConnect;                  // corresponds to dropConnect applying
-        
+        bool _dropConnect;                  // corresponds to dropConnect applying        
         T _pDropOut;                        // dropout probabilities (if used)
         T _pDropConnect;                    // dropconnect probabilities (if used)
                 
+    public:
+    
         // default constructor, sets all pointers to be empty
         INativeLayer();
         
@@ -85,6 +76,96 @@ template <typename T> class INativeLayer {
         virtual void dropOutHelper(NDArray<T> *input) = 0;
         virtual void dropConnectHelper(NDArray<T> *input) = 0;
 
+        void setParams(const NDArray<T>* other) 
+        { _params = other; }
+
+        NDArray<T>* getParams() const
+        { return _params; }
+
+        void setInput(const NDArray<T>* other) 
+        { _input = other; }
+
+        NDArray<T>* getInput() const
+        { return _input; }
+
+        void setOutput(const NDArray<T>* other) 
+        { _output = other; }
+
+        NDArray<T>* getOutput() const
+        { return _output; }
+
+        void setBias(const NDArray<T>* other) 
+        { _bias = other; }
+
+        NDArray<T>* getBias() const
+        { return _bias; }        
+
+        void setEpsilon(const NDArray<T>* other) 
+        { _epsilon = other; }
+
+        NDArray<T>* getEpsilon() const
+        { return _epsilon; }        
+        
+        void setMask(const NDArray<T>* other) 
+        { _mask = other; }
+
+        NDArray<T>* getMask() const
+        { return _mask; }        
+
+        void setEpsilonNext(const NDArray<T>* other) 
+        { _epsilonNext = other; }
+
+        NDArray<T>* getEpsilonNext() const
+        { return _epsilonNext; }        
+        
+        void setPreOutput(const NDArray<T>* other) 
+        { _preOutput = other; }
+
+        NDArray<T>* getPreOutput() const
+        { return _preOutput; }
+
+        void setGradientW(const NDArray<T>* other) 
+        { _gradientW = other; }
+
+        NDArray<T>* getGradientW() const
+        { return _gradientW; }
+
+        void setGradientB(const NDArray<T>* other) 
+        { _gradientB = other; }
+
+        NDArray<T>* getGradientB() const
+        { return _gradientB; }          
+        
+        void setDropOut(const bool other) 
+        { _dropOut = other; }
+
+        bool getDropOut() const
+        { return _dropOut; }          
+        
+        void setDropConnect(const bool other) 
+        { _dropConnect = other; }
+
+        bool getDropConnect() const
+        { return _dropConnect; }   
+
+        void setpDropOut(const T& other) 
+        { _pDropOut = other; }
+        
+        T getpDropOut() const
+        { return _pDropOut; } 
+
+        void setpDropConnect(const T& other) 
+        { _pDropConnect = other; }
+
+        T getpDropConnect() const
+        { return _pDropConnect; }
+        
+        void setRng(nd4j::random::RandomBuffer* other) 
+        { _rng = other; }
+
+        nd4j::random::RandomBuffer* getRng() const
+        { return _rng; }
+            
         // this inline method attaches layer to workspace memory
         void setWorkspace(const void *memory, const Nd4jIndex length) {
             this->_length    = length;
