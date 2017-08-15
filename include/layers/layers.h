@@ -76,61 +76,61 @@ template <typename T> class INativeLayer {
         virtual void dropOutHelper(NDArray<T> *input) = 0;
         virtual void dropConnectHelper(NDArray<T> *input) = 0;
 
-        void setParams(const NDArray<T>* other) 
+        void setParams(NDArray<T>* other) 
         { _params = other; }
 
         NDArray<T>* getParams() const
         { return _params; }
 
-        void setInput(const NDArray<T>* other) 
+        void setInput(NDArray<T>* other) 
         { _input = other; }
 
         NDArray<T>* getInput() const
         { return _input; }
 
-        void setOutput(const NDArray<T>* other) 
+        void setOutput(NDArray<T>* other) 
         { _output = other; }
 
         NDArray<T>* getOutput() const
         { return _output; }
 
-        void setBias(const NDArray<T>* other) 
+        void setBias(NDArray<T>* other) 
         { _bias = other; }
 
         NDArray<T>* getBias() const
         { return _bias; }        
 
-        void setEpsilon(const NDArray<T>* other) 
+        void setEpsilon(NDArray<T>* other) 
         { _epsilon = other; }
 
         NDArray<T>* getEpsilon() const
         { return _epsilon; }        
         
-        void setMask(const NDArray<T>* other) 
+        void setMask(NDArray<T>* other) 
         { _mask = other; }
 
         NDArray<T>* getMask() const
         { return _mask; }        
 
-        void setEpsilonNext(const NDArray<T>* other) 
+        void setEpsilonNext(NDArray<T>* other) 
         { _epsilonNext = other; }
 
         NDArray<T>* getEpsilonNext() const
         { return _epsilonNext; }        
         
-        void setPreOutput(const NDArray<T>* other) 
+        void setPreOutput(NDArray<T>* other) 
         { _preOutput = other; }
 
         NDArray<T>* getPreOutput() const
         { return _preOutput; }
 
-        void setGradientW(const NDArray<T>* other) 
+        void setGradientW(NDArray<T>* other) 
         { _gradientW = other; }
 
         NDArray<T>* getGradientW() const
         { return _gradientW; }
 
-        void setGradientB(const NDArray<T>* other) 
+        void setGradientB(NDArray<T>* other) 
         { _gradientB = other; }
 
         NDArray<T>* getGradientB() const
@@ -230,24 +230,24 @@ template <typename T> class INativeLayer {
 // default constructor sets all pointers to be empty
 template <typename T> INativeLayer<T>::INativeLayer() {
     
-    _params    = new NDArray<T>();
-    _bias      = new NDArray<T>();
-    _input     = new NDArray<T>();
-    _epsilon   = new NDArray<T>();
-    _mask      = new NDArray<T>();
-    _output    = new NDArray<T>();
-    _gradientW = new NDArray<T>();
-    _gradientB = new NDArray<T>();
+    _params      = new NDArray<T>();
+    _bias        = new NDArray<T>();
+    _input       = new NDArray<T>();
+    _epsilon     = new NDArray<T>();
+    _mask        = new NDArray<T>();
+    _output      = new NDArray<T>();
+    _gradientW   = new NDArray<T>();
+    _gradientB   = new NDArray<T>();
     _epsilonNext = new NDArray<T>();
-    _preOutput = new NDArray<T>();
+    _preOutput   = new NDArray<T>();
 
-    _workspace = nullptr;
-    _rng = nullptr;
-    _allocated = 0;
-    _length = 0;
-    _dropOut = false;                   
-    _dropConnect = false;                       
-    _pDropOut = 0.;   
+    _workspace    = nullptr;
+    _rng          = nullptr;
+    _allocated    = 0;
+    _length       = 0;
+    _dropOut      = false;                   
+    _dropConnect  = false;                       
+    _pDropOut     = 0.;   
     _pDropConnect = 0.;    
 }
 

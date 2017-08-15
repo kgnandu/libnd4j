@@ -116,15 +116,26 @@ template <typename T> NDArray<T>::NDArray(const char order, const std::initializ
 template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) {
 	if (this == &other) return *this;
 
-    if (other.lengthOf() != lengthOf())
-        throw std::invalid_argument("Assignment operator: lengths of arrays are mismatched!");
-
-    if (ordering() == other.ordering()) 
+    if (shape::equalsStrict(_shapeInfo, other._shapeInfo))
         memcpy(_buffer, other._buffer, lengthOf()*sizeOfT());
-    else 
-        // now we invoke dup pwt against target buffer
-        NativeOpExcutioner<T>::execPairwiseTransform(1, _buffer, _shapeInfo, other._buffer, other._shapeInfo, _buffer, _shapeInfo, nullptr);
-    
+    else {
+        if(_allocated) {
+            delete []_buffer;
+            delete []_shapeInfo;
+        }
+        
+        int arrLength = shape::length(other->_shapeInfo);
+        int shapeLength = shape::rank(other->_shapeInfo)*2 + 4;
+        
+        _buffer = new T[arrLength];
+        memcpy(_buffer, other._buffer, lengthOf()*sizeOfT());               // copy elements of other current array
+        
+        _shapeInfo = new int[shapeLength];             
+        memcpy(_shapeInfo, other._shapeInfo, shapeLength*sizeof(int));     // copy shape information into new array
+        
+        _allocated = true;        
+    }
+
     return *this;
 }
 
@@ -132,9 +143,6 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
 template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const {
     if(this == &other) 
         return true;    
-
-    if (lengthOf() != other.lengthOf())
-        return false;
 
     if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
         return false;
@@ -358,9 +366,6 @@ template <typename T> void NDArray<T>::transposei() {
 
 // This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
 template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) const {
-    
-    if (lengthOf() != other.lengthOf())
-        return false;
 
     if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
         return false;

@@ -567,13 +567,25 @@ TEST_F(DenseLayerInputTest, FeedForwardTest2) {
 
 // This test checks mathematics during FF step Z = IW + B, A = F(Z) 
 TEST_F(DenseLayerInputTest, FeedForwardTest3) {    
-    auto *output     = new NDArray<double>(M, N,'c');
-    auto *resultTrue = new NDArray<double>(Z, shapeZ);    
-    auto* denseLayer = new nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>>();
-    int result = denseLayer->setParameters(W, shapeW, B, shapeB);
-    result = denseLayer->configureLayerFF(I, shapeI, output->getBuff(), output->getShape(), 0.0f, 0.0f, nullptr);    
-    result = denseLayer->feedForward();
-    ASSERT_TRUE(resultTrue->equalsTo(*output));
+    
+    NDArray<double> finalMatrix(Z, shapeZ);    
+    nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> denseLayer;
+    // configure layer
+    NDArray<double> output(M, N,'c');  denseLayer.setOutput(&output);
+    NDArray<double> input(I, shapeI);  denseLayer.setInput(&input);
+    NDArray<double> params(W, shapeW); denseLayer.setParams(&params);
+    NDArray<double> biases(B, shapeB); denseLayer.setBias(&biases);      
+    denseLayer.setpDropOut(0.);
+    denseLayer.setpDropConnect(0.);
+    denseLayer.setDropOut(false);
+    denseLayer.setDropConnect(false);
+    denseLayer.setRng(nullptr);
+    // checks parameters consistency
+    int result = denseLayer.validateParameters();
+    ASSERT_EQ(ND4J_STATUS_OK, result);
+    // run FF    
+    result = denseLayer.feedForward();
+    ASSERT_TRUE(finalMatrix.equalsTo(*denseLayer.getOutput()));
 }
 
 
@@ -640,12 +652,24 @@ TEST_F(DenseLayerInputTest, BackPropagationTest1) {
 // This test checks mathematics during BP step 
 // D = E*dA/dZ, Gw=I^T*D, Gb = sum_over_0_dim_of D, En = D*W^T
 TEST_F(DenseLayerInputTest, BackPropagationTest2) {    
-    auto *output     = new NDArray<double>(M, N,'c');
-    auto *resultTrue = new NDArray<double>(Z, shapeZ);    
-    auto* denseLayer = new nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>>();
-    int result = denseLayer->setParameters(W, shapeW, B, shapeB);
-    result = denseLayer->configureLayerFF(I, shapeI, output->getBuff(), output->getShape(), 0.0f, 0.0f, nullptr);    
-    result = denseLayer->feedForward();
-    ASSERT_TRUE(resultTrue->equalsTo(*output));
+
+    NDArray<double> finalMatrix(Z, shapeZ);    
+    nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> denseLayer;
+    // configure layer
+    NDArray<double> output(M, N,'c');  denseLayer.setOutput(&output);
+    NDArray<double> input(I, shapeI);  denseLayer.setInput(&input);
+    NDArray<double> params(W, shapeW); denseLayer.setParams(&params);
+    NDArray<double> biases(B, shapeB); denseLayer.setBias(&biases);      
+    denseLayer.setpDropOut(0.);
+    denseLayer.setpDropConnect(0.);
+    denseLayer.setDropOut(false);
+    denseLayer.setDropConnect(false);
+    denseLayer.setRng(nullptr);
+    // checks parameters consistency
+    int result = denseLayer.validateParameters();
+    ASSERT_EQ(ND4J_STATUS_OK, result);
+    // run FF    
+    result = denseLayer.feedForward();
+    ASSERT_TRUE(finalMatrix.equalsTo(*denseLayer.getOutput()));
 }
 
