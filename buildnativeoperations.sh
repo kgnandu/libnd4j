@@ -323,7 +323,7 @@ if [ "$CHIP" == "cuda" ] && [ -n "$CHIP_VERSION" ]; then
     esac
 fi
 
-OPENBLAS_PATH="/usr/local/"
+OPENBLAS_PATH="$HOME/.javacpp/cache/openblas-0.2.19-1.3.4-SNAPSHOT-linux-x86_64.jar/org/bytedeco/javacpp/linux-x86_64/"
 
 if [[ -n "${BUILD_PATH:-}" ]]; then
     PREVIFS="$IFS"
