@@ -336,6 +336,10 @@ if [[ -n "${BUILD_PATH:-}" ]]; then
     IFS="$PREVIFS"
 fi
 
+if [ ! -d "$OPENBLAS_PATH" ]; then
+    echo "Could not find OPENBLAS_PATH = $OPENBLAS_PATH"
+fi
+
 OPENBLAS_ARG="-DOPENBLAS_PATH=$OPENBLAS_PATH"
 
 mkbuilddir() {
