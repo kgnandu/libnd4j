@@ -2,7 +2,7 @@
 #include <NativeOpExcutioner.h>
 #include <stdexcept>
 
-
+////////////////////////////////////////////////////////////////////////
 // default constructor, do not allocate memory, memory for array is passed from outside 
 template <typename T> NDArray<T>::NDArray(T *buffer, int *shapeInfo ) {        
     
@@ -11,6 +11,7 @@ template <typename T> NDArray<T>::NDArray(T *buffer, int *shapeInfo ) {
     _allocated = false;                                  // indicate that memory for array is passed from outside
 }
 
+////////////////////////////////////////////////////////////////////////
 // copy constructor
 template <typename T> NDArray<T>::NDArray(const NDArray<T>& other)
 {
@@ -26,6 +27,7 @@ template <typename T> NDArray<T>::NDArray(const NDArray<T>& other)
     _allocated = true;
 }
 
+////////////////////////////////////////////////////////////////////////
 // this constructor creates 2D NDArray, memory for array is allocated in this constructor 
 template <typename T> NDArray<T>::NDArray(const int rows, const int columns, const char order) {
     
@@ -45,10 +47,10 @@ template <typename T> NDArray<T>::NDArray(const int rows, const int columns, con
     _shapeInfo[6] = 1;
     _allocated = true;
 
-    delete[] shape;
+    delete[] shape;    
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // this constructor creates NDArray as single row (dimension is 1xlength), memory for array is allocated in constructor 
 template <typename T> NDArray<T>::NDArray(const int length, const char order) {
     
@@ -69,7 +71,7 @@ template <typename T> NDArray<T>::NDArray(const int length, const char order) {
     delete[] shape;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // creates new NDArray using shape information from "shape" array, set all elements in new array to be zeros
 template <typename T> NDArray<T>::NDArray(const int* shape) {
    
@@ -84,7 +86,7 @@ template <typename T> NDArray<T>::NDArray(const int* shape) {
     _allocated = true;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // this constructor creates new array using rank information contained in initializer_list argument
 template <typename T> NDArray<T>::NDArray(const char order, const std::initializer_list<int>& shape) {
     
@@ -112,6 +114,7 @@ template <typename T> NDArray<T>::NDArray(const char order, const std::initializ
     delete[] shapeOf;
 }
 
+////////////////////////////////////////////////////////////////////////
 // assignment operator
 template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) {
 	if (this == &other) return *this;
@@ -124,8 +127,8 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
             delete []_shapeInfo;
         }
         
-        int arrLength = shape::length(other->_shapeInfo);
-        int shapeLength = shape::rank(other->_shapeInfo)*2 + 4;
+        int arrLength = shape::length(other._shapeInfo);
+        int shapeLength = shape::rank(other._shapeInfo)*2 + 4;
         
         _buffer = new T[arrLength];
         memcpy(_buffer, other._buffer, lengthOf()*sizeOfT());               // copy elements of other current array
@@ -136,9 +139,10 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
         _allocated = true;        
     }
 
-    return *this;
+    return *this;    
 }
 
+////////////////////////////////////////////////////////////////////////
 // equality operator
 template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const {
     if(this == &other) 
@@ -157,19 +161,7 @@ template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const 
     return true;
 }
 
-// This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)
-template <typename T> void NDArray<T>::replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting) {
-    
-    if (_allocated && releaseExisting) {
-        printf("Deleting original memory\n");
-        delete[] _buffer;
-        delete[] _shapeInfo;
-    }
-    _allocated = false;
-    _buffer    = buffer;
-    _shapeInfo = shapeInfo;
-}
-
+////////////////////////////////////////////////////////////////////////
 // check two arrays whether they have the same shapes, arrays are considered to have the same shapes if they have the same rank and corresponding dimensions
 template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>& other) const {
     int rank1 = shape::rank(_shapeInfo);
@@ -177,14 +169,14 @@ template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>& other) cons
     if(rank1 != rank2)
         return false;
     
-    for(unsigned i=0; i<=rank1; ++i)
+    for(int i=0; i<=rank1; ++i)
         if(_shapeInfo[i] != other._shapeInfo[i])
             return false;
 
     return true;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method assigns values of given NDArray to this one, wrt order
 template <typename T> void NDArray<T>::assign(const NDArray<T> *other) {
     if (this == other) return;
@@ -201,6 +193,7 @@ template <typename T> void NDArray<T>::assign(const NDArray<T> *other) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////
 // This method assigns given value to all elements in this NDArray
 template <typename T> void NDArray<T>::assign(const T value) {
 
@@ -208,7 +201,7 @@ template <typename T> void NDArray<T>::assign(const T value) {
     NativeOpExcutioner<T>::execScalar(13, _buffer, _shapeInfo, _buffer, _shapeInfo, value, nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method returns new copy of this NDArray, optionally in different order
 template <typename T> NDArray<T>* NDArray<T>::dup(const char newOrder) {
     // op
@@ -234,19 +227,19 @@ template <typename T> NDArray<T>* NDArray<T>::dup(const char newOrder) {
     return result;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method returns sum of all elements of this NDArray
 template <typename T> T NDArray<T>::sumNumber() const {
     return NativeOpExcutioner<T>::execReduceScalar(1, _buffer, _shapeInfo, nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method returns mean number of this NDArray
 template <typename T> T NDArray<T>::meanNumber() const {
     return NativeOpExcutioner<T>::execReduceScalar(0, _buffer, _shapeInfo, nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // method calculates sum along dimension(s) in this array and save it to row: as new NDArray with dimensions 1xN
 template <typename T> NDArray<T>* NDArray<T>::sum(const std::initializer_list<int>& dimensions) const {    
     return reduceAlongDimension<simdOps::Sum<T>>(dimensions);
@@ -254,7 +247,7 @@ template <typename T> NDArray<T>* NDArray<T>::sum(const std::initializer_list<in
 
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // eventually this method reduces this array to 1xN row 
 template <typename T> template <typename OpName> 
 NDArray<T>* NDArray<T>::reduceAlongDimension(const std::initializer_list<int>& dimensions) const {
@@ -279,30 +272,31 @@ NDArray<T>* NDArray<T>::reduceAlongDimension(const std::initializer_list<int>& d
     return result;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 //
 template <typename T> template<typename OpName> T NDArray<T>::reduceNumber() const {
     return reduceNumber(nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 //
 template <typename T> template<typename OpName> T NDArray<T>::reduceNumber(T *extraParams) const {
     return functions::reduce::ReduceFunction<T>::template execScalar<OpName>(_buffer, _shapeInfo, extraParams);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // perform array transformation
 template <typename T> template <typename OpName> void NDArray<T>::applyTransform() {
     applyTransform<OpName>(nullptr);
 }
 
+////////////////////////////////////////////////////////////////////////
 // perform array transformation
 template <typename T> template <typename OpName> void NDArray<T>::applyTransform(T *extraParams) {
     functions::transform::Transform<T>::template exec<OpName>(_buffer, _shapeInfo, _buffer, _shapeInfo, extraParams, nullptr, nullptr);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // method makes copy of this array and applies to the copy the transpose operation, that is this array remains unaffected 
 template <typename T> NDArray<T>* NDArray<T>::transpose() const {
     int *rearrange = new int[rankOf()];
@@ -331,7 +325,7 @@ template <typename T> NDArray<T>* NDArray<T>::transpose() const {
     return result;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method applies in-place transpose to this array, so this array becomes transposed 
 template <typename T> void NDArray<T>::transposei() {
     
@@ -364,7 +358,7 @@ template <typename T> void NDArray<T>::transposei() {
     _shapeInfo = newShapeBuffer;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
 template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) const {
 
@@ -380,7 +374,7 @@ template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) 
     return true;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // Return value from linear buffer
 template <typename T> T NDArray<T>::getScalar(const Nd4jIndex i) const {
 
@@ -391,7 +385,7 @@ template <typename T> T NDArray<T>::getScalar(const Nd4jIndex i) const {
     return _buffer[i];
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // Returns value from 2D matrix by coordinates/indexes 
 template <typename T> T NDArray<T>::getScalar(const int i, const int j) const {
     // throw something here
@@ -404,7 +398,7 @@ template <typename T> T NDArray<T>::getScalar(const int i, const int j) const {
     return _buffer[xOffset];
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // Returns value from 3D tensor by coordinates
 template <typename T> T NDArray<T>::getScalar(const int i, const int j, const int k) const {
     // throw something here
@@ -418,7 +412,7 @@ template <typename T> T NDArray<T>::getScalar(const int i, const int j, const in
     return _buffer[xOffset];
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method sets value in linear buffer to position i
 template <typename T> void NDArray<T>::putScalar(const Nd4jIndex i, const T value) {
     // throw something right here
@@ -428,7 +422,7 @@ template <typename T> void NDArray<T>::putScalar(const Nd4jIndex i, const T valu
     _buffer[i] = value;
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method sets value in 2D matrix to position i, j 
 template <typename T> void NDArray<T>::putScalar(const int i, const int j, const T value) {
     // throw something here
@@ -440,7 +434,7 @@ template <typename T> void NDArray<T>::putScalar(const int i, const int j, const
     putScalar(xOffset, value);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method sets value in 3D matrix to position i,j,k
 template <typename T> void NDArray<T>::putScalar(const int i, const int j, const int k, const T value) {
     // throw something here
@@ -454,7 +448,7 @@ template <typename T> void NDArray<T>::putScalar(const int i, const int j, const
     putScalar(xOffset, value);
 }
 
-
+////////////////////////////////////////////////////////////////////////
 // This method adds given row to all rows in this NDArray, that is this array becomes affected
 template <typename T> void NDArray<T>::addiRowVector(const NDArray<T> *row) {
     if (rankOf() != 2)
@@ -475,7 +469,42 @@ template <typename T> void NDArray<T>::addiRowVector(const NDArray<T> *row) {
     delete tad;
 }
 
+////////////////////////////////////////////////////////////////////////
+// set array to have given shape, apply only to empty array
+template <typename T> void NDArray<T>::setShape(const int* shape) {
+    
+    if(this->nonNull())
+        throw "Can't reshape non-empty array!";
+    // check if current shape is consistent with rows x columns dimension, also check order
+    int arrLength = shape::length(const_cast<int*>(shape));
+    int shapeLength = shape::rank(const_cast<int*>(shape))*2 + 4;
+    _buffer = new T[arrLength];    
+    memset(_buffer, 0, arrLength*sizeOfT());          // set all elements in new array to be zeros    
+    _shapeInfo = new int[shapeLength];             
+    memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
+    _allocated = true;
 
+}
+
+////////////////////////////////////////////////////////////////////////
+// output operator
+template <typename T> std::ostream& operator<<(std::ostream& os, const NDArray<T>& arr) {
+    int arrLength = arr.lengthOf();
+    int shapeLength = arr.rankOf()*2 + 4;
+    os<<"!!!! ";//<<(arr.getShapeInfo()[0]);    
+    // os<<"Shape: [ ";
+    // for(int i=0; i<shapeLength; ++i)
+        // os<<(T)(arr._shapeInfo[i])<<", ";
+    // os<<" ]"<<std::endl;
+    // os<<"Elements: { ";
+    // for(int i=0; i<arrLength; ++i)
+        // os<<(T)(arr._buffer[i])<<", ";
+    // os<<" }"<<std::endl;
+    
+    return os;
+}
+
+////////////////////////////////////////////////////////////////////////
 // default destructor
 template <typename T> NDArray<T>::~NDArray() {
     

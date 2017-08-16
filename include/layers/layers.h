@@ -77,61 +77,61 @@ template <typename T> class INativeLayer {
         virtual void dropConnectHelper(NDArray<T> *input) = 0;
 
         void setParams(NDArray<T>* other) 
-        { _params = other; }
+        { _params->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getParams() const
         { return _params; }
 
         void setInput(NDArray<T>* other) 
-        { _input = other; }
+        { _input->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getInput() const
         { return _input; }
 
         void setOutput(NDArray<T>* other) 
-        { _output = other; }
+        { _output->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getOutput() const
         { return _output; }
 
         void setBias(NDArray<T>* other) 
-        { _bias = other; }
+        { _bias->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getBias() const
         { return _bias; }        
 
         void setEpsilon(NDArray<T>* other) 
-        { _epsilon = other; }
+        { _epsilon->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getEpsilon() const
         { return _epsilon; }        
         
         void setMask(NDArray<T>* other) 
-        { _mask = other; }
+        { _mask->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getMask() const
         { return _mask; }        
 
         void setEpsilonNext(NDArray<T>* other) 
-        { _epsilonNext = other; }
+        { _epsilonNext->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getEpsilonNext() const
         { return _epsilonNext; }        
         
         void setPreOutput(NDArray<T>* other) 
-        { _preOutput = other; }
+        { _preOutput->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getPreOutput() const
         { return _preOutput; }
 
         void setGradientW(NDArray<T>* other) 
-        { _gradientW = other; }
+        { _gradientW->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getGradientW() const
         { return _gradientW; }
 
         void setGradientB(NDArray<T>* other) 
-        { _gradientB = other; }
+        { _gradientB->replacePointers(other->getBuff(), other->getShapeInfo()); }
 
         NDArray<T>* getGradientB() const
         { return _gradientB; }          
@@ -265,7 +265,7 @@ template <typename T> INativeLayer<T>::~INativeLayer() {
 }
 
 template <typename T> void INativeLayer<T>::gemmHelper(const NDArray<T> *A, const NDArray<T> *B, NDArray<T> *C, const T alpha, const T beta) {
-    gemmHelper(A->getBuff(), A->getShape(), B->getBuff(), B->getShape(), C->getBuff(), C->getShape(), alpha, beta);
+    gemmHelper(A->getBuff(), A->getShapeInfo(), B->getBuff(), B->getShapeInfo(), C->getBuff(), C->getShapeInfo(), alpha, beta);
 }
 
 // perform C = alpha*A*B + beta*C

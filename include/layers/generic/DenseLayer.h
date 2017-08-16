@@ -41,51 +41,48 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
  
 // back propagate
 template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
-            // delta = dL/dz
-            // epsilon = dL/da
-            // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
-
+    // delta = dL/dz
+    // epsilon = dL/da
+    // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
+    
     NDArray<T> *preOutput = nullptr;
     bool swapFlag = false;
     if (!this->_preOutput->nonNull()) {
         swapFlag = true;
         // temporary save output pointers
-        //T *buffer = this->_output->getBuff();
-        //int *shapeInfo = this->_output->getShape();
+        T* oldBuffer = this->_output->getBuff();
+        int* oldShapeInfo = this->_output->getShapeInfo();
 
         preOutput = new NDArray<T>(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');
-        this->_output->replacePointers(preOutput->getBuff(), preOutput->getShape());
+        this->setOutput(preOutput);
         this->feedForward();
 
-            // put buffers back
-        this->_output->replacePointers(nullptr, nullptr);
+        // put buffers back
+        this->_output->replacePointers(oldBuffer, oldShapeInfo);
 
         // temporary put preOutput to class field
-        this->_preOutput->replacePointers(preOutput->getBuff(), preOutput->getShape());
+        this->setPreOutput(preOutput);
     }
-
-    NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShape());
+    
+    NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShapeInfo());
     
     // calculate/fill delta
     ActivationsExecutioner<T>::template executeBP<AF>(this->_preOutput, this->_epsilon, delta);
-
+    
     // gradient_on_param = delta * next_output
-    NDArray<T> *iT = this->_input->transpose();
+    NDArray<T> *iT = this->_input->transpose();    
+    
     this->gemmHelper(iT, delta, this->_gradientW, (T) 1.0f, (T) 0.0f);
     // gradient_on_bias = delta
-
+    std::cout<<this->_gradientW<<std::endl;
     // calculate biases gradients
     NDArray<T> *sumArr = delta->sum({0}); 
     this->_gradientB->assign(sumArr);
     // calculate next epsilon
 
     // creating temp output array
-    NDArray<T> *oT = new NDArray<T>(this->_params->shapeOf()[0], this->_input->shapeOf()[0], 'f');
-    delta->transposei();
-    this->gemmHelper(this->_params, delta, oT, (T) 1.0f, (T) 0.0f);
-    //printf("O length: %i\n", this->_output->lengthOf());
-    oT->transposei();
-    this->_epsilonNext->assign(oT);
+    NDArray<T> *oT = this->_params->transpose();   
+    this->gemmHelper(delta, oT, this->_epsilonNext, (T) 1.0f, (T) 0.0f);    
 
     delete delta;
     delete sumArr;    
@@ -100,7 +97,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
 
     // forget _epsilonNext
     this->_epsilonNext->replacePointers(nullptr, nullptr);
-
+    
     return ND4J_STATUS_OK;
 }
 
@@ -143,7 +140,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateGradients() cons
 
 // This method should validate layer parameters & bias, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int DenseLayer<T,AF>::validateParameters() const {
-    if (this->_params->getShape() == nullptr || this->_bias->getShape() == nullptr || this->_params == nullptr || this->_bias == nullptr || this->_params->getBuff() == nullptr || this->_bias->getBuff() == nullptr) {
+    if (this->_params->getShapeInfo() == nullptr || this->_bias->getShapeInfo() == nullptr || this->_params == nullptr || this->_bias == nullptr || this->_params->getBuff() == nullptr || this->_bias->getBuff() == nullptr) {
 //        printf("Got nulls here\n");
         return ND4J_STATUS_BAD_PARAMS;
     }
@@ -176,7 +173,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateParameters() con
 // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int DenseLayer<T,AF>::validateInput() const {
     // we expect input to be either vector or matrix, in both cases - that's rank2
-    if (this->_input == nullptr || this->_input->getShape() == nullptr ||this->_input->getBuff() == nullptr)
+    if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr ||this->_input->getBuff() == nullptr)
         return ND4J_STATUS_BAD_INPUT;
 
     if (this->_input->rankOf() != 2)
@@ -263,7 +260,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::feedForward() {
 
     // do wxa+b here or something else
     // TODO: introduce BLAS right here
-    if (shape::isRowVector(this->_input->getShape())) {
+    if (shape::isRowVector(this->_input->getShapeInfo())) {
         // gemv here input * W
 
     } else {

@@ -3,6 +3,10 @@
 
 #include <shape.h>
 
+// the forward declaration is only way to define friend function to template class in order to have one-to-one template correspondence between friend function and class
+// template <typename T> class NDArray;
+// template<typename T> std::ostream& operator<<(std::ostream&, const NDArray<T>&);
+
 template <typename T> class NDArray 
 { 
     private:
@@ -28,30 +32,23 @@ template <typename T> class NDArray
 
         // this constructor creates new array using shape information contained in initializer_list argument
         explicit NDArray(const char order, const std::initializer_list<int>& shape);
-
-        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)
-        void replacePointers(T* buffer, int* shapeInfo, bool releaseExisting = true);
         
         // assignment operator
         NDArray<T>& operator=(const NDArray<T>& other);
 
         // equality operator
         bool operator==(const NDArray<T>& other) const;
-        
-        // set _buffer
-        void setBuff(const T* buff) 
-        { _buffer = buff; }
+           
+        // check allocation 
+        bool isAllocated() const
+        { return _allocated;}
         
         // get _buffer
         T* getBuff() const
         { return _buffer; }
     
-        // set _shapeInfo
-        void setShape(const int* shape) 
-        { _shapeInfo = shape; }
-
         // get _shapeInfo
-        int* getShape() const
+        int* getShapeInfo() const
         { return _shapeInfo; }
         
         // This method returns order of this NDArray
@@ -171,7 +168,21 @@ template <typename T> class NDArray
 
         // This method adds given row to all rows in this NDArray, that is this array becomes affected
         void addiRowVector(const NDArray<T> *row);
-
+        
+        // set array to have given shape, apply only to empty array
+        void setShape(const int* shape);
+        
+        // output operator
+        template <typename U> friend std::ostream& operator<<(std::ostream & os, const NDArray<U>& arr); 
+        
+        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        
+        void replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting = true) {
+            if (_allocated && releaseExisting) 
+                { delete[] _buffer; delete[] _shapeInfo; }
+            _allocated = false;
+            _buffer    = buffer;
+            _shapeInfo = shapeInfo;
+        }  
 
     // default destructor
     ~NDArray();
