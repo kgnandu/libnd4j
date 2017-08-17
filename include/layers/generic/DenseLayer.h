@@ -46,58 +46,56 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
     // delta = dL/dz
     // epsilon = dL/da
     // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
-    
-    NDArray<T> *preOutput = nullptr;
-    // temporary save output pointers                
-    
+       
     bool swapFlag = false;
     if (!this->_preOutput->nonNull()) {
-        swapFlag = true;        
-        T* oldBuffer = this->_output->getBuff();
-        int* oldShapeInfo = this->_output->getShapeInfo();
-        preOutput = new NDArray<T>(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');
-        this->setOutput(preOutput);
+        swapFlag = true;
+        // set _preOutput to have MxN output dimension  
+        this->_preOutput->setShape(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');        
+        // assign _preOutput pointers to _output, delete previous _output pointers if allocated 
+        this->setOutput(this->_preOutput);
+        // run FF, fill _output 
         this->feedForward();
-        // put buffers back
-        this->_output->replacePointers(oldBuffer, oldShapeInfo);
-        // temporary put preOutput to class field
-        this->setPreOutput(preOutput);
+        // make _output to forget _preOutput pointers (also forbid _output to delete its previous _preOutput pointers), now _output FF information is stored only in _preOutput
+        this->_output->replacePointers(nullptr, nullptr, false);
     }
-    // std::cout<<"!!!!!!!!"<<std::endl;
-    this->_output->print();
+    std::cout<<"_preOutput: "<<std::endl;
+    this->_preOutput->print();
     NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShapeInfo());
     
     // calculate/fill delta
     ActivationsExecutioner<T>::template executeBP<AF>(this->_preOutput, this->_epsilon, delta);
-    
+    std::cout<<"delta: "<<std::endl;
+    delta->print();
     // gradient_on_param = delta * next_output
-    NDArray<T> *iT = this->_input->transpose();    
-    
+    NDArray<T>* iT = this->_input->transpose();            
     this->gemmHelper(iT, delta, this->_gradientW, (T) 1.0f, (T) 0.0f);
     // gradient_on_bias = delta
-    
+    std::cout<<"_gradientW: "<<std::endl;
+    this->_gradientW->print();
     // calculate biases gradients
     NDArray<T> *sumArr = delta->sum({0}); 
     this->_gradientB->assign(sumArr);
     // calculate next epsilon
-
+    std::cout<<"_gradientB: "<<std::endl;
+    this->_gradientB->print();
     // creating temp output array
     NDArray<T> *oT = this->_params->transpose();   
-    this->gemmHelper(delta, oT, this->_epsilonNext, (T) 1.0f, (T) 0.0f);    
-
+    this->gemmHelper(delta, oT, this->_epsilonNext, (T) 1.0f, (T) 0.0f);        
+    std::cout<<"_epsilonNext: "<<std::endl;
+    this->_epsilonNext->print();
+    
+    // delete _preOutput pointers if they were allocated
+    if (swapFlag) 
+        this->_preOutput->replacePointers(nullptr, nullptr);
+    
+    // forget _epsilonNext
+    this->_epsilonNext->replacePointers(nullptr, nullptr);
+    
     delete delta;
     delete sumArr;    
     delete oT;
     delete iT;
-
-    // delete if was allocated
-    if (swapFlag) {
-        this->_preOutput->replacePointers(nullptr, nullptr);
-        delete preOutput;
-    }
-
-    // forget _epsilonNext
-    this->_epsilonNext->replacePointers(nullptr, nullptr);
     
     return ND4J_STATUS_OK;
 }

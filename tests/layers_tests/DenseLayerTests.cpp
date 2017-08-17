@@ -670,7 +670,7 @@ TEST_F(DenseLayerInputTest, BackPropagationTest2) {
     
     nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> denseLayer;
     // configure layer for FF
-    denseLayer.getOutput()->setShape(shapeZ);
+    // denseLayer.getOutput()->setShape(shapeZ);
     denseLayer.getInput()->replacePointers(I, shapeI);
     denseLayer.getParams()->replacePointers(W, shapeW);
     denseLayer.getBias()->replacePointers(B, shapeB);
@@ -691,11 +691,10 @@ TEST_F(DenseLayerInputTest, BackPropagationTest2) {
     int result = denseLayer.validateParameters();
     ASSERT_EQ(ND4J_STATUS_OK, result);        
     // run BF
-    result = denseLayer.backPropagate();  
+    result = denseLayer.backPropagate();          
     
-    ASSERT_TRUE(gradientW.equalsTo(*denseLayer.getGradientW()));
-    // ASSERT_TRUE(gradientW   == *denseLayer.getGradientW());
-    // ASSERT_TRUE(gradientB   == *denseLayer.getGradientB());
-    // ASSERT_TRUE(epsilonNext == *denseLayer.getEpsilonNext());
+    ASSERT_TRUE(gradientW.equalsTo(*denseLayer.getGradientW()));    
+    ASSERT_TRUE(gradientB   == *denseLayer.getGradientB());        
+    // ASSERT_TRUE(epsilonNext == *(denseLayer.getEpsilonNext()));
 }
 

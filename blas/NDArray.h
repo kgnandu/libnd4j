@@ -168,6 +168,9 @@ template <typename T> class NDArray
         
         // set array to have given shape, apply only to empty array
         void setShape(const int* shape);
+
+        // set shape to be 2D NDArray, apply only to empty array
+        void setShape(const int rows, const int columns, const char order);
         
         // print array shape and elements
         void print() const;

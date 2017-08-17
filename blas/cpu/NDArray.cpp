@@ -162,6 +162,22 @@ template<typename T> bool NDArray<T>::operator==(const NDArray<T>& other) const 
 }
 
 ////////////////////////////////////////////////////////////////////////
+// This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
+template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) const {
+
+    if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
+        return false;
+
+    // we don't need extraparams for this op
+    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &eps, other._buffer, other._shapeInfo);    
+
+    if (val > 0)
+        return false;
+
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////
 // check two arrays whether they have the same shapes, arrays are considered to have the same shapes if they have the same rank and corresponding dimensions
 template <typename T> bool NDArray<T>::isSameShape(const NDArray<T>& other) const {
     int rank1 = shape::rank(_shapeInfo);
@@ -208,7 +224,6 @@ template <typename T> NDArray<T>* NDArray<T>::dup(const char newOrder) {
     Nd4jIndex newLength = shape::length(_shapeInfo);
     T * newBuffer = new T[newLength];
     int *newShapeInfo;
-    int *shape = shapeOf();
 
     if (newOrder == 'f')
         newShapeInfo = shape::shapeBufferFortran(rankOf(), shapeOf());
@@ -359,22 +374,6 @@ template <typename T> void NDArray<T>::transposei() {
 }
 
 ////////////////////////////////////////////////////////////////////////
-// This method returns true if two arrays are equal, with custom or default Eps value of 1e-5, false otherwise
-template <typename T> bool NDArray<T>::equalsTo(const NDArray<T>& other, T eps) const {
-
-    if (!shape::equalsSoft(_shapeInfo, other._shapeInfo))
-        return false;
-
-    // we don't need extraparams for this op
-    T val = NativeOpExcutioner<T>::execReduce3Scalar(4, _buffer, _shapeInfo, &eps, other._buffer, other._shapeInfo);    
-
-    if (val > 0)
-        return false;
-
-    return true;
-}
-
-////////////////////////////////////////////////////////////////////////
 // Return value from linear buffer
 template <typename T> T NDArray<T>::getScalar(const Nd4jIndex i) const {
 
@@ -475,7 +474,7 @@ template <typename T> void NDArray<T>::setShape(const int* shape) {
     
     if(this->nonNull())
         throw "Can't reshape non-empty array!";
-    // check if current shape is consistent with rows x columns dimension, also check order
+
     int arrLength = shape::length(const_cast<int*>(shape));
     int shapeLength = shape::rank(const_cast<int*>(shape))*2 + 4;
     _buffer = new T[arrLength];    
@@ -488,16 +487,48 @@ template <typename T> void NDArray<T>::setShape(const int* shape) {
 ////////////////////////////////////////////////////////////////////////
 // print array shape and elements
 template <typename T> void NDArray<T>::print() const {
+
+    if(!this->nonNull()) {
+        std::cout<<"Array is empty (= nullptr), can't print shape/elements !"<<std::endl; 
+        return;
+    }
+    
     int arrLength = lengthOf();
     int shapeLength = rankOf()*2 + 4;    
     std::cout<<"Shape: [ ";
     for(int i=0; i<shapeLength; ++i)
         std::cout<<_shapeInfo[i]<<", ";
-    std::cout<<" ]"<<std::endl;
+    std::cout<<"]"<<std::endl;
     std::cout<<"Elements: { ";
     for(int i=0; i<arrLength; ++i)
         std::cout<<_buffer[i]<<", ";
-    std::cout<<" }"<<std::endl;
+    std::cout<<"}"<<std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////
+// set shape to be 2D NDArray, apply only to empty array
+template <typename T> void NDArray<T>::setShape(const int rows, const int columns, const char order) {
+   
+    if(this->nonNull())
+        throw "Can't reshape non-empty array!";
+    
+    _buffer = new T[rows * columns];
+    memset(_buffer, 0, rows * columns * sizeOfT());              // set all elements in new array to be zeros
+
+    int *shape = new int[2] {rows, columns};
+
+    if (order == 'f') {
+        _shapeInfo = shape::shapeBufferFortran(2, shape);
+        _shapeInfo[7] = 102;
+    } else {
+        _shapeInfo = shape::shapeBuffer(2, shape);
+        _shapeInfo[7] = 99;
+    }
+
+    _shapeInfo[6] = 1;
+    _allocated = true;
+
+    delete[] shape;    
 }
 
 ////////////////////////////////////////////////////////////////////////
