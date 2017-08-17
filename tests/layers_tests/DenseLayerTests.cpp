@@ -31,30 +31,39 @@ public:
     // input matrix  
     double I[M*K]  = {13., 15., 11., 14., 3., 17., 17., 9., 15., 9., 11., 6., 17., 4., 8., 6., 18., 3., 1., 14.};
     int shapeI[8]  = {2, M, K, K, 1, 0, 1, 99};
+       // int shapeI[8]  = {2, M, K, 1, M, 0, 1, 102};
     // weight matrix
     double W[K*N]  = {12., 17., 9., 8., 17., 4., 1., 5., 20., 18., 7., 10.};
     int shapeW[8]  = {2, K, N, N, 1, 0, 1, 99};
+       // int shapeW[8]  = {2, K, N, 1, K, 0, 1, 102};
     // biases matrix (one row)
     double B[1*N]  = {8, 16, 2};
     int shapeB[8]  = {2, 1, N, N, 1, 0, 1, 99};
+       // int shapeB[8]  = {2, 1, N, 1, 1, 0, 1, 102};
     // pre-output matrix Z = I*W + B
     double Z[M*N]  = {547., 645., 539., 359., 504., 527., 379., 521., 453., 360., 455., 391., 501., 476., 336.};
     int shapeZ[8]  = {2, M, N, N, 1, 0, 1, 99};
+       // int shapeZ[8]  = {2, M, N, 1, M, 0, 1, 102};
     // epsilon matrix E
     double E[M*N]  = { 16., 15., 7.0, 3.0, 6.0, 14.0, 1.0, 9.0, 8.0, 19.0, 13.0, 2.0, 11.0, 3.0, 1.0 };
     int shapeE[8]  = {2, M, N, N, 1, 0, 1, 99};
+       // int shapeE[8]  = {2, M, N, 1, M, 0, 1, 102};
     // delta matrix 
     double D[M*N]  = { 16., 15., 7.0, 3.0, 6.0, 14.0, 1.0, 9.0, 8.0, 19.0, 13.0, 2.0, 11.0, 3.0, 1.0 };
     int shapeD[8]  = {2, M, N, N, 1, 0, 1, 99};
+       // int shapeD[8]  = {2, M, N, 1, M, 0, 1, 102};
     // weights gradients matrix
     double Gw[K*N] = {753., 623., 305., 409., 469., 426., 401., 473., 420., 525., 438., 298.};
     int shapeGw[8] = {2, K, N, N, 1, 0, 1, 99};
+       // int shapeGw[8] = {2, K, N, 1, K, 0, 1, 102};
     // biases gradients matrix (one row)
     double Gb[1*N]  = {50., 46., 32.};
-    int shapeGb[8]  = {2, 1, N, N, 1, 0, 1, 99};
+    int shapeGb[8]  = {2, 1, N, N, 1, 0, 1, 99}; 
+       // int shapeGb[8]  = {2, 1, N, 1, 1, 0, 1, 102};
     // next epsilon matrix 
     double En[M*K]  = { 510., 411., 231., 463., 264., 182., 313., 236., 237., 193., 206., 161., 467., 381., 124., 453., 192., 143.,  46., 229.};
     int shapeEn[8]  = {2, M, K, K, 1, 0, 1, 99};
+       // int shapeEn[8]  = {2, M, K, 1, M, 0, 1, 102};
 };
 
 
@@ -604,64 +613,63 @@ TEST_F(DenseLayerInputTest, FeedForwardTest3) {
 }
 
 
-
 // back propagation test
-// TEST_F(DenseLayerInputTest, BackPropagationTest1) {
+TEST_F(DenseLayerInputTest, BackPropagationTest1) {
 
-    // auto *input = new NDArray<double>(32, 784, 'c');
-    // input->assign(0.19);
+    auto *input = new NDArray<double>(32, 784, 'c');
+    input->assign(0.19);
 
-    // auto *output = new NDArray<double>(32, 1000, 'f');
+    auto *output = new NDArray<double>(32, 1000, 'f');
 
-    // auto *weights = new NDArray<double>(784, 1000, 'c');
-    // weights->assign(0.15);
+    auto *weights = new NDArray<double>(784, 1000, 'c');
+    weights->assign(0.15);
 
-    // auto *bias = new NDArray<double>(1, 1000, 'f');
-    // bias->assign(0.13);
+    auto *bias = new NDArray<double>(1, 1000, 'f');
+    bias->assign(0.13);
     
-    // auto *epsilonGood = new NDArray<double>(32, 1000, 'f');
-    // epsilonGood->assign(0.12);
+    auto *epsilonGood = new NDArray<double>(32, 1000, 'f');
+    epsilonGood->assign(0.12);
 
-    // auto *outputBPGood = new NDArray<double>(32, 784, 'f');
+    auto *outputBPGood = new NDArray<double>(32, 784, 'f');
 
-    // auto *gradWGood = new NDArray<double>(784, 1000, 'f');
+    auto *gradWGood = new NDArray<double>(784, 1000, 'f');
 
-    // auto *gradBGood = new NDArray<double>(1, 1000, 'f');
+    auto *gradBGood = new NDArray<double>(1, 1000, 'f');
 
-    // nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> *layer = new nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>>();
+    nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> *layer = new nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>>();
 
-    // int result = layer->setParameters(weights->getBuff(), weights->getShapeInfo(), bias->getBuff(), bias->getShapeInfo());
-    // ASSERT_EQ(ND4J_STATUS_OK, result);
+    int result = layer->setParameters(weights->getBuff(), weights->getShapeInfo(), bias->getBuff(), bias->getShapeInfo());
+    ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    // result = layer->configureLayerFF(input->getBuff(), input->getShapeInfo(), output->getBuff(), output->getShapeInfo(), 0.0, 0.0, nullptr);
-    // ASSERT_EQ(ND4J_STATUS_OK, result);
+    result = layer->configureLayerFF(input->getBuff(), input->getShapeInfo(), output->getBuff(), output->getShapeInfo(), 0.0, 0.0, nullptr);
+    ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    // result = layer->configureLayerBP(outputBPGood->getBuff(), outputBPGood->getShapeInfo(), gradWGood->getBuff(), gradWGood->getShapeInfo(), gradBGood->getBuff(), gradBGood->getShapeInfo(), epsilonGood->getBuff(), epsilonGood->getShapeInfo());
-    // ASSERT_EQ(ND4J_STATUS_OK, result);        
+    result = layer->configureLayerBP(outputBPGood->getBuff(), outputBPGood->getShapeInfo(), gradWGood->getBuff(), gradWGood->getShapeInfo(), gradBGood->getBuff(), gradBGood->getShapeInfo(), epsilonGood->getBuff(), epsilonGood->getShapeInfo());
+    ASSERT_EQ(ND4J_STATUS_OK, result);        
 
-    // result = layer->backPropagate();
-    // ASSERT_EQ(ND4J_STATUS_OK, result);
+    result = layer->backPropagate();
+    ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    // for(int e = 0; e < outputBPGood->lengthOf(); e++) {
-        // if (nd4j::math::nd4j_abs<double>(outputBPGood->getScalar(e) - 18.00000) > 1e-5) {
-            // printf("Failed at [%i] as [%f]\n", e, outputBPGood->getScalar(e));
-            // break;
-        // }
-    // }
+    for(int e = 0; e < outputBPGood->lengthOf(); e++) {
+        if (nd4j::math::nd4j_abs<double>(outputBPGood->getScalar(e) - 18.00000) > 1e-5) {
+            printf("Failed at [%i] as [%f]\n", e, outputBPGood->getScalar(e));
+            break;
+        }
+    }
 
-    // // expected results were calculated manually
-    // ASSERT_NEAR(0.7296,gradWGood->meanNumber(), 1e-5);
-    // ASSERT_NEAR(3.84, gradBGood->meanNumber(), 1e-5);
-    // ASSERT_NEAR(18.0, outputBPGood->meanNumber(), 1e-5);
+    // expected results were calculated manually
+    ASSERT_NEAR(0.7296,gradWGood->meanNumber(), 1e-5);
+    ASSERT_NEAR(3.84, gradBGood->meanNumber(), 1e-5);
+    ASSERT_NEAR(18.0, outputBPGood->meanNumber(), 1e-5);
 
-    // delete  weights;
-    // delete  bias;
+    delete  weights;
+    delete  bias;
 
-    // delete epsilonGood;
-    // delete outputBPGood;
-    // delete gradWGood;
-    // delete gradBGood;
-// }
+    delete epsilonGood;
+    delete outputBPGood;
+    delete gradWGood;
+    delete gradBGood;
+}
 
 
 // This test checks mathematics during BP step 
@@ -670,7 +678,6 @@ TEST_F(DenseLayerInputTest, BackPropagationTest2) {
     
     nd4j::layers::DenseLayer<double, nd4j::activations::Identity<double>> denseLayer;
     // configure layer for FF
-    // denseLayer.getOutput()->setShape(shapeZ);
     denseLayer.getInput()->replacePointers(I, shapeI);
     denseLayer.getParams()->replacePointers(W, shapeW);
     denseLayer.getBias()->replacePointers(B, shapeB);

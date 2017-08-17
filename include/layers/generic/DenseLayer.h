@@ -43,15 +43,16 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
  
 // back propagate
 template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
-    // delta = dL/dz
+    // delta = dL/dz = da/dz (*) epsilon 
     // epsilon = dL/da
-    // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
-       
+    // gradient_on_param = input_transposed * delta
+    // gradient_on_bias = sum_over_0_dimension delta    
+    // epsilonNext = delta * params_transposed
     bool swapFlag = false;
     if (!this->_preOutput->nonNull()) {
         swapFlag = true;
         // set _preOutput to have MxN output dimension  
-        this->_preOutput->setShape(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');        
+        this->_preOutput->setShape(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'c');        
         // assign _preOutput pointers to _output, delete previous _output pointers if allocated 
         this->setOutput(this->_preOutput);
         // run FF, fill _output 
@@ -59,32 +60,18 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
         // make _output to forget _preOutput pointers (also forbid _output to delete its previous _preOutput pointers), now _output FF information is stored only in _preOutput
         this->_output->replacePointers(nullptr, nullptr, false);
     }
-    std::cout<<"_preOutput: "<<std::endl;
-    this->_preOutput->print();
-    NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShapeInfo());
-    
+    NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShapeInfo());    
     // calculate/fill delta
     ActivationsExecutioner<T>::template executeBP<AF>(this->_preOutput, this->_epsilon, delta);
-    std::cout<<"delta: "<<std::endl;
-    delta->print();
-    // gradient_on_param = delta * next_output
+    // gradient_on_param = input_transposed * delta
     NDArray<T>* iT = this->_input->transpose();            
     this->gemmHelper(iT, delta, this->_gradientW, (T) 1.0f, (T) 0.0f);
-    // gradient_on_bias = delta
-    std::cout<<"_gradientW: "<<std::endl;
-    this->_gradientW->print();
-    // calculate biases gradients
+    // gradient_on_bias = sum_over_0_dimension delta    
     NDArray<T> *sumArr = delta->sum({0}); 
     this->_gradientB->assign(sumArr);
-    // calculate next epsilon
-    std::cout<<"_gradientB: "<<std::endl;
-    this->_gradientB->print();
-    // creating temp output array
+    // calculate next epsilon _epsilonNext = delta * params_transposed
     NDArray<T> *oT = this->_params->transpose();   
-    this->gemmHelper(delta, oT, this->_epsilonNext, (T) 1.0f, (T) 0.0f);        
-    std::cout<<"_epsilonNext: "<<std::endl;
-    this->_epsilonNext->print();
-    
+    this->gemmHelper(delta, oT, this->_epsilonNext, (T) 1.0f, (T) 0.0f);            
     // delete _preOutput pointers if they were allocated
     if (swapFlag) 
         this->_preOutput->replacePointers(nullptr, nullptr);
