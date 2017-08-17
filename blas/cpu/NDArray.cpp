@@ -483,25 +483,21 @@ template <typename T> void NDArray<T>::setShape(const int* shape) {
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
     _allocated = true;
-
 }
 
 ////////////////////////////////////////////////////////////////////////
-// output operator
-template <typename T> std::ostream& operator<<(std::ostream& os, const NDArray<T>& arr) {
-    int arrLength = arr.lengthOf();
-    int shapeLength = arr.rankOf()*2 + 4;
-    os<<"!!!! ";//<<(arr.getShapeInfo()[0]);    
-    // os<<"Shape: [ ";
-    // for(int i=0; i<shapeLength; ++i)
-        // os<<(T)(arr._shapeInfo[i])<<", ";
-    // os<<" ]"<<std::endl;
-    // os<<"Elements: { ";
-    // for(int i=0; i<arrLength; ++i)
-        // os<<(T)(arr._buffer[i])<<", ";
-    // os<<" }"<<std::endl;
-    
-    return os;
+// print array shape and elements
+template <typename T> void NDArray<T>::print() const {
+    int arrLength = lengthOf();
+    int shapeLength = rankOf()*2 + 4;    
+    std::cout<<"Shape: [ ";
+    for(int i=0; i<shapeLength; ++i)
+        std::cout<<_shapeInfo[i]<<", ";
+    std::cout<<" ]"<<std::endl;
+    std::cout<<"Elements: { ";
+    for(int i=0; i<arrLength; ++i)
+        std::cout<<_buffer[i]<<", ";
+    std::cout<<" }"<<std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////

@@ -3,9 +3,6 @@
 
 #include <shape.h>
 
-// the forward declaration is only way to define friend function to template class in order to have one-to-one template correspondence between friend function and class
-// template <typename T> class NDArray;
-// template<typename T> std::ostream& operator<<(std::ostream&, const NDArray<T>&);
 
 template <typename T> class NDArray 
 { 
@@ -172,10 +169,10 @@ template <typename T> class NDArray
         // set array to have given shape, apply only to empty array
         void setShape(const int* shape);
         
-        // output operator
-        template <typename U> friend std::ostream& operator<<(std::ostream & os, const NDArray<U>& arr); 
-        
-        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        
+        // print array shape and elements
+        void print() const;
+ 
+       // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        
         void replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting = true) {
             if (_allocated && releaseExisting) 
                 { delete[] _buffer; delete[] _shapeInfo; }
@@ -194,3 +191,4 @@ template <typename T> class NDArray
 
 #endif
 
+ 

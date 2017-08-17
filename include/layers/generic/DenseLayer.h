@@ -11,6 +11,7 @@
 namespace nd4j {
 namespace layers {
 
+
 template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
     public:
   
@@ -30,7 +31,8 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
         inline virtual int validateOutput() const;
 
         // this method should validate memory/holders for BP pass
-        inline virtual int validateGradients() const;
+        inline virtual int validateGradients() const;        
+ 
 };
 
 
@@ -46,24 +48,23 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
     // delta = epsilon * da/dz = previous_params_T * previous_delta (*) da/dz
     
     NDArray<T> *preOutput = nullptr;
+    // temporary save output pointers                
+    
     bool swapFlag = false;
     if (!this->_preOutput->nonNull()) {
-        swapFlag = true;
-        // temporary save output pointers
+        swapFlag = true;        
         T* oldBuffer = this->_output->getBuff();
         int* oldShapeInfo = this->_output->getShapeInfo();
-
         preOutput = new NDArray<T>(this->_input->shapeOf()[0], this->_params->shapeOf()[1], 'f');
         this->setOutput(preOutput);
         this->feedForward();
-
         // put buffers back
         this->_output->replacePointers(oldBuffer, oldShapeInfo);
-
         // temporary put preOutput to class field
         this->setPreOutput(preOutput);
     }
-    
+    // std::cout<<"!!!!!!!!"<<std::endl;
+    this->_output->print();
     NDArray<T> *delta = new NDArray<T>(this->_preOutput->getShapeInfo());
     
     // calculate/fill delta
@@ -74,7 +75,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::backPropagate() {
     
     this->gemmHelper(iT, delta, this->_gradientW, (T) 1.0f, (T) 0.0f);
     // gradient_on_bias = delta
-    std::cout<<this->_gradientW<<std::endl;
+    
     // calculate biases gradients
     NDArray<T> *sumArr = delta->sum({0}); 
     this->_gradientB->assign(sumArr);
