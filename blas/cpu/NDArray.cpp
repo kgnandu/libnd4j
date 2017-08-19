@@ -538,18 +538,19 @@ template <typename T> bool NDArray<T>::permute(const int* dimensions, const int 
     if(_buffer==nullptr || rank != rankOf())
         return false;
         
-    int doubleRank = 2*rank;    
-    for(int i=1; i<=rank; ++i) 
-        _shapeInfo[i] = dimensions[i-1];         // exclude first element -> rank     
-    // change strides accordingly                    
-    if(ordering()=='c') 
-        for(int j=1; j<rank; ++j)
-            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*dimensions[rank-j];
-    else 
-        for(int j=rank+1; j<doubleRank; ++j)
-            _shapeInfo[j+1] = _shapeInfo[j]*dimensions[j-rank-1];
+    // int doubleRank = 2*rank;    
+    // for(int i=1; i<=rank; ++i) 
+        // _shapeInfo[i] = dimensions[i-1];         // exclude first element -> rank     
+    // // change strides accordingly                    
+    // if(ordering()=='c') 
+        // for(int j=1; j<rank; ++j)
+            // _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*dimensions[rank-j];
+    // else 
+        // for(int j=rank+1; j<doubleRank; ++j)
+            // _shapeInfo[j+1] = _shapeInfo[j]*dimensions[j-rank-1];
 
-    // doPermuteShapeBuffer(const_cast<int*>(dimensions))
+    
+    shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), _shapeInfo);
     return true;    
 }
 
@@ -559,19 +560,26 @@ template <typename T> bool NDArray<T>::permute(const std::initializer_list<int>&
     
     int rank = dimensions.size();    
     if(_buffer==nullptr || rank != rankOf())
-        return false;
-        
-    int doubleRank = 2*rank;    
-    int i=1;
-    for(const auto& item : dimensions)
-        _shapeInfo[i++] = item;                 // exclude first element -> rank     
-    // change strides accordingly                    
-    if(ordering()=='c') 
-        for(int j=1; j<rank; ++j)
-            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
-    else 
-        for(int j=rank+1; j<doubleRank; ++j)
-            _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];
+        return false;        
+
+    // int doubleRank = 2*rank;    
+    // int i=1;
+    // for(const auto& item : dimensions)
+        // _shapeInfo[i++] = item;                 // exclude first element -> rank     
+    // // change strides accordingly                    
+    // if(ordering()=='c') 
+        // for(int j=1; j<rank; ++j)
+            // _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
+    // else 
+        // for(int j=rank+1; j<doubleRank; ++j)
+            // _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];
+
+    int* newShape = new int[rank];
+    int i=0;
+    for (const auto& item : dimensions)
+        newShape[i++] = item;
+    
+    shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(newShape), _shapeInfo);
 
     return true;
 }
