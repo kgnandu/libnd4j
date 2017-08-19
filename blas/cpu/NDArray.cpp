@@ -532,6 +532,140 @@ template <typename T> void NDArray<T>::setShape(const int rows, const int column
 }
 
 ////////////////////////////////////////////////////////////////////////
+// permute array dimensions, the "rank" must be equal to array rank 
+template <typename T> bool NDArray<T>::permute(const int* dimensions, const int rank) {
+         
+    if(_buffer==nullptr || rank != rankOf())
+        return false;
+        
+    int doubleRank = 2*rank;    
+    for(int i=1; i<=rank; ++i) 
+        _shapeInfo[i] = dimensions[i-1];         // exclude first element -> rank     
+    // change strides accordingly                    
+    if(ordering()=='c') 
+        for(int j=1; j<rank; ++j)
+            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*dimensions[rank-j];
+    else 
+        for(int j=rank+1; j<doubleRank; ++j)
+            _shapeInfo[j+1] = _shapeInfo[j]*dimensions[j-rank-1];
+
+    // doPermuteShapeBuffer(const_cast<int*>(dimensions))
+    return true;    
+}
+
+////////////////////////////////////////////////////////////////////////
+// permute array dimensions, the "rank" (shape.size()) must be equal to array rank 
+template <typename T> bool NDArray<T>::permute(const std::initializer_list<int>& dimensions) {
+    
+    int rank = dimensions.size();    
+    if(_buffer==nullptr || rank != rankOf())
+        return false;
+        
+    int doubleRank = 2*rank;    
+    int i=1;
+    for(const auto& item : dimensions)
+        _shapeInfo[i++] = item;                 // exclude first element -> rank     
+    // change strides accordingly                    
+    if(ordering()=='c') 
+        for(int j=1; j<rank; ++j)
+            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
+    else 
+        for(int j=rank+1; j<doubleRank; ++j)
+            _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];
+
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////
+// set new shape in case of suitable array length 
+template <typename T> bool NDArray<T>::reshape(const int* shape, const int rank) {
+    
+    int arrLength = 1;
+    for(int i=0; i<rank; ++i)
+        arrLength *= shape[i];
+            
+    if(_buffer==nullptr || arrLength != lengthOf())
+        return false;
+    
+    int shapeLength = rank*2 + 4;
+    int doubleRank = 2*rank;
+    // remember old values
+    char order = ordering();    
+    int elemWiseStride = _shapeInfo[rankOf()*2 + 2];
+    // if rank is different then delete and resize _shapeInfo appropriately
+    if(rank != rankOf()) {
+        delete []_shapeInfo;
+        _shapeInfo = new int[shapeLength];
+        _shapeInfo[0] = rank;
+    }    
+    // copy new dimensions to _shapeInfo
+    for(int i=1; i<=rank; ++i)
+        _shapeInfo[i] = shape[i-1];
+    // set strides in correspondence to dimensions and order
+    if(order=='c') {
+        _shapeInfo[doubleRank] = 1;          // set unity as last stride for c order 
+        for(int j=1; j<rank; ++j)
+            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*shape[rank-j];
+    } 
+    else {
+        _shapeInfo[rank+1] = 1;             // set unity as first stride for f order 
+        for(int j=rank+1; j<doubleRank; ++j)
+            _shapeInfo[j+1] = _shapeInfo[j]*shape[j-rank-1];                
+    }
+    // restore last 3 elements in _shapeInfo
+    _shapeInfo[shapeLength-3] = 0;                  // always zero at this position
+    _shapeInfo[shapeLength-2] = elemWiseStride;
+    _shapeInfo[shapeLength-1] = (int)order;
+    
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////
+// set new shape in case of suitable array length 
+template <typename T> bool NDArray<T>::reshape(const std::initializer_list<int>& shape) {
+    
+    int rank = shape.size();
+    int arrLength = 1;
+    for(const auto& item : shape)
+        arrLength *= item;
+            
+    if(_buffer==nullptr || arrLength != lengthOf())
+        return false;
+    
+    int shapeLength = rank*2 + 4;
+    int doubleRank = 2*rank;
+    // remember old values
+    char order = ordering();    
+    int elemWiseStride = _shapeInfo[rankOf()*2 + 2];    
+    // if rank is different then delete and resize _shapeInfo appropriately
+    if(rank != rankOf()) {
+        delete []_shapeInfo;
+        _shapeInfo = new int[shapeLength];
+        _shapeInfo[0] = rank;
+    }    
+    // copy new dimensions to _shapeInfo
+    int i = 1;
+    for(const auto& item : shape)
+        _shapeInfo[i++] = item;                 // exclude first element -> rank     
+    // set strides in correspondence to dimensions and order
+    if(order=='c') {
+        _shapeInfo[doubleRank] = 1;          // set unity as last stride for c order 
+        for(int j=1; j<rank; ++j)
+            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
+    } 
+    else {
+        _shapeInfo[rank+1] = 1;             // set unity as first stride for f order 
+        for(int j=rank+1; j<doubleRank; ++j)
+            _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];                
+    }
+    // restore last 3 elements in _shapeInfo
+    _shapeInfo[shapeLength-3] = 0;                  // always zero at this position
+    _shapeInfo[shapeLength-2] = elemWiseStride;
+    _shapeInfo[shapeLength-1] = (int)order;
+    
+    return true;
+}  
+////////////////////////////////////////////////////////////////////////
 // default destructor
 template <typename T> NDArray<T>::~NDArray() {
     

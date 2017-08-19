@@ -174,6 +174,18 @@ template <typename T> class NDArray
         
         // print array shape and elements
         void print() const;
+
+        // permute array dimensions, the "rank" must be equal to array rank 
+        bool permute(const int* dimension, const int rank);
+        
+        // permute array dimensions, the "rank" (shape.size()) must be equal to array rank 
+        bool permute(const std::initializer_list<int>& shape);
+
+        // set new shape in case of suitable array length 
+        bool reshape(const int* shape, const int rank);
+
+        // set new shape in case of suitable array length 
+        bool reshape(const std::initializer_list<int>& shape);
  
        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        
         void replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting = true) {
