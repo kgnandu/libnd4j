@@ -9,7 +9,8 @@ template <typename T> class NDArray
     private:
         T    *_buffer;                          // pointer on flattened data array in memory
         int  *_shapeInfo;                       // contains shape info:  matrix rank, numbers of elements per each dimension, dimensions strides, c-like or fortan-like order, element-wise-stride
-        bool  _allocated;                       // indicates whether user allocates memory for array by himself, in opposite case the memory must be allocated from outside       
+        bool  _isShapeAlloc;                    // indicates whether user allocates memory for _shapeInfo by himself, in opposite case the memory must be allocated from outside       
+        bool  _isBuffAlloc;                     // indicates whether user allocates memory for _buffer by himself, in opposite case the memory must be allocated from outside       
         
     public:    
         // default constructor, do not allocate memory, memory for array is passed from outside 
@@ -38,8 +39,16 @@ template <typename T> class NDArray
            
         // check allocation 
         bool isAllocated() const
-        { return _allocated;}
+        { return _isBuffAlloc && _isShapeAlloc;}
         
+        // check _buffer allocation 
+        bool isBuffAlloc() const
+        { return _isBuffAlloc;}
+        
+        // check _shapeInfo allocation 
+        bool isShapeAlloc() const
+        { return _isShapeAlloc;}
+    
         // get _buffer
         T* getBuff() const
         { return _buffer; }
@@ -189,9 +198,13 @@ template <typename T> class NDArray
  
        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        
         void replacePointers(T* buffer, int* shapeInfo, const bool releaseExisting = true) {
-            if (_allocated && releaseExisting) 
-                { delete[] _buffer; delete[] _shapeInfo; }
-            _allocated = false;
+            if (releaseExisting) {
+                if (_isBuffAlloc) 
+                    delete []_buffer; 
+                if (_isShapeAlloc)
+                    delete[] _shapeInfo;
+            }
+            _isBuffAlloc = _isShapeAlloc = false;
             _buffer    = buffer;
             _shapeInfo = shapeInfo;
         }  

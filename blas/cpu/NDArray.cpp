@@ -8,7 +8,8 @@ template <typename T> NDArray<T>::NDArray(T *buffer, int *shapeInfo ) {
     
     _buffer    = buffer;
     _shapeInfo = shapeInfo;
-    _allocated = false;                                  // indicate that memory for array is passed from outside
+    _isBuffAlloc = false;                                  // indicate that memory for array is passed from outside
+    _isShapeAlloc = false;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,8 @@ template <typename T> NDArray<T>::NDArray(const NDArray<T>& other)
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, other._shapeInfo, shapeLength*sizeof(int));     // copy shape information into new array
     
-    _allocated = true;
+    _isBuffAlloc = false; 
+   _isShapeAlloc = false;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -45,8 +47,9 @@ template <typename T> NDArray<T>::NDArray(const int rows, const int columns, con
     }
 
     _shapeInfo[6] = 1;
-    _allocated = true;
-
+    _isBuffAlloc = false; 
+    _isShapeAlloc = false;
+    
     delete[] shape;    
 }
 
@@ -67,7 +70,8 @@ template <typename T> NDArray<T>::NDArray(const int length, const char order) {
         _shapeInfo[7] = 99;
     }
 
-    _allocated = true;
+    _isBuffAlloc = false; 
+    _isShapeAlloc = false;
     delete[] shape;
 }
 
@@ -83,7 +87,8 @@ template <typename T> NDArray<T>::NDArray(const int* shape) {
  
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
-    _allocated = true;
+    _isBuffAlloc = false; 
+    _isShapeAlloc = false;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -109,7 +114,8 @@ template <typename T> NDArray<T>::NDArray(const char order, const std::initializ
 
     _buffer = new T[shape::length(_shapeInfo)];
     memset(_buffer, 0, sizeOfT() * shape::length(_shapeInfo));
-    _allocated = true;
+    _isBuffAlloc = false; 
+    _isShapeAlloc = false;
     
     delete[] shapeOf;
 }
@@ -121,12 +127,12 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
 
     if (shape::equalsStrict(_shapeInfo, other._shapeInfo))
         memcpy(_buffer, other._buffer, lengthOf()*sizeOfT());
-    else {
-        if(_allocated) {
+    else {        
+        if(_isBuffAlloc)
             delete []_buffer;
+        if(_isShapeAlloc)
             delete []_shapeInfo;
-        }
-        
+
         int arrLength = shape::length(other._shapeInfo);
         int shapeLength = shape::rank(other._shapeInfo)*2 + 4;
         
@@ -136,7 +142,8 @@ template<typename T> NDArray<T>& NDArray<T>::operator=(const NDArray<T>& other) 
         _shapeInfo = new int[shapeLength];             
         memcpy(_shapeInfo, other._shapeInfo, shapeLength*sizeof(int));     // copy shape information into new array
         
-        _allocated = true;        
+        _isBuffAlloc = true;        
+        _isShapeAlloc = true;        
     }
 
     return *this;    
@@ -235,7 +242,8 @@ template <typename T> NDArray<T>* NDArray<T>::dup(const char newOrder) {
 
     NDArray<T> *result = new NDArray<T>(newBuffer, newShapeInfo);
     // this value should be set, to avoid memleak
-    result->_allocated = true;
+    result->_isBuffAlloc = true;
+    result->_isShapeAlloc = true;
 
     result->assign(this);
 
@@ -333,7 +341,8 @@ template <typename T> NDArray<T>* NDArray<T>::transpose() const {
     memcpy(newBuffer, _buffer, sizeOfT() * lengthOf());
 
     NDArray<T> *result = new NDArray(newBuffer, newShapeBuffer);
-    result->_allocated = true;
+    result->_isBuffAlloc = true;
+    result->_isShapeAlloc = true;
 
     delete[] rearrange;
 
@@ -351,18 +360,23 @@ template <typename T> void NDArray<T>::transposei() {
     }
 
     int *newShapeBuffer;
-    int sLen = rankOf() * 2 + 4;
-    if (!_allocated) {
+    int sLen = rankOf() * 2 + 4;  
+    if (!_isBuffAlloc) {
         // if we're going for transpose - we'll have to detach this array from original one
-        _allocated = true;
+        _isBuffAlloc = true;
 
         T *newBuffer = new T[lengthOf()];
         memcpy(newBuffer, _buffer, sizeOfT() * lengthOf());
-
         _buffer = newBuffer;
+                
+       
+    }
+    else if(!_isShapeAlloc) {
+        _isShapeAlloc = true;
         newShapeBuffer = new int[sLen];
         memcpy(newShapeBuffer, _shapeInfo, sizeof(int) * sLen);
-    } else {
+    }
+    else {
         newShapeBuffer = _shapeInfo;
     }
 
@@ -371,6 +385,7 @@ template <typename T> void NDArray<T>::transposei() {
     // fixme: this is bad
     newShapeBuffer[sLen - 2] = 1;
     _shapeInfo = newShapeBuffer;
+    delete []rearrange;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -481,7 +496,8 @@ template <typename T> void NDArray<T>::setShape(const int* shape) {
     memset(_buffer, 0, arrLength*sizeOfT());          // set all elements in new array to be zeros    
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
-    _allocated = true;
+    _isBuffAlloc = true;
+    _isShapeAlloc = true;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -526,7 +542,8 @@ template <typename T> void NDArray<T>::setShape(const int rows, const int column
     }
 
     _shapeInfo[6] = 1;
-    _allocated = true;
+    _isBuffAlloc = true;
+    _isShapeAlloc = true;
 
     delete[] shape;    
 }
@@ -534,53 +551,46 @@ template <typename T> void NDArray<T>::setShape(const int rows, const int column
 ////////////////////////////////////////////////////////////////////////
 // permute array dimensions, the "rank" must be equal to array rank 
 template <typename T> bool NDArray<T>::permute(const int* dimensions, const int rank) {
-         
+
     if(_buffer==nullptr || rank != rankOf())
         return false;
         
-    // int doubleRank = 2*rank;    
-    // for(int i=1; i<=rank; ++i) 
-        // _shapeInfo[i] = dimensions[i-1];         // exclude first element -> rank     
-    // // change strides accordingly                    
-    // if(ordering()=='c') 
-        // for(int j=1; j<rank; ++j)
-            // _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*dimensions[rank-j];
-    // else 
-        // for(int j=rank+1; j<doubleRank; ++j)
-            // _shapeInfo[j+1] = _shapeInfo[j]*dimensions[j-rank-1];
-
+    // check if current object is _shapeInfo owner 
+    if(!_isShapeAlloc) {             // if _shapeInfo is not its own 
+        int* shapeInfo = new int[rank*2+4];
+        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), shapeInfo);
+        _shapeInfo = shapeInfo;
+        _isShapeAlloc = true; 
+    }
+    else
+        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), _shapeInfo);
     
-    shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), _shapeInfo);
     return true;    
 }
 
 ////////////////////////////////////////////////////////////////////////
 // permute array dimensions, the "rank" (shape.size()) must be equal to array rank 
 template <typename T> bool NDArray<T>::permute(const std::initializer_list<int>& dimensions) {
-    
+        
     int rank = dimensions.size();    
     if(_buffer==nullptr || rank != rankOf())
         return false;        
-
-    // int doubleRank = 2*rank;    
-    // int i=1;
-    // for(const auto& item : dimensions)
-        // _shapeInfo[i++] = item;                 // exclude first element -> rank     
-    // // change strides accordingly                    
-    // if(ordering()=='c') 
-        // for(int j=1; j<rank; ++j)
-            // _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
-    // else 
-        // for(int j=rank+1; j<doubleRank; ++j)
-            // _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];
-
+    
     int* newShape = new int[rank];
     int i=0;
     for (const auto& item : dimensions)
-        newShape[i++] = item;
+        newShape[i++] = item;    
+    // check if current object is _shapeInfo owner 
+    if(!_isShapeAlloc) {             // if _shapeInfo is not its own 
+        int* shapeInfo = new int[rank*2+4];
+        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(newShape), shapeInfo);
+        _shapeInfo = shapeInfo;
+        _isShapeAlloc = true; 
+    }
+    else
+        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(newShape), _shapeInfo);
     
-    shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(newShape), _shapeInfo);
-
+    delete []newShape;    
     return true;
 }
 
@@ -601,10 +611,13 @@ template <typename T> bool NDArray<T>::reshape(const int* shape, const int rank)
     char order = ordering();    
     int elemWiseStride = _shapeInfo[rankOf()*2 + 2];
     // if rank is different then delete and resize _shapeInfo appropriately
-    if(rank != rankOf()) {
-        delete []_shapeInfo;
+    // also check if current object is _shapeInfo owner 
+    if(rank != rankOf() || !_isShapeAlloc) {
+        if(_isShapeAlloc)
+            delete []_shapeInfo;
         _shapeInfo = new int[shapeLength];
         _shapeInfo[0] = rank;
+        _isShapeAlloc = true;
     }    
     // copy new dimensions to _shapeInfo
     for(int i=1; i<=rank; ++i)
@@ -646,10 +659,13 @@ template <typename T> bool NDArray<T>::reshape(const std::initializer_list<int>&
     char order = ordering();    
     int elemWiseStride = _shapeInfo[rankOf()*2 + 2];    
     // if rank is different then delete and resize _shapeInfo appropriately
-    if(rank != rankOf()) {
-        delete []_shapeInfo;
+    // also check if current object is _shapeInfo owner 
+    if(rank != rankOf() || !_isShapeAlloc) {
+        if(_isShapeAlloc)
+            delete []_shapeInfo;
         _shapeInfo = new int[shapeLength];
         _shapeInfo[0] = rank;
+        _isShapeAlloc = true;
     }    
     // copy new dimensions to _shapeInfo
     int i = 1;
@@ -677,9 +693,9 @@ template <typename T> bool NDArray<T>::reshape(const std::initializer_list<int>&
 // default destructor
 template <typename T> NDArray<T>::~NDArray() {
     
-    if (_allocated) {
+    if (_isBuffAlloc) 
         delete[] _buffer;
+    if (_isShapeAlloc) 
         delete[] _shapeInfo;
-    }
 }
 

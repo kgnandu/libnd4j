@@ -250,13 +250,17 @@ TEST_F(NDArrayTest, TestPermute) {
     
     const int shape1[] = {3, 5, 10, 15, 150, 15, 1, 0, 1, 99};
     const int shape2[] = {3, 15, 5, 10, 50,  10, 1, 0, 1, 99};
-    const std::initializer_list<int> perm = {15, 5, 10};
+    const std::initializer_list<int> perm = {2, 0, 1};
+    const int permArr[] = {2, 0, 1};
     
     NDArray<float> arr1(shape1);
     NDArray<float> arr2(shape2);
+    NDArray<float> arr3(shape1);
 
     ASSERT_TRUE(arr1.permute(perm));        
-    ASSERT_TRUE(shape::equalsStrict(arr1.getShapeInfo(), arr2.getShapeInfo()));    
+    ASSERT_TRUE(arr3.permute(permArr,3));        
+    ASSERT_TRUE(shape::equalsSoft(arr1.getShapeInfo(), arr2.getShapeInfo()));    
+    ASSERT_TRUE(shape::equalsSoft(arr1.getShapeInfo(), arr3.getShapeInfo()));    
 }
 
 
@@ -265,10 +269,14 @@ TEST_F(NDArrayTest, TestReshape) {
     const int shape1[] = {2, 10, 75, 1, 10, 0, 1, 102};
     const int shape2[] = {3, 15, 5, 10, 1, 15, 75, 0, 1, 102};
     const std::initializer_list<int> newShape = {15, 5, 10};
+    const int newShapeArr[] = {15, 5, 10};
     
     NDArray<float> arr1(shape1);
     NDArray<float> arr2(shape2);
+    NDArray<float> arr3(shape1);
 
     ASSERT_TRUE(arr1.reshape(newShape));        
+    ASSERT_TRUE(arr3.reshape(newShapeArr,3));        
     ASSERT_TRUE(shape::equalsStrict(arr1.getShapeInfo(), arr2.getShapeInfo()));    
+    ASSERT_TRUE(shape::equalsStrict(arr1.getShapeInfo(), arr3.getShapeInfo()));    
 }
