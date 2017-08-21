@@ -26,10 +26,19 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
         ConvolutionLayer(const int kernelH, const int kernelW, const int strideH, const int strideW, const int padH, const int padW, const bool padModeSame);
         
         // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
-        inline virtual int validateInput() const;
+        virtual int validateInput() const;
 
         // This method should validate output parameters, and return TRUE if everything is ok, FALSE otherwise        
-        inline virtual int validateOutput() const;
+        virtual int validateOutput() const;
+
+        // This method "allocates" memory chunk from workspace
+        // virtual T* allocate(long bytes) = 0; 
+        
+        // This method should validate parameters & bias, and return TRUE if everything ok. False otherwise
+        virtual int validateParameters() const;
+
+        // this method should validate memory/holders for BP pass
+        virtual int validateGradients() const;
 
         // feed forward
         virtual int feedForward();
@@ -45,7 +54,7 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
 //////////////////////////////////////////////////////////////////////
 ///////////////////// implementation part ////////////////////////////
 
-// default constructor 
+// constructor 
 template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const int kernelH, const int kernelW, const int strideH, const int strideW, const int padH, const int padW, const bool padModeSame): BaseLayer<T,AF>()  {
     _kernelH     = kernelH;  
     _kernelW     = kernelW;
@@ -54,6 +63,48 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
     _padH        = padH;     
     _padW        = padW; 
     _padModeSame = padModeSame;
+}
+
+//////////////////////////////////////////////////////////////////////
+// This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() const {
+    
+    if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr || this->_input->getBuff() == nullptr)        
+        return ND4J_STATUS_BAD_INPUT;
+
+    if (this->_params == nullptr || this->_params->getShapeInfo() == nullptr || this->_params->getBuff() == nullptr)
+        ND4J_STATUS_BAD_PARAMS;
+        
+    if (this->_bias == nullptr || this->_bias->getShapeInfo() == nullptr || this->_bias->getBuff() == nullptr)
+        ND4J_STATUS_BAD_BIAS;
+
+    if (this->_input->rankOf() != 4 || this->_params->rankOf() != 4 || this->_bias->rankOf() != 2)
+        return ND4J_STATUS_BAD_RANK;
+    
+    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2] || this->_params->getShapeInfo()[1] != this->_bias->getShapeInfo()[2])
+        return ND4J_STATUS_BAD_SHAPE;        
+
+    // check the weight matrix consistency with class kernel members 
+    if (this->_params->getShapeInfo()[3] != _kernelH || this->_params->getShapeInfo()[4] != _kernelW)
+        return ND4J_STATUS_BAD_PARAMS;
+
+    return ND4J_STATUS_OK;
+}
+
+//////////////////////////////////////////////////////////////////////
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() const {
+
+}
+
+
+//////////////////////////////////////////////////////////////////////
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients() const {
+
+}
+
+//////////////////////////////////////////////////////////////////////
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters() const {
+
 }
 
 
@@ -77,8 +128,9 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
 }
 
 // back propagation
-// template<typename T, typename AF> virtual int ConvolutionLayer<T,AF>::backPropagate() {
-// } 
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::backPropagate() {
+
+} 
 
 // end of namespace brackets
 }

@@ -254,13 +254,13 @@ TEST_F(NDArrayTest, TestPermute) {
     const int permArr[] = {2, 0, 1};
     
     NDArray<float> arr1(shape1);
-    NDArray<float> arr2(shape2);
-    NDArray<float> arr3(shape1);
+    NDArray<float> arr2(shape1);
+    NDArray<float> arr3(shape2);
 
     ASSERT_TRUE(arr1.permute(perm));        
-    ASSERT_TRUE(arr3.permute(permArr,3));        
-    ASSERT_TRUE(shape::equalsSoft(arr1.getShapeInfo(), arr2.getShapeInfo()));    
+    ASSERT_TRUE(arr2.permute(permArr,3));        
     ASSERT_TRUE(shape::equalsSoft(arr1.getShapeInfo(), arr3.getShapeInfo()));    
+    ASSERT_TRUE(shape::equalsSoft(arr2.getShapeInfo(), arr3.getShapeInfo()));    
 }
 
 
@@ -272,11 +272,11 @@ TEST_F(NDArrayTest, TestReshape) {
     const int newShapeArr[] = {15, 5, 10};
     
     NDArray<float> arr1(shape1);
-    NDArray<float> arr2(shape2);
-    NDArray<float> arr3(shape1);
+    NDArray<float> arr2(shape1);
+    NDArray<float> arr3(shape2);
 
     ASSERT_TRUE(arr1.reshape(newShape));        
-    ASSERT_TRUE(arr3.reshape(newShapeArr,3));        
-    ASSERT_TRUE(shape::equalsStrict(arr1.getShapeInfo(), arr2.getShapeInfo()));    
+    ASSERT_TRUE(arr2.reshape(newShapeArr,3));        
     ASSERT_TRUE(shape::equalsStrict(arr1.getShapeInfo(), arr3.getShapeInfo()));    
+    ASSERT_TRUE(shape::equalsStrict(arr2.getShapeInfo(), arr3.getShapeInfo()));    
 }

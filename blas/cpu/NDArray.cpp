@@ -25,8 +25,8 @@ template <typename T> NDArray<T>::NDArray(const NDArray<T>& other)
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, other._shapeInfo, shapeLength*sizeof(int));     // copy shape information into new array
     
-    _isBuffAlloc = false; 
-   _isShapeAlloc = false;
+    _isBuffAlloc = true; 
+   _isShapeAlloc = true;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,8 @@ template <typename T> NDArray<T>::NDArray(const int rows, const int columns, con
     }
 
     _shapeInfo[6] = 1;
-    _isBuffAlloc = false; 
-    _isShapeAlloc = false;
+    _isBuffAlloc = true; 
+    _isShapeAlloc = true;
     
     delete[] shape;    
 }
@@ -70,8 +70,8 @@ template <typename T> NDArray<T>::NDArray(const int length, const char order) {
         _shapeInfo[7] = 99;
     }
 
-    _isBuffAlloc = false; 
-    _isShapeAlloc = false;
+    _isBuffAlloc = true; 
+    _isShapeAlloc = true;
     delete[] shape;
 }
 
@@ -87,8 +87,8 @@ template <typename T> NDArray<T>::NDArray(const int* shape) {
  
     _shapeInfo = new int[shapeLength];             
     memcpy(_shapeInfo, shape, shapeLength*sizeof(int));     // copy shape information into new array
-    _isBuffAlloc = false; 
-    _isShapeAlloc = false;
+    _isBuffAlloc = true; 
+    _isShapeAlloc = true;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -106,16 +106,16 @@ template <typename T> NDArray<T>::NDArray(const char order, const std::initializ
     for (auto& item: shape)
         shapeOf[cnt++] = item;
 
-    if (order == 'f') {
+    if (order == 'f')
         _shapeInfo = shape::shapeBufferFortran(rank, shapeOf);
-    } else {
+    else 
         _shapeInfo = shape::shapeBuffer(rank, shapeOf);
-    }
 
     _buffer = new T[shape::length(_shapeInfo)];
     memset(_buffer, 0, sizeOfT() * shape::length(_shapeInfo));
-    _isBuffAlloc = false; 
-    _isShapeAlloc = false;
+    
+    _isBuffAlloc = true; 
+    _isShapeAlloc = true;
     
     delete[] shapeOf;
 }
@@ -560,10 +560,10 @@ template <typename T> bool NDArray<T>::permute(const int* dimensions, const int 
         int* shapeInfo = new int[rank*2+4];
         shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), shapeInfo);
         _shapeInfo = shapeInfo;
-        _isShapeAlloc = true; 
+        _isShapeAlloc = true;                 
     }
-    else
-        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), _shapeInfo);
+    else 
+        shape::permuteShapeBufferInPlace(_shapeInfo, const_cast<int*>(dimensions), _shapeInfo);                
     
     return true;    
 }

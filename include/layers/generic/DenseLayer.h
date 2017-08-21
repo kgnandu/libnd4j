@@ -22,16 +22,16 @@ template<typename T, typename AF> class DenseLayer: public BaseLayer<T, AF> {
         virtual int backPropagate();
        
         // This method should validate layer parameters & bias, and return TRUE if everything ok. FALSE otherwise      
-        inline virtual int validateParameters() const;
+        virtual int validateParameters() const;
 
         // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
-        inline virtual int validateInput() const;
+        virtual int validateInput() const;
 
         // This method should validate output parameters, and return TRUE if everything is ok, FALSE otherwise        
-        inline virtual int validateOutput() const;
+        virtual int validateOutput() const;
 
         // this method should validate memory/holders for BP pass
-        inline virtual int validateGradients() const;        
+        virtual int validateGradients() const;        
  
 };
 

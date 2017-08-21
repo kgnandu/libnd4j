@@ -3,8 +3,10 @@
 //
 
 #include "testlayers.h"
-#include "DenseLayerTests.cpp"
 #include "NDArrayTests.cpp"
+#include "DenseLayerTests.cpp"
+#include "ConvolutionLayerTests.cpp"
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
