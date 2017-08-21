@@ -18,6 +18,7 @@ public:
     int shapeI[12]  = {4, bS, iD, pH, pW, iD*pH*pW, pH*pW, pW, 1, 0, 1, 99}; 
     int shapeW[12]  = {4, oD, iD, kH, kW, iD*kH*kW, kH*kW, kW, 1, 0, 1, 99}; 
     int shapeB[8]   = {2, 1, oD, oD, 1, 0, 1, 99};
+    int shapeO[12]  = {4, bS, iD, pH, pW, iD*pH*pW, pH*pW, pW, 1, 0, 1, 99}; 
 };
 
 
@@ -25,15 +26,22 @@ public:
 //////////////////////////////////////////////////////////////////////
 ///////////////////// implementation part ////////////////////////////
 
-TEST_F(ConvolutionLayerTest, InputValidationTest) {
+TEST_F(ConvolutionLayerTest, ValidationTest) {
 
+    float* input = new float[bS*iD*pH*pW];
+    float* output = new float[bS*iD*pH*pW];    
     nd4j::layers::ConvolutionLayer<float, nd4j::activations::Identity<float>> layer(3, 3, 1, 1, 0, 0, true);
-    layer.getInput()->setShape(shapeI);
     layer.getParams()->setShape(shapeW);
-    layer.getBias()->setShape(shapeB);  
-    int result = layer.validateInput();
+    layer.getBias()->setShape(shapeB); 
     
-    ASSERT_EQ(result, ND4J_STATUS_OK);    
+    int result = layer.validateParameters();
+    ASSERT_EQ(result, ND4J_STATUS_OK);     
+    
+    result = layer.configureLayerFF(input, shapeI, output, shapeO, 0.f, 0.f, nullptr);
+    ASSERT_EQ(result, ND4J_STATUS_OK);        
+    
+    delete []input;
+    delete []output;
 }
 
 

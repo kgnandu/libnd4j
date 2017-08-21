@@ -69,31 +69,55 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
 // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() const {
     
-    if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr || this->_input->getBuff() == nullptr)        
+   if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr || this->_input->getBuff() == nullptr)        
         return ND4J_STATUS_BAD_INPUT;
 
     if (this->_params == nullptr || this->_params->getShapeInfo() == nullptr || this->_params->getBuff() == nullptr)
         ND4J_STATUS_BAD_PARAMS;
-        
+
     if (this->_bias == nullptr || this->_bias->getShapeInfo() == nullptr || this->_bias->getBuff() == nullptr)
         ND4J_STATUS_BAD_BIAS;
 
     if (this->_input->rankOf() != 4 || this->_params->rankOf() != 4 || this->_bias->rankOf() != 2)
         return ND4J_STATUS_BAD_RANK;
-    
-    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2] || this->_params->getShapeInfo()[1] != this->_bias->getShapeInfo()[2])
+
+    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2])
         return ND4J_STATUS_BAD_SHAPE;        
+    
+}
+
+//////////////////////////////////////////////////////////////////////
+// This method should valudate output parameters, and return TRUE if everything is ok, FALSE otherwise
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() const {
+    
+    if ((this->_output == nullptr || !this->_output->nonNull()))
+        return ND4J_STATUS_BAD_OUTPUT;
+
+    // if (this->_output->rankOf() != 6)
+        // return ND4J_STATUS_BAD_RANK;
+
+        
+    return ND4J_STATUS_OK;
+}
+
+//////////////////////////////////////////////////////////////////////
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters() const {
+    
+    if (this->_params == nullptr || this->_params->getShapeInfo() == nullptr || this->_bias->getShapeInfo() == nullptr || 
+        this->_bias == nullptr || this->_params->getBuff() == nullptr || this->_bias->getBuff() == nullptr )
+        return ND4J_STATUS_BAD_PARAMS;    
+    
+    if (this->_params->rankOf() != 4 || this->_bias->rankOf() != 2)
+        return ND4J_STATUS_BAD_RANK;
 
     // check the weight matrix consistency with class kernel members 
     if (this->_params->getShapeInfo()[3] != _kernelH || this->_params->getShapeInfo()[4] != _kernelW)
         return ND4J_STATUS_BAD_PARAMS;
 
+    if (this->_params->getShapeInfo()[1] != this->_bias->getShapeInfo()[2])
+        ND4J_STATUS_BAD_SHAPE;
+    
     return ND4J_STATUS_OK;
-}
-
-//////////////////////////////////////////////////////////////////////
-template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() const {
-
 }
 
 
@@ -101,12 +125,6 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() c
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients() const {
 
 }
-
-//////////////////////////////////////////////////////////////////////
-template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters() const {
-
-}
-
 
 //////////////////////////////////////////////////////////////////////
 // feed forward
