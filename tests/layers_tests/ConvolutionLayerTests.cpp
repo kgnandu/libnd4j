@@ -32,13 +32,13 @@ TEST_F(ConvolutionLayerTest, ValidationTest) {
     float* output = new float[bS*iD*pH*pW];    
     nd4j::layers::ConvolutionLayer<float, nd4j::activations::Identity<float>> layer(3, 3, 1, 1, 0, 0, true);
     layer.getParams()->setShape(shapeW);
-    layer.getBias()->setShape(shapeB); 
+    layer.getBias()->setShape(shapeB);     
     
     int result = layer.validateParameters();
-    ASSERT_EQ(result, ND4J_STATUS_OK);     
+    ASSERT_EQ(result, ND4J_STATUS_OK);         
     
     result = layer.configureLayerFF(input, shapeI, output, shapeO, 0.f, 0.f, nullptr);
-    ASSERT_EQ(result, ND4J_STATUS_OK);        
+    ASSERT_EQ(result, ND4J_STATUS_OK);
     
     delete []input;
     delete []output;

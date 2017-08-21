@@ -69,16 +69,10 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
 // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() const {
     
-   if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr || this->_input->getBuff() == nullptr)        
+   if (this->_input == nullptr || !this->_input->nonNull())        
         return ND4J_STATUS_BAD_INPUT;
 
-    if (this->_params == nullptr || this->_params->getShapeInfo() == nullptr || this->_params->getBuff() == nullptr)
-        ND4J_STATUS_BAD_PARAMS;
-
-    if (this->_bias == nullptr || this->_bias->getShapeInfo() == nullptr || this->_bias->getBuff() == nullptr)
-        ND4J_STATUS_BAD_BIAS;
-
-    if (this->_input->rankOf() != 4 || this->_params->rankOf() != 4 || this->_bias->rankOf() != 2)
+    if (this->_input->rankOf() != 4)
         return ND4J_STATUS_BAD_RANK;
 
     if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2])
@@ -90,12 +84,11 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() co
 // This method should valudate output parameters, and return TRUE if everything is ok, FALSE otherwise
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() const {
     
-    if ((this->_output == nullptr || !this->_output->nonNull()))
+    if (this->_output == nullptr || !this->_output->nonNull())
         return ND4J_STATUS_BAD_OUTPUT;
 
     // if (this->_output->rankOf() != 6)
         // return ND4J_STATUS_BAD_RANK;
-
         
     return ND4J_STATUS_OK;
 }
@@ -103,8 +96,7 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() c
 //////////////////////////////////////////////////////////////////////
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters() const {
     
-    if (this->_params == nullptr || this->_params->getShapeInfo() == nullptr || this->_bias->getShapeInfo() == nullptr || 
-        this->_bias == nullptr || this->_params->getBuff() == nullptr || this->_bias->getBuff() == nullptr )
+    if (this->_params == nullptr || !this->_params->nonNull() || this->_bias == nullptr || !this->_bias->nonNull())
         return ND4J_STATUS_BAD_PARAMS;    
     
     if (this->_params->rankOf() != 4 || this->_bias->rankOf() != 2)
@@ -115,7 +107,7 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters
         return ND4J_STATUS_BAD_PARAMS;
 
     if (this->_params->getShapeInfo()[1] != this->_bias->getShapeInfo()[2])
-        ND4J_STATUS_BAD_SHAPE;
+        return ND4J_STATUS_BAD_SHAPE;
     
     return ND4J_STATUS_OK;
 }
@@ -124,11 +116,36 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateParameters
 //////////////////////////////////////////////////////////////////////
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients() const {
 
+    // if (this->_gradientW == nullptr || this->_gradientB == nullptr ||  !this->_gradientW->nonNull() || !this->_gradientB->nonNull())
+        // return ND4J_STATUS_BAD_GRADIENTS;    
+
+    // if (this->_epsilonNext == nullptr || !this->_epsilonNext->nonNull())
+        // return ND4J_STATUS_BAD_OUTPUT;
+        
+    // if (!this->_gradientW->isSameShape(*this->_params)) 
+        // return ND4J_STATUS_BAD_GRADIENTS;
+    
+    // if (!this->_gradientB->isSameShape(*this->_bias))
+        // return ND4J_STATUS_BAD_BIAS;
+
+    // // we're checking equality of input/epsilon batch size
+    // if (this->_epsilon->shapeOf()[0] != this->_input->shapeOf()[0])
+        // return ND4J_STATUS_BAD_EPSILON;
+
+    // if (this->_epsilon->columns() != this->_bias->columns())
+        // return ND4J_STATUS_BAD_EPSILON;
+
+    // // batch comparison again
+    // if (!this->_epsilonNext->isSameShape(*this->_input))
+        // return ND4J_STATUS_BAD_OUTPUT;
+
+    // return ND4J_STATUS_OK;
 }
 
 //////////////////////////////////////////////////////////////////////
 // feed forward
-template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
+
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward( ) {
    
     // // gemm here, input * W
     // // these values should be set appropriately
