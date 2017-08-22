@@ -8,18 +8,18 @@
 class ConvolutionLayerTest : public testing::Test {
 public:
     static const int bS  = 2;       // batch size
-    static const int iD  = 3;        // input depth (number of picture channels, for example rgb=3)
+    static const int iD  = 1;        // input depth (number of picture channels, for example rgb=3)
     static const int pH  = 28;      // picture height in pixels 
     static const int pW  = 28;      // picture width in pixels 
-    static const int oD  = 5;        // output depth (= N for dense layer)
-    static const int kH  = 4;        // kernel height in pixels 
-    static const int kW  = 4;        // kernel width in pixels 
+    static const int oD  = 3;        // output depth (= N for dense layer)
+    static const int kH  = 5;        // kernel height in pixels 
+    static const int kW  = 5;        // kernel width in pixels 
     static const int sH  = 1;        // stride step in horizontal direction
     static const int sW  = 1;        // stride step in vertical direction
     static const int pdH = 0;        // padding height
     static const int pdW = 0;        // padding width
-    static const int oW  = (pW - kW + 2*pdW)/(sW+1); // output width
-    static const int oH  = (pH - kH + 2*pdH)/(sH+1); // output width
+    static const int oW  = (pW - kW + 2*pdW)/sW + 1; // output width
+    static const int oH  = (pH - kH + 2*pdH)/sH + 1; // output width
 
     int shapeI[12]  = {4, bS, iD, pH, pW, iD*pH*pW, pH*pW, pW, 1, 0, 1, 99}; 
     int shapeW[12]  = {4, oD, iD, kH, kW, iD*kH*kW, kH*kW, kW, 1, 0, 1, 99}; 

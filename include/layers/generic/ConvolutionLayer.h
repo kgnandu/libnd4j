@@ -112,11 +112,11 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() c
     if (this->_output->getShapeInfo()[1] != this->_input->getShapeInfo()[1] || this->_output->getShapeInfo()[2] != this->_params->getShapeInfo()[1])
         return ND4J_STATUS_BAD_OUTPUT;
     
-    float oH = (this->_input->getShapeInfo()[3] - _kernelH + 2.*_padH) / (_strideH + 1.);
+    float oH = (this->_input->getShapeInfo()[3] - _kernelH + 2.*_padH) / _strideH + 1.;
     // oH must be integer ! 
     if (oH != (int)oH)
         return ND4J_STATUS_BAD_SHAPE;
-    float oW = (this->_input->getShapeInfo()[4] - _kernelW + 2.*_padW) / (_strideW + 1.);
+    float oW = (this->_input->getShapeInfo()[4] - _kernelW + 2.*_padW) / _strideW + 1.;
     // oW must be integer ! 
     if (oW != (int)oW)
         return ND4J_STATUS_BAD_SHAPE;
