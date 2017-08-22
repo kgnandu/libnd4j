@@ -7,10 +7,10 @@
 
 class ConvolutionLayerTest : public testing::Test {
 public:
-    static const int bS  = 20;       // batch size
+    static const int bS  = 2;       // batch size
     static const int iD  = 3;        // input depth (number of picture channels, for example rgb=3)
-    static const int pH  = 256;      // picture height in pixels 
-    static const int pW  = 256;      // picture width in pixels 
+    static const int pH  = 28;      // picture height in pixels 
+    static const int pW  = 28;      // picture width in pixels 
     static const int oD  = 5;        // output depth (= N for dense layer)
     static const int kH  = 4;        // kernel height in pixels 
     static const int kW  = 4;        // kernel width in pixels 
@@ -67,8 +67,6 @@ TEST_F(ConvolutionLayerTest, FFtest) {
     
     delete []input;
     delete []output;
-
-
 }
 
 
