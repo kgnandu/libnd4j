@@ -51,4 +51,25 @@ TEST_F(ConvolutionLayerTest, ValidationTest) {
     delete []output;
 }
 
+TEST_F(ConvolutionLayerTest, FFtest) {
+
+    float* input  = new float[bS*iD*pH*pW];
+    float* output = new float[bS*oD*oH*oW];    
+    
+    nd4j::layers::ConvolutionLayer<float, nd4j::activations::Identity<float>> layer(kH, kW, sW, sH, pdW, pdH, true);
+    layer.getParams()->setShape(shapeW);
+    layer.getBias()->setShape(shapeB);         
+    layer.validateParameters();        
+    layer.configureLayerFF(input, shapeI, output, shapeO, 0.f, 0.f, nullptr);
+        
+    int result = layer.feedForward();
+    ASSERT_EQ(ND4J_STATUS_OK, result);
+    
+    delete []input;
+    delete []output;
+
+
+}
+
+
 

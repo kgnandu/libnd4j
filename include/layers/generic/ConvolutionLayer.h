@@ -195,8 +195,10 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
     this->_output->replacePointers(nullptr,nullptr);    
     this->_output->setShape('f',{bS*oH*oW, oD});    
     // reshape _params to 2D    
-    if(this->_params->reshape({iD*_kernelW*_kernelH, oD}))
+    
+    if(!this->_params->reshape({iD*_kernelW*_kernelH, oD}))
         return ND4J_STATUS_BAD_PARAMS;
+    
     // Z = IW
     this->gemmHelper(&arr6d, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
     // Z += B
