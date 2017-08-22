@@ -156,22 +156,27 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients(
 
 //////////////////////////////////////////////////////////////////////
 // feed forward
-
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward( ) {
    
-    // // gemm here, input * W
-    // // these values should be set appropriately
+    functions::transform::exec<simdOps::Im2col<T>>(_input->getBuff(), _input->getShapeInfo(), _output->getBuff(), _output->getShapeInfo())
+    
+    // permute and reshape weights (_params) to 2D
+    if (!_params->permute({3, 2, 1, 0})) 
+        return ND4J_STATUS_BAD_PARAMS;    
+    if(_params.reshape(_kernelW*_kernelH*_input->getShapeInfo()[2], _output->getShapeInfo()[2]))
+        return ND4J_STATUS_BAD_PARAMS;
 
-    // this->gemmHelper(this->_input, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
+    gemmHelper(_input, _params, _output, (T) 1.0f, (T) 0.0f);
+    
+    _output->addiRowVector(this->_bias);    
 
-    // // we're rolling through rows here
-    // this->_output->addiRowVector(this->_bias);
-   
+    ActivationsExecutioner<T>::template executeFF<AF>(_output, _output);
 
-    // // activation call
-    // ActivationsExecutioner<T>::template executeFF<AF>(this->_output, this->_output);
+    // permute and reshape weights (_params) back to 4D
+    _params.reshape(_kernelW, _kernelH, _input->getShapeInfo()[2], _output->getShapeInfo()[2]);
+    _params->permute({3, 2, 1, 0});
 
-    // return ND4J_STATUS_OK;
+    return ND4J_STATUS_OK;
 }
 
 // back propagation
