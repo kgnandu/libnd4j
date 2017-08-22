@@ -18,6 +18,8 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
         int _padH, _padW;                   // the number of zero-columns and zero-rows at the edges of input volume/picture 
         bool _padModeSame;
 
+        T *_extraParams;                    // extraparams for im2col
+
     public:
         // default constructor 
         ConvolutionLayer() = delete;
@@ -63,6 +65,16 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
     _padH        = padH;     
     _padW        = padW; 
     _padModeSame = padModeSame;
+
+    _extraParams = new T[7];
+
+    _extraParams[0] = _kernelW;
+    _extraParams[1] = _kernelH;
+    _extraParams[2] = _strideW;
+    _extraParams[3] = _strideH;
+    _extraParams[4] = _padW;
+    _extraParams[5] = _padH;
+    _extraParams[6] = _padModeSame ? 1.0 : 0.0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -158,23 +170,25 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients(
 // feed forward
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward( ) {
    
-    functions::transform::exec<simdOps::Im2col<T>>(_input->getBuff(), _input->getShapeInfo(), _output->getBuff(), _output->getShapeInfo())
+    functions::transform::Transform<T>::template exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), this->_output->getBuff(), this->_output->getShapeInfo(), _extraParams,
+                                                                          nullptr, nullptr);
     
     // permute and reshape weights (_params) to 2D
-    if (!_params->permute({3, 2, 1, 0})) 
-        return ND4J_STATUS_BAD_PARAMS;    
-    if(_params.reshape(_kernelW*_kernelH*_input->getShapeInfo()[2], _output->getShapeInfo()[2]))
+    if (!this->_params->permute({3, 2, 1, 0}))
         return ND4J_STATUS_BAD_PARAMS;
 
-    gemmHelper(_input, _params, _output, (T) 1.0f, (T) 0.0f);
-    
-    _output->addiRowVector(this->_bias);    
+    if(this->_params->reshape({_kernelW *_kernelH * this->_input->getShapeInfo()[2], this->_output->getShapeInfo()[2]}) )
+        return ND4J_STATUS_BAD_PARAMS;
 
-    ActivationsExecutioner<T>::template executeFF<AF>(_output, _output);
+    this->gemmHelper(this->_input, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
+    
+    this->_output->addiRowVector(this->_bias);
+
+    ActivationsExecutioner<T>::template executeFF<AF>(this->_output, this->_output);
 
     // permute and reshape weights (_params) back to 4D
-    _params.reshape(_kernelW, _kernelH, _input->getShapeInfo()[2], _output->getShapeInfo()[2]);
-    _params->permute({3, 2, 1, 0});
+    this->_params->reshape({_kernelW, _kernelH, this->_input->getShapeInfo()[2], this->_output->getShapeInfo()[2]});
+    this->_params->permute({3, 2, 1, 0});
 
     return ND4J_STATUS_OK;
 }
