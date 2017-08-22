@@ -24,6 +24,14 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
         // default constructor 
         ConvolutionLayer() = delete;
 
+        // copy constructor
+        // creation of this class objects by copying is not expected, therefore disable copy constructor 
+        ConvolutionLayer(const ConvolutionLayer& ) = delete;
+        
+        // assignment operator
+        // the assignment operations are not expected for this class objects, therefore disable assignment operator
+        ConvolutionLayer& operator=(const ConvolutionLayer& ) = delete;   
+
         // constructor 
         ConvolutionLayer(const int kernelH, const int kernelW, const int strideH, const int strideW, const int padH, const int padW, const bool padModeSame);
         
@@ -33,9 +41,6 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
         // This method should validate output parameters, and return TRUE if everything is ok, FALSE otherwise        
         virtual int validateOutput() const;
 
-        // This method "allocates" memory chunk from workspace
-        // virtual T* allocate(long bytes) = 0; 
-        
         // This method should validate parameters & bias, and return TRUE if everything ok. False otherwise
         virtual int validateParameters() const;
 
@@ -48,6 +53,8 @@ template<typename T, typename AF> class ConvolutionLayer: public BaseLayer<T, AF
         // back propagate
         virtual int backPropagate();
         
+        // destructor
+        ~ConvolutionLayer();
 };
 
 
@@ -110,7 +117,7 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateOutput() c
     if (oH != (int)oH)
         return ND4J_STATUS_BAD_SHAPE;
     float oW = (this->_input->getShapeInfo()[4] - _kernelW + 2.*_padW) / (_strideW + 1.);
-    // oH must be integer ! 
+    // oW must be integer ! 
     if (oW != (int)oW)
         return ND4J_STATUS_BAD_SHAPE;
         
@@ -168,28 +175,38 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateGradients(
 
 //////////////////////////////////////////////////////////////////////
 // feed forward
-template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward( ) {
+template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
    
-    functions::transform::Transform<T>::template exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), this->_output->getBuff(), this->_output->getShapeInfo(), _extraParams,
-                                                                          nullptr, nullptr);
+    const int bS = this->_input->getShapeInfo()[1];     // batch size, number of examples
+    const int iD = this->_input->getShapeInfo()[2];     // input depth
+    const int oD = this->_output->getShapeInfo()[2];    // output depth
+    const int oH = this->_output->getShapeInfo()[3];    // output height
+    const int oW = this->_output->getShapeInfo()[4];    // output width
+    // create temporary 6D array for the needs of Im2col, it will serve as output array there
+    NDArray<T> arr6d('f', {bS, iD, _kernelH, _kernelW, oH, oW});
+    // call Im2col
+    functions::transform::Transform<T>::template 
+    exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), arr6d.getBuff(), 
+                             arr6d.getShapeInfo(), _extraParams, nullptr, nullptr);
     
-    // permute and reshape weights (_params) to 2D
-    if (!this->_params->permute({3, 2, 1, 0}))
+    if(!arr6d.reshape({bS*oH*oW, iD*_kernelH*_kernelW}))
+        return ND4J_STATUS_BAD_SHAPE;
+    // prepare _output, reshape to 2D     
+    this->_output->replacePointers(nullptr,nullptr);    
+    this->_output->setShape('f',{bS*oH*oW, oD});    
+    // reshape _params to 2D    
+    if(this->_params->reshape({iD*_kernelW*_kernelH, oD}))
         return ND4J_STATUS_BAD_PARAMS;
-
-    if(this->_params->reshape({_kernelW *_kernelH * this->_input->getShapeInfo()[2], this->_output->getShapeInfo()[2]}) )
-        return ND4J_STATUS_BAD_PARAMS;
-
-    this->gemmHelper(this->_input, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
-    
+    // Z = IW
+    this->gemmHelper(&arr6d, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
+    // Z += B
     this->_output->addiRowVector(this->_bias);
-
+    // reshape _params and output  back to 4D
+    this->_output->reshape({bS, oD, oH, oW});
+    this->_params->reshape({oD, iD, _kernelH, _kernelW});
+    // apply activations F(Z)
     ActivationsExecutioner<T>::template executeFF<AF>(this->_output, this->_output);
-
-    // permute and reshape weights (_params) back to 4D
-    this->_params->reshape({_kernelW, _kernelH, this->_input->getShapeInfo()[2], this->_output->getShapeInfo()[2]});
-    this->_params->permute({3, 2, 1, 0});
-
+    
     return ND4J_STATUS_OK;
 }
 
@@ -197,6 +214,16 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward( ) {
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::backPropagate() {
 
 } 
+
+
+////////////////////////////////////////////////////////////////////////
+// destructor
+template<typename T, typename AF> ConvolutionLayer<T,AF>::~ConvolutionLayer() {
+    
+    delete []_extraParams;
+}
+
+
 
 // end of namespace brackets
 }

@@ -176,6 +176,9 @@ template <typename T> class NDArray
         void addiRowVector(const NDArray<T> *row);
         
         // set array to have given shape, apply only to empty array
+        void setShape(const char order, const std::initializer_list<int>& shape);
+
+        // set array to have given shape, apply only to empty array
         void setShape(const int* shape);
 
         // set shape to be 2D NDArray, apply only to empty array

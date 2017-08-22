@@ -488,7 +488,7 @@ template <typename T> void NDArray<T>::addiRowVector(const NDArray<T> *row) {
 template <typename T> void NDArray<T>::setShape(const int* shape) {
     
     if(this->nonNull())
-        throw "Can't reshape non-empty array!";
+        throw "Can't set shape for non-empty array!";
 
     int arrLength = shape::length(const_cast<int*>(shape));
     int shapeLength = shape::rank(const_cast<int*>(shape))*2 + 4;
@@ -499,6 +499,52 @@ template <typename T> void NDArray<T>::setShape(const int* shape) {
     _isBuffAlloc = true;
     _isShapeAlloc = true;
 }
+
+////////////////////////////////////////////////////////////////////////
+// set array to have given shape, apply only to empty array
+template <typename T> void NDArray<T>::setShape(const char order, const std::initializer_list<int>& shape) {
+    
+    if(this->nonNull())
+        throw "Can't set shape for non-empty array!";
+
+    int rank = shape.size();
+    int arrLength = 1;
+    for(const auto& item : shape)
+        arrLength *= item;
+    
+    int shapeLength = rank*2 + 4;
+    int doubleRank = 2*rank;    
+    // allocate and fill _shapeInfo
+    _shapeInfo = new int[shapeLength];
+    _shapeInfo[0] = rank;        
+    // copy dimensions to _shapeInfo
+    int i = 1;
+    for(const auto& item : shape)
+        _shapeInfo[i++] = item;                 // exclude first element -> rank     
+    // set strides in correspondence to dimensions and order
+    if(order=='c') {
+        _shapeInfo[doubleRank] = 1;          // set unity as last stride for c order 
+        for(int j=1; j<rank; ++j)
+            _shapeInfo[doubleRank-j] = _shapeInfo[doubleRank-j+1]*_shapeInfo[rank+1-j];
+    } 
+    else {
+        _shapeInfo[rank+1] = 1;             // set unity as first stride for f order 
+        for(int j=rank+1; j<doubleRank; ++j)
+            _shapeInfo[j+1] = _shapeInfo[j]*_shapeInfo[j-rank];                
+    }
+    // restore last 3 elements in _shapeInfo
+    _shapeInfo[shapeLength-3] = 0;                  // always zero at this position
+    _shapeInfo[shapeLength-2] = 1;
+    _shapeInfo[shapeLength-1] = (int)order;
+    
+    // allocate and fill _buffer
+    _buffer = new T[arrLength];    
+    memset(_buffer, 0, arrLength*sizeOfT());          // set all elements in new array to be zeros    
+
+    _isBuffAlloc  = true;
+    _isShapeAlloc = true;
+}  
+
 
 ////////////////////////////////////////////////////////////////////////
 // print array shape and elements
@@ -526,7 +572,7 @@ template <typename T> void NDArray<T>::print() const {
 template <typename T> void NDArray<T>::setShape(const int rows, const int columns, const char order) {
    
     if(this->nonNull())
-        throw "Can't reshape non-empty array!";
+        throw "Can't set shape non-empty array!";
     
     _buffer = new T[rows * columns];
     memset(_buffer, 0, rows * columns * sizeOfT());              // set all elements in new array to be zeros
@@ -689,8 +735,9 @@ template <typename T> bool NDArray<T>::reshape(const std::initializer_list<int>&
     
     return true;
 }  
+
 ////////////////////////////////////////////////////////////////////////
-// default destructor
+// destructor
 template <typename T> NDArray<T>::~NDArray() {
     
     if (_isBuffAlloc) 
