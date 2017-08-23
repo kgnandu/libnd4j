@@ -198,7 +198,8 @@ template <typename T> class NDArray
 
         // set new shape in case of suitable array length 
         bool reshape(const std::initializer_list<int>& shape);
-
+        
+        // set new order and shape in case of suitable array length 
         bool reshape(char order, const std::initializer_list<int>& shape);
  
        // This method replaces existing buffer/shapeinfo, AND releases original pointers (if releaseExisting TRUE)        

@@ -7,7 +7,6 @@
 #include <layers/generic/ConvolutionLayer.h>
 
 class ConvolutionLayerTest : public testing::Test {
-public:
 
 };
 
@@ -18,10 +17,10 @@ public:
 
 // TEST_F(ConvolutionLayerTest, ValidationTest) {
 
-    // float* input  = new float[bS*iD*pH*pW];
-    // float* output = new float[bS*oD*oH*oW];    
+    // double* input  = new double[bS*iD*pH*pW];
+    // double* output = new double[bS*oD*oH*oW];    
     
-    // nd4j::layers::ConvolutionLayer<float, nd4j::activations::Identity<float>> layer(kH, kW, sW, sH, pdW, pdH, true);
+    // nd4j::layers::ConvolutionLayer<double, nd4j::activations::Identity<double>> layer(kH, kW, sW, sH, pdW, pdH, true);
     // layer.getParams()->setShape(shapeW);
     // layer.getBias()->setShape(shapeB);     
     
@@ -37,33 +36,33 @@ public:
 
 TEST_F(ConvolutionLayerTest, FFtest) {
         
-    nd4j::layers::ConvolutionLayer<float, nd4j::activations::Identity<float>> layer(kH, kW, sW, sH, pdW, pdH, true);    
-    NDArray<float> finalMatrix(Z, shapeZ);
+    nd4j::layers::ConvolutionLayer<double, nd4j::activations::Identity<double>> layer(kH, kW, sW, sH, pdW, pdH, true);    
+    NDArray<double> finalMatrix(Z, shapeZ);
     
-    float* ob = new float[bS*oD*oH*oW];
-    NDArray<float> input(I, shapeI);
-    NDArray<float> output(ob, shapeZ);
+    double* ob = new double[bS*oD*oH*oW];
+    NDArray<double> input(I, shapeI);
+    NDArray<double> output(ob, shapeZ);
     int result = layer.setParameters(W, shapeW, B, shapeB);
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    printf("Input shape: \n");
-    input.printShapeInfo();
-        
     result = layer.configureLayerFF(input.getBuff(), input.getShapeInfo(), output.getBuff(), output.getShapeInfo(), 0.f, 0.f, nullptr);
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
     result = layer.feedForward();                
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
-
-    printf("Output: \n");
-    output.print();
-
-    printf("\nExpected: \n");
-    finalMatrix.print();
-
-    //for(int i=0; i<layer.getOutput()->lengthOf(); ++i)
-//        std::cout<<std::setw(10)<<layer.getOutput()->getBuff()[i]<<"  "<<std::setw(10)<<Z[i]<<std::endl;
+    int count1=layer.getOutput()->lengthOf();
+    int count2=0;
+    for(int i=0; i<layer.getOutput()->lengthOf(); ++i) {
+        
+        double calculated = layer.getOutput()->getBuff()[i];
+        double actual = Z[i];
+        if (calculated < (actual-0.00001) || calculated > (actual+0.00001) ) {
+            std::cout<<std::setw(10)<<calculated<<"  "<<std::setw(10)<<actual<<std::endl;
+            ++count2;
+        }        
+    }
+    std::cout<<"!!!!! "<<count1<<"  "<<count2<<std::endl;
     ASSERT_TRUE(finalMatrix == *layer.getOutput());        
     //delete []output;
 }
