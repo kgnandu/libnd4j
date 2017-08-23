@@ -87,16 +87,15 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
 //////////////////////////////////////////////////////////////////////
 // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() const {
-    
+   
    if (this->_input == nullptr || !this->_input->nonNull())        
         return ND4J_STATUS_BAD_INPUT;
-
+    
     if (this->_input->rankOf() != 4)
         return ND4J_STATUS_BAD_RANK;
-
-    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2])
-        return ND4J_STATUS_BAD_SHAPE;        
     
+    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2])
+        return ND4J_STATUS_BAD_SHAPE;            
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -412,14 +412,12 @@ int INativeLayer<T>::configureLayerFF(T *input, int *inputShapeInfo, T *output, 
         return ND4J_STATUS_BAD_RNG;
 
     _input->replacePointers(input, inputShapeInfo);
-
-
+std::cout<<"00000"<<std::endl;
     if (validateInput() != ND4J_STATUS_OK)
         return ND4J_STATUS_BAD_INPUT;
-
-
+std::cout<<"11111"<<std::endl;
     _output->replacePointers(output, outputShapeInfo);
-
+std::cout<<"22222"<<std::endl;
     if (validateOutput() != ND4J_STATUS_OK)
         return ND4J_STATUS_BAD_OUTPUT;
 

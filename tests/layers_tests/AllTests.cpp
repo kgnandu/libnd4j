@@ -2,9 +2,9 @@
 // Created by raver119 on 04.08.17.
 //
 
-#include "testlayers.h"
-#include "NDArrayTests.cpp"
-#include "DenseLayerTests.cpp"
+// #include "testlayers.h"
+// #include "NDArrayTests.cpp"
+// #include "DenseLayerTests.cpp"
 #include "ConvolutionLayerTests.cpp"
 
 
