@@ -159,7 +159,7 @@ template<typename T, typename AF> int DenseLayer<T,AF>::validateParameters() con
 // This method should validate input parameters, and return TRUE if everything ok. FALSE otherwise
 template<typename T, typename AF> int DenseLayer<T,AF>::validateInput() const {
     // we expect input to be either vector or matrix, in both cases - that's rank2
-    if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr ||this->_input->getBuff() == nullptr)
+    if (this->_input == nullptr || this->_input->getShapeInfo() == nullptr || this->_input->getBuff() == nullptr)
         return ND4J_STATUS_BAD_INPUT;
 
     if (this->_input->rankOf() != 2)

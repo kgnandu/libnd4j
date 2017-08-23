@@ -89,13 +89,15 @@ template<typename T, typename AF> ConvolutionLayer<T,AF>::ConvolutionLayer(const
 template<typename T, typename AF> int ConvolutionLayer<T,AF>::validateInput() const {
    
    if (this->_input == nullptr || !this->_input->nonNull())        
-        return ND4J_STATUS_BAD_INPUT;
-    
+        return ND4J_STATUS_BAD_INPUT;    
+     
     if (this->_input->rankOf() != 4)
         return ND4J_STATUS_BAD_RANK;
     
-    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2])
-        return ND4J_STATUS_BAD_SHAPE;            
+    if (this->_input->getShapeInfo()[2] != this->_params->getShapeInfo()[2]) 
+        return ND4J_STATUS_BAD_SHAPE;
+    
+    return ND4J_STATUS_OK;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -182,7 +184,7 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
     const int oH = this->_output->getShapeInfo()[3];    // output height
     const int oW = this->_output->getShapeInfo()[4];    // output width
     // create temporary 6D array for the needs of Im2col, it will serve as output array there
-    NDArray<T> arr6d('f', {bS, iD, _kernelH, _kernelW, oH, oW});
+    NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});
     // call Im2col
     functions::transform::Transform<T>::template 
     exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), arr6d.getBuff(), 
@@ -193,8 +195,7 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
     // prepare _output, reshape to 2D     
     this->_output->replacePointers(nullptr,nullptr);    
     this->_output->setShape('f',{bS*oH*oW, oD});    
-    // reshape _params to 2D    
-    
+    // reshape _params to 2D        
     if(!this->_params->reshape({iD*_kernelW*_kernelH, oD}))
         return ND4J_STATUS_BAD_PARAMS;
     

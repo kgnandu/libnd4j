@@ -399,6 +399,10 @@ int INativeLayer<T>::configureLayerBP(T *epsilonNext, int *epsilonNextShapeInfo,
 template <typename T>
 int INativeLayer<T>::configureLayerFF(T *input, int *inputShapeInfo, T *output, int *outputShapeInfo, T pDropOut, T pDropConnect, Nd4jPointer ptrRng) {
 
+    // check if bias and weighted are already set    
+    if (this->_params == nullptr || !this->_params->nonNull() || this->_bias == nullptr || !this->_bias->nonNull())    
+        return ND4J_STATUS_BAD_PARAMS;
+
     if (ptrRng != nullptr)
         _rng = reinterpret_cast<nd4j::random::RandomBuffer *> (ptrRng);
 
@@ -411,13 +415,13 @@ int INativeLayer<T>::configureLayerFF(T *input, int *inputShapeInfo, T *output, 
     if ((_dropOut || _dropConnect) && _rng == nullptr)
         return ND4J_STATUS_BAD_RNG;
 
-    _input->replacePointers(input, inputShapeInfo);
-std::cout<<"00000"<<std::endl;
+    _input->replacePointers(input, inputShapeInfo);   
+    
     if (validateInput() != ND4J_STATUS_OK)
         return ND4J_STATUS_BAD_INPUT;
-std::cout<<"11111"<<std::endl;
+    
     _output->replacePointers(output, outputShapeInfo);
-std::cout<<"22222"<<std::endl;
+
     if (validateOutput() != ND4J_STATUS_OK)
         return ND4J_STATUS_BAD_OUTPUT;
 
