@@ -184,7 +184,9 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
     const int oH = this->_output->getShapeInfo()[3];    // output height
     const int oW = this->_output->getShapeInfo()[4];    // output width
     // create temporary 6D array for the needs of Im2col, it will serve as output array there
-    NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});
+    // NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});
+    NDArray<T> arr6d('c', {bS, oH, oW, iD, _kernelH, _kernelW});
+    arr6d.permute({0, 3, 4, 5, 1, 2});
     // call Im2col
     functions::transform::Transform<T>::template 
     exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), arr6d.getBuff(), 
@@ -192,13 +194,14 @@ template<typename T, typename AF> int ConvolutionLayer<T,AF>::feedForward() {
     
     if(!arr6d.reshape({bS*oH*oW, iD*_kernelH*_kernelW}))
         return ND4J_STATUS_BAD_SHAPE;
-    // prepare _output, reshape to 2D     
-    this->_output->replacePointers(nullptr,nullptr);    
-    this->_output->setShape('f',{bS*oH*oW, oD});    
+    // prepare _output, reshape to 2D         
+    this->_output->reshape({3, 2, 0, 1});   
+    this->_output->permute({2, 3, 1, 0});
+    this->_output->reshape({bS*oH*oW, oD});    
     // reshape _params to 2D        
+    this->_params->permute({3, 2, 1, 0});
     if(!this->_params->reshape({iD*_kernelW*_kernelH, oD}))
-        return ND4J_STATUS_BAD_PARAMS;
-    
+        return ND4J_STATUS_BAD_PARAMS;    
     // Z = IW
     this->gemmHelper(&arr6d, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
     // Z += B

@@ -74,13 +74,12 @@ TEST_F(ConvolutionLayerTest, FFtest) {
     result = layer.configureLayerFF(I, shapeI, output, shapeZ, 0.f, 0.f, nullptr);
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
-    result = layer.feedForward();            
-    // layer.getOutput()->print();
+    result = layer.feedForward();                
     ASSERT_EQ(ND4J_STATUS_OK, result);
-    // ASSERT_TRUE(finalMatrix == *layer.getOutput());        
-    for(int i=0; i<layer.getOutput()->lengthOf(); ++i)
-        std::cout<<layer.getOutput()->getBuff()[i]<<"  "<<Z[i]<<std::endl;
     
+    for(int i=0; i<layer.getOutput()->lengthOf(); ++i)
+        std::cout<<std::setw(10)<<layer.getOutput()->getBuff()[i]<<"  "<<std::setw(10)<<Z[i]<<std::endl;
+    ASSERT_TRUE(finalMatrix == *layer.getOutput());        
     delete []output;
 }
 
