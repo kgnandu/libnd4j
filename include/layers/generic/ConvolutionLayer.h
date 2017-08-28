@@ -185,18 +185,19 @@ int ConvolutionLayer<T,AF>::feedForward() {
     const int oH = this->_output->getShapeInfo()[3];    // output height
     const int oW = this->_output->getShapeInfo()[4];    // output width
     // create temporary 6D array for the needs of Im2col, it will serve as output array there
-    // NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});
-    NDArray<T> arr6d('c', {bS, oH, oW, iD, _kernelH, _kernelW});
+    NDArray<T> arr6d('c', {bS, oH, oW, iD, _kernelH, _kernelW});     
+    // NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});    
     arr6d.permute({0, 3, 4, 5, 1, 2});
-    // call Im2col
+    
+	// call Im2col
     functions::transform::Transform<T>::template 
     exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), arr6d.getBuff(), 
                              arr6d.getShapeInfo(), _extraParams, nullptr, nullptr);
 
-    //printf("Im2Col shape:\n");
-    //arr6d.printShapeInfo();
-    
-    if(!arr6d.reshape({bS*oH*oW, iD*_kernelH*_kernelW}))
+    printf("Im2Col shape:\n");
+    arr6d.printShapeInfo();
+
+    if(!arr6d.reshape('c',{bS*oH*oW, iD*_kernelH*_kernelW}))
         return ND4J_STATUS_BAD_SHAPE;
     // prepare _output, reshape to 2D
 
@@ -208,7 +209,7 @@ int ConvolutionLayer<T,AF>::feedForward() {
     //this->_output->permute({2, 3, 1, 0});
     this->_output->reshape('f', {bS*oH*oW, oD});
     // reshape _params to 2D        
-    this->_params->permute({3, 2, 1, 0});
+    // this->_params->permute({3, 2, 1, 0});
     if(!this->_params->reshape('f', {iD*_kernelW*_kernelH, oD}))
         return ND4J_STATUS_BAD_PARAMS;    
     // Z = IW

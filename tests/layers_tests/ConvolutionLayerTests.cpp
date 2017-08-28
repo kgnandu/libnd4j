@@ -37,35 +37,32 @@ class ConvolutionLayerTest : public testing::Test {
 TEST_F(ConvolutionLayerTest, FFtest) {
         
     nd4j::layers::ConvolutionLayer<double, nd4j::activations::Identity<double>> layer(kH, kW, sW, sH, pdW, pdH, true);    
-    NDArray<double> finalMatrix(Z, shapeZ);
+    NDArray<double> finalMatrix(const_cast<double*>(Z), const_cast<int*>(shapeZ));
     
     double* ob = new double[bS*oD*oH*oW];
-    NDArray<double> input(I, shapeI);
-    NDArray<double> output(ob, shapeZ);
-    int result = layer.setParameters(W, shapeW, B, shapeB);
+    NDArray<double> input(const_cast<double*>(I), const_cast<int*>(shapeI));
+    NDArray<double> output(const_cast<double*>(ob), const_cast<int*>(shapeZ));
+    int result = layer.setParameters(const_cast<double*>(W), const_cast<int*>(shapeW), const_cast<double*>(B), const_cast<int*>(shapeB));
     ASSERT_EQ(ND4J_STATUS_OK, result);
 
     result = layer.configureLayerFF(input.getBuff(), input.getShapeInfo(), output.getBuff(), output.getShapeInfo(), 0.f, 0.f, nullptr);
     ASSERT_EQ(ND4J_STATUS_OK, result);
-
-    result = layer.feedForward();                
+    std::cout<<"!!!!! "<<std::endl;        
+    result = layer.feedForward();                    
     ASSERT_EQ(ND4J_STATUS_OK, result);
-
-    int count1=layer.getOutput()->lengthOf();
-    int count2=0;
-    for(int i=0; i<layer.getOutput()->lengthOf(); ++i) {
+    
+    // int count1=layer.getOutput()->lengthOf();
+    // int count2=0;
+    // for(int i=0; i<layer.getOutput()->lengthOf(); ++i) {
         
-        double calculated = layer.getOutput()->getBuff()[i];
-        double actual = Z[i];
-        if (calculated < (actual-0.00001) || calculated > (actual+0.00001) ) {
-            std::cout<<std::setw(10)<<calculated<<"  "<<std::setw(10)<<actual<<std::endl;
-            ++count2;
-        }        
-    }
-    std::cout<<"!!!!! "<<count1<<"  "<<count2<<std::endl;
+        // double calculated = layer.getOutput()->getBuff()[i];
+        // double actual = Z[i];
+        // if (fabs(calculated - actual) > 0.00001) {
+            // std::cout<<std::setw(10)<<calculated<<"  "<<std::setw(10)<<actual<<std::endl;
+            // ++count2;
+        // }
+    // }
+    // std::cout<<"!!!!! "<<count1<<"  "<<count2<<std::endl;        
     ASSERT_TRUE(finalMatrix == *layer.getOutput());        
-    //delete []output;
+    delete []ob;
 }
-
-
-
