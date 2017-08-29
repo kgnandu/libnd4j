@@ -47,7 +47,7 @@ TEST_F(ConvolutionLayerTest, FFtest) {
 
     result = layer.configureLayerFF(input.getBuff(), input.getShapeInfo(), output.getBuff(), output.getShapeInfo(), 0.f, 0.f, nullptr);
     ASSERT_EQ(ND4J_STATUS_OK, result);
-    std::cout<<"!!!!! "<<std::endl;        
+
     result = layer.feedForward();                    
     ASSERT_EQ(ND4J_STATUS_OK, result);
     

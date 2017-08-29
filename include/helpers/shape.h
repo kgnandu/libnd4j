@@ -3301,20 +3301,18 @@ __device__ INLINEDEF int *cuMalloc(int *buffer, long size) {
     __host__ __device__
 #endif
 
-    INLINEDEF void doPermuteShapeBuffer(int *shapeBuffer,int *rearrange, int *tmpBuffer) {
-        int *shapeRef = shapeBuffer;
-        //rank of the rearrange array == rank of shape buffer
-        int rearrageRank = shape::rank(shapeRef);
-        int *shape = shape::shapeOf(shapeRef);
-        int *stride = shape::stride(shapeRef);
+    INLINEDEF void doPermuteShapeBuffer(int *inBuffer, int *rearrange, int *outBuffer) {
+        int rank = shape::rank(inBuffer);		
+		int length = shapeInfoLength(rank);
+		memcpy(outBuffer, inBuffer, sizeof(int)*length);
 
-        shape::copyOf(rearrageRank,rearrange, tmpBuffer);
-        shape::doPermuteSwap(rearrageRank,&shape,tmpBuffer);
-
-        shape::copyOf(rearrageRank,rearrange, tmpBuffer);
-        shape::doPermuteSwap(rearrageRank,&stride,tmpBuffer);
-        shapeRef[shapeInfoLength(rearrageRank) - 2] = -1;
-        shapeRef[shape::shapeInfoLength(rearrageRank) - 1] = shape::getOrder(rearrageRank,shape,stride,1);
+        int *shape = shape::shapeOf(outBuffer);
+        int *stride = shape::stride(outBuffer);
+       
+        shape::doPermuteSwap(rank,&shape,rearrange);
+        shape::doPermuteSwap(rank,&stride,rearrange);
+        outBuffer[length - 2] = -1;
+        outBuffer[length - 1] = shape::getOrder(rank,shape,stride,1);
     }
 
 #ifdef __CUDACC__
