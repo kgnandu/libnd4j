@@ -51,18 +51,18 @@ TEST_F(ConvolutionLayerTest, FFtest) {
     result = layer.feedForward();                    
     ASSERT_EQ(ND4J_STATUS_OK, result);
     
-    // int count1=layer.getOutput()->lengthOf();
-    // int count2=0;
-    // for(int i=0; i<layer.getOutput()->lengthOf(); ++i) {
+    int count1=layer.getOutput()->lengthOf();
+    int count2=0;
+    for(int i=0; i<layer.getOutput()->lengthOf(); ++i) {
         
-        // double calculated = layer.getOutput()->getBuff()[i];
-        // double actual = Z[i];
-        // if (fabs(calculated - actual) > 0.00001) {
-            // std::cout<<std::setw(10)<<calculated<<"  "<<std::setw(10)<<actual<<std::endl;
-            // ++count2;
-        // }
-    // }
-    // std::cout<<"!!!!! "<<count1<<"  "<<count2<<std::endl;        
+        double calculated = layer.getOutput()->getBuff()[i];
+        double actual = Z[i];
+        if (fabs(calculated - actual) > 0.00001) {
+            std::cout<<std::setw(10)<<calculated<<"  "<<std::setw(10)<<actual<<std::endl;
+            ++count2;
+        }
+    }
+    std::cout<<"!!!!! "<<count1<<"  "<<count2<<std::endl;        
     ASSERT_TRUE(finalMatrix == *layer.getOutput());        
     delete []ob;
 }

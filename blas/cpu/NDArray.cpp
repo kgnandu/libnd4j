@@ -629,7 +629,7 @@ template <typename T> bool NDArray<T>::permute(const std::initializer_list<int>&
     // check if current object is _shapeInfo owner 
     if(!_isShapeAlloc) {             // if _shapeInfo is not its own 
         int* shapeInfo = new int[rank*2+4];        
-		shape::doPermuteShapeBuffer(_shapeInfo, newShape, shapeInfo) ;
+		shape::doPermuteShapeBuffer(_shapeInfo, newShape, shapeInfo);
         _shapeInfo = shapeInfo;
         _isShapeAlloc = true; 
     }

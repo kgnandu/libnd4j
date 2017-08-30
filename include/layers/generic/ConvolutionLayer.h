@@ -187,46 +187,36 @@ int ConvolutionLayer<T,AF>::feedForward() {
     // create temporary 6D array for the needs of Im2col, it will serve as output array there    
     // NDArray<T> arr6d('c', {bS, iD, _kernelH, _kernelW, oH, oW});    	
 	NDArray<T> arr6d('c', {bS, oH, oW, iD, _kernelH, _kernelW});
-	printf("Params before:\n");
-    arr6d.printShapeInfo();
-    arr6d.permute({0, 3, 4, 5, 1, 2});
-	printf("Params:after \n");
-    arr6d.printShapeInfo();
-    
+    arr6d.permute({0, 3, 4, 5, 1, 2});   
 	// call Im2col
     functions::transform::Transform<T>::template 
     exec<simdOps::Im2col<T>>(this->_input->getBuff(), this->_input->getShapeInfo(), arr6d.getBuff(), 
                              arr6d.getShapeInfo(), _extraParams, nullptr, nullptr);
 
-    if(!arr6d.reshape('c',{bS*oH*oW, iD*_kernelH*_kernelW}))
+    if(!arr6d.reshape({bS*oH*oW, iD*_kernelH*_kernelW}))
         return ND4J_STATUS_BAD_SHAPE;
 
     // reshape _params to 2D
-	printf("Params before:\n");
-    this->_params->printShapeInfo();
+	// printf("Params before:\n");
+    // this->_params->printShapeInfo();
 	this->_params->permute({3, 2, 1, 0});
-	printf("Params:after \n");
-    this->_params->printShapeInfo();
-	// if(!this->_params->reshape('f', {iD*_kernelW*_kernelH, oD}))
-        // return ND4J_STATUS_BAD_PARAMS;    
+	// printf("Params:after \n");
+    // this->_params->printShapeInfo();
+	if(!this->_params->reshape('f', {iD*_kernelW*_kernelH, oD}))
+        return ND4J_STATUS_BAD_PARAMS;    
     // prepare _output
-	// this->_output->reshape('f', {bS*oH*oW, oD});
-    
-    
-    //printf("Params 2d:\n");
-    //this->_params->print();
-
-    //printf("Output 2d:\n");
-    //this->_output->printShapeInfo();
+	this->_output->reshape('f',{bS*oH*oW, oD});    
 	// Z = IW
-    // this->gemmHelper(&arr6d, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
+    this->gemmHelper(&arr6d, this->_params, this->_output, (T) 1.0f, (T) 0.0f);
     // Z += B
-    //this->_output->addiRowVector(this->_bias);
+    this->_output->addiRowVector(this->_bias);
     // reshape _params and output  back to 4D
-    // this->_output->reshape({bS, oD, oH, oW});
+    this->_output->reshape({oW, oH, bS, oD});
+	this->_output->permute({2, 3, 1, 0});	
+	// this->_output->reshape({bS, oD, oH, oW});
     // this->_params->reshape({oD, iD, _kernelH, _kernelW});
     // apply activations F(Z)
-   // ActivationsExecutioner<T>::template executeFF<AF>(this->_output, this->_output);
+	ActivationsExecutioner<T>::template executeFF<AF>(this->_output, this->_output);
     
     return ND4J_STATUS_OK;
 }
