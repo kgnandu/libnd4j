@@ -323,7 +323,7 @@ if [ "$CHIP" == "cuda" ] && [ -n "$CHIP_VERSION" ]; then
     esac
 fi
 
-OPENBLAS_PATH="$HOME/.javacpp/cache/openblas-0.2.19-1.3.4-SNAPSHOT-linux-x86_64.jar/org/bytedeco/javacpp/linux-x86_64/"
+OPENBLAS_PATH="$HOME/.javacpp/cache/openblas-0.2.20-1.3.4-SNAPSHOT-linux-x86_64.jar/org/bytedeco/javacpp/linux-x86_64/"
 
 if [[ -n "${BUILD_PATH:-}" ]]; then
     PREVIFS="$IFS"
@@ -337,7 +337,7 @@ if [[ -n "${BUILD_PATH:-}" ]]; then
 fi
 
 if [ ! -d "$OPENBLAS_PATH" ]; then
-    echo "Could not find OPENBLAS_PATH = $OPENBLAS_PATH"
+    echo "Could not find OPENBLAS_PATH = $OPENBLAS_PATH, please run build for ND4J with Maven"
 fi
 
 OPENBLAS_ARG="-DOPENBLAS_PATH=$OPENBLAS_PATH"
