@@ -15,13 +15,32 @@
 #include <types/float16.h>
 #define math_def __host__ __device__
 
-typedef union {
-		struct {
+#ifdef CUDA_9
+struct HALFS{
 			half H;
 			half L;
-		} B;
+
+			HALFS() {};
+			~HALFS() {};
+		};
+union PAIR {
+		HALFS B;
 		int W;
+
+		PAIR() {};
+		~PAIR(){}
+
+};
+#else
+typedef union {
+        struct {
+            half H;
+            half L;
+        } B;
+        int W;
 } PAIR;
+#endif // cuda_9
+
 #else
 #define math_def
 #include <types/float16.h>
