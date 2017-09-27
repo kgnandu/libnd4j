@@ -20,14 +20,20 @@ struct HALFS{
 			half H;
 			half L;
 
+            __host__ __device__
 			HALFS() {};
+
+			__host__ __device__
 			~HALFS() {};
 		};
 union PAIR {
 		HALFS B;
 		int W;
 
+        __host__ __device__
 		PAIR() {};
+
+		__host__ __device__
 		~PAIR(){}
 
 };
