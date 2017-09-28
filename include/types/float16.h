@@ -56,7 +56,7 @@ struct ihalf : public __half {
         }
 
         inline void assign(const half f) {
-            this->__x = ((__half_raw *) &f)->__x;
+            this->x = ((__half *) &f)->x;
         }
 };
 #endif // CUDA_9
