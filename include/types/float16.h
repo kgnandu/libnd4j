@@ -62,24 +62,22 @@ struct ihalf : public __half {
 #endif // CUDA_9
 
 #else
-typedef struct {
+struct __half {
 public:
     unsigned short x;
     inline unsigned short * getXP() {
-        return &this->__x;
+        return &this->x;
     }
 
     inline unsigned short getX() const  {
-        return this->__x;
+        return this->x;
     }
-
-    inline void assign(const half f) {
-        this->__x = ((__half_raw *) &f)->x;
-    }
-} __half;
+};
 
 typedef __half half;
 typedef __half ihalf;
+
+
 #endif // CUDA
 
 #ifdef __CUDACC__
@@ -286,15 +284,21 @@ local_def ihalf cpu_float2ihalf_rn(float f)
         *data.getXP() = ((ihalf) rhs).getX();
     }
 
+    /*
     local_def void assign(const half& rhs) {
       //data = rhs;
-        data.assign(rhs);
+        //data.assign(rhs);
+#ifdef __CUDACC__
+
+#else
+        data.x = rhs.x;
+#endif
     }
 
     local_def void assign(const float16& rhs) {
       data = rhs.data;
     }
-
+*/
     local_def float16& operator+=(float16 rhs) { assign((float)*this + rhs); return *this; }
 
     local_def float16& operator-=(float16 rhs) { assign((float)*this - rhs); return *this; }
