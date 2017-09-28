@@ -284,21 +284,17 @@ local_def ihalf cpu_float2ihalf_rn(float f)
         *data.getXP() = ((ihalf) rhs).getX();
     }
 
-    /*
+#ifdef __CUDACC__
     local_def void assign(const half& rhs) {
       //data = rhs;
-        //data.assign(rhs);
-#ifdef __CUDACC__
-
-#else
-        data.x = rhs.x;
-#endif
+      data.assign(rhs);
     }
+#endif
 
     local_def void assign(const float16& rhs) {
       data = rhs.data;
     }
-*/
+
     local_def float16& operator+=(float16 rhs) { assign((float)*this + rhs); return *this; }
 
     local_def float16& operator-=(float16 rhs) { assign((float)*this - rhs); return *this; }
