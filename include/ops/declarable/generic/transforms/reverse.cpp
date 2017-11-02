@@ -33,8 +33,6 @@ CONFIGURABLE_OP_IMPL(reverse, 1, 1, true, 0, -2) {
 			subArrOut->putIndexedScalar(j, subArrIn->getIndexedScalar(subArrLength - 1 - j));
 	}
 
-	output->printBuffer("output");
-
 	STORE_RESULT(*output);
 
 	delete listOut;
