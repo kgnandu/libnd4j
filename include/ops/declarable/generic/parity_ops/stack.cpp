@@ -3,6 +3,7 @@
 //
 
 #include <ops/declarable/CustomOperations.h>
+#include <helpers/ShapeUtils.h>
 #include <vector>
 
 namespace nd4j {
@@ -12,30 +13,31 @@ namespace nd4j {
 //////////////////////////////////////////////////////////////////////////
 CUSTOM_OP_IMPL(stack, -1, 1, false, 0, 1) {
 
+    NDArray<T>* input = INPUT_VARIABLE(0);
+    NDArray<T>* output = OUTPUT_VARIABLE(0);
+
     int dim = block.getIArguments()->at(0);
     if(dim < 0)
-    	dim += (INPUT_VARIABLE(0))->rankOf();                
+    	dim += input->rankOf();                	
 
-    NDArray<T> *output = OUTPUT_VARIABLE(0);
+	std::vector<int> dimsToExclude = ShapeUtils<T>::evalDimsToExclude(output->rankOf(), {dim});	
+	ArrayList<T>* list = NDArrayFactory<T>::allTensorsAlongDimension(output, dimsToExclude);		// list.size() == block.width()
 
-    int inArrNum = (int)block.width();
-    Nd4jPointer* buffers = new Nd4jPointer[inArrNum];
-    Nd4jPointer* shapes = new Nd4jPointer[inArrNum];
-
-    Variable<T>* var = nullptr;
-    for (int e = 0; e < inArrNum; e++) {
-        var = block.variable(e);
-        buffers[e] = (Nd4jPointer) var->getNDArray()->getBuffer();
-        shapes[e] = (Nd4jPointer) var->getNDArray()->getShapeInfo();
-    }
-
-    nd4j::SpecialMethods<T>::concatCpuGeneric(dim, inArrNum, buffers, shapes, output->getBuffer(), output->getShapeInfo());
+	for(int i=0; i<list->size(); ++i)
+		list->at(i)->assign(INPUT_VARIABLE(i));
+	
+	// remove unity from output shape if input arrays are vectors 
+	if(input->isVector())
+	{
+		std::vector<int> outShape(output->shapeOf(), output->shapeOf() + output->rankOf());
+		outShape.erase(std::remove(outShape.begin(), outShape.end(), 1), outShape.end());
+		output->reshapei(output->ordering(), outShape);
+		output->getShapeInfo()[output->rankOf()*2 + 2] = 1;		
+	}
+	
 
     STORE_RESULT(*output);
-
-    delete[] buffers;
-    delete[] shapes;
-
+	delete list;
     return ND4J_STATUS_OK;
 }
 
@@ -46,6 +48,7 @@ DECLARE_SHAPE_FN(stack) {
 	for (int i = 0; i < inArrNum - 1; ++i)
 		if (!shape::equalsSoft(inputShape->at(i), inputShape->at(i+1)))
 			throw "CUSTOM_OP stack: the shapes of input arrays are different !";
+	
 	// check whether input dimension is within rank range
 	int* inShapeInfo = inputShape->at(0);
 	int rank = inShapeInfo[0];
@@ -60,8 +63,8 @@ DECLARE_SHAPE_FN(stack) {
 	outShape.insert(outShape.begin() + dim, inArrNum);
 	// if input arrays are vectors remove unity from shape
 	NDArray<T>* input = INPUT_VARIABLE(0);
-	if(input->isVector())
-		outShape.erase(std::remove(outShape.begin(), outShape.end(), 1), outShape.end());
+	// if(input->isVector())
+	// 	outShape.erase(std::remove(outShape.begin(), outShape.end(), 1), outShape.end());
 
 	// evaluate output ShapeInfo
 	int newRank = outShape.size();
@@ -71,7 +74,7 @@ DECLARE_SHAPE_FN(stack) {
     for(int i=1; i <= newRank; ++i)
     	outShapeInfo[i] = outShape[i-1];
 	
-    shape::updateStrides(outShapeInfo, input->ordering());
+    shape::updateStrides(outShapeInfo, input->ordering());    
 
     return new ShapeList(outShapeInfo);
     
@@ -79,7 +82,10 @@ DECLARE_SHAPE_FN(stack) {
 }
 
 
-
+// 1) 1х4 + 1х4 = 2х1х4 (along dim=0) = 2x4 
+// 2) 1х4 + 1х4 = 1х2х4 (along dim=1) = 2x4 
+// 3) 4х1 + 4х1 = 2х4x1 (along dim=0) = 2x4 
+// 4) 4х1 + 4х1 = 4х2x1 (along dim=1) = 4x2 
 
 
 
