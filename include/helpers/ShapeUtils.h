@@ -31,7 +31,7 @@ namespace nd4j {
         static int* evalTranspShapeInfo(const NDArray<T>& arr);
 
         // return new (shorter) dimensions array without dimensions that are present in input vector
-        static std::vector<int> evalDimsToExclude(const int rank, const std::vector<int> dimensions);
+        static std::vector<int> evalDimsToExclude(const int rank, const std::vector<int>& dimensions);
 
     };
 

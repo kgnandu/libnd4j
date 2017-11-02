@@ -114,11 +114,8 @@ namespace nd4j {
         DECLARE_CONFIGURABLE_OP(batchnorm_bp, 5, 1, true, 0, 1);                
         DECLARE_CONFIGURABLE_OP(conv3d_bp, 3, 1, false, 0, 7); // TODO: to be implemented        
         DECLARE_CONFIGURABLE_OP(ismax, 1, 1, false, 0, -1);
-
-
         DECLARE_CONFIGURABLE_OP(firas_sparse, 1, 1, false, 0, -1);
-
-
+        DECLARE_CONFIGURABLE_OP(reverse, 1, 1, true, 0, -2);        
 
         DECLARE_BOOLEAN_OP(lt_scalar, 2, true);
         DECLARE_BOOLEAN_OP(gt_scalar, 2, true);
