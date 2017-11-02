@@ -21,10 +21,10 @@ CONFIGURABLE_OP_IMPL(reverse, 1, 1, true, 0, -2) {
 
 	ArrayList<T>* listOut = NDArrayFactory<T>::allTensorsAlongDimension(output, dimensions);
 	ArrayList<T>* listIn  = NDArrayFactory<T>::allTensorsAlongDimension(input, dimensions);
-		
+
 	NDArray<T>* subArrIn  = nullptr;
 	NDArray<T>* subArrOut = nullptr;
-	int subArrLength = 0;
+	int subArrLength = 0;	
 	for(int i=0; i<listIn->size(); ++i) {		// listIn->size() = listOut->size()
 		subArrIn   = listIn->at(i);
 		subArrOut  = listOut->at(i);
@@ -34,10 +34,8 @@ CONFIGURABLE_OP_IMPL(reverse, 1, 1, true, 0, -2) {
 	}
 	
 	// check whether operation is in-place
-	if(block.isInplace())	{	// in-place
-		input->assign(output);
+	if(block.isInplace())		// in-place		
 		STORE_RESULT(*input);
-	}
 	else 
 		STORE_RESULT(*output);
 

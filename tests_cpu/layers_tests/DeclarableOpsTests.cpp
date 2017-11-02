@@ -2941,7 +2941,7 @@ TEST_F(DeclarableOpsTests, Reverse_1 ) {
 
     nd4j::ops::reverse<float> op;
     nd4j::ArrayList<float>*  results = op.execute({&input}, {}, {0});
-    NDArray<float>* result = results->at(0);        
+    NDArray<float>* result = results->at(0);    
 
     ASSERT_TRUE(expected.isSameShapeStrict(result));
     ASSERT_TRUE(expected.equalsTo(result));
