@@ -2936,16 +2936,17 @@ TEST_F(DeclarableOpsTests, Reverse_1 ) {
     NDArray<float> expected(expBuff, shapeInfo);
     NDArray<float> output(shapeInfo);
     
-    VariableSpace<float>* variableSpace = new VariableSpace<float>();
-    variableSpace->putVariable(1, &output);   
-
     nd4j::ops::reverse<float> op;
-    nd4j::ArrayList<float>*  results = op.execute({&input}, {}, {0});
-    NDArray<float>* result = results->at(0);        
+    auto results = op.execute({&input}, {}, {0}, true);
+
+    ASSERT_EQ(ND4J_STATUS_OK, results->status());
+
+    auto result = results->at(0);
 
     ASSERT_TRUE(expected.isSameShapeStrict(result));
     ASSERT_TRUE(expected.equalsTo(result));
 
+    delete results;
 }
 
 

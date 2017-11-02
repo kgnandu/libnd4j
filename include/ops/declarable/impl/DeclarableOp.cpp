@@ -174,7 +174,16 @@ namespace nd4j {
             if (outputNumber == 0 && this->getOpDescriptor()->getNumberOfOutputs() == 1) {
                 // we're adding this check, to avoid saving in legacy execution mechanism
                 if (!block.getVariableSpace()->hasVariable(block.getNodeId())) {
-                    nd4j_debug("Skipping storeResult for node_%i:%i\n", block.getNodeId(), outputNumber);
+                    //nd4j_debug("Skipping storeResult for node_%i:%i\n", block.getNodeId(), outputNumber);
+                    auto var = new Variable<T>(&array, nullptr, block.getNodeId(), outputNumber);
+
+                    // if node is inplace, we don't want to remove this array eventually
+                    if (block.isInplace())
+                        var->markRemovable(false);
+
+                    std::pair<int, int> pair(block.getNodeId(), outputNumber);
+                    block.getVariableSpace()->putVariable(pair, var);
+
                     return;
                 }
 

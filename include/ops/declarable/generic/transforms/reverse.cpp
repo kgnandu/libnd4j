@@ -32,14 +32,10 @@ CONFIGURABLE_OP_IMPL(reverse, 1, 1, true, 0, -2) {
 		for(int j=0; j<subArrLength; ++j)
 			subArrOut->putIndexedScalar(j, subArrIn->getIndexedScalar(subArrLength - 1 - j));
 	}
-	
-	// check whether operation is in-place
-	if(block.isInplace())	{	// in-place
-		input->assign(output);
-		STORE_RESULT(*input);
-	}
-	else 
-		STORE_RESULT(*output);
+
+	output->printBuffer("output");
+
+	STORE_RESULT(*output);
 
 	delete listOut;
 	delete listIn;
