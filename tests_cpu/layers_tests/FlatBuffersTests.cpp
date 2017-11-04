@@ -55,6 +55,29 @@ TEST_F(FlatBuffersTest, BasicTest1) {
     ASSERT_TRUE(gA->equals(gB));
 }
 
+TEST_F(FlatBuffersTest, FlatGraphTestRandom) {
+    auto graph = GraphExecutioner<float>::importFromFlatBuffers("/Users/susaneraly/SKYMIND/libnd4j/tests_cpu/resources/frozen_model.fb");
+    Nd4jStatus status = GraphExecutioner<float>::execute(graph);
+
+    ASSERT_EQ(ND4J_STATUS_OK, status);
+//    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(227));
+//
+//    auto lastNode = graph->getVariableSpace()->getVariable(227)->getNDArray();
+//
+//    lastNode->printShapeInfo("Result shape");
+//
+//    auto argMax = lastNode->argMax();
+//
+//    nd4j_printf("Predicted class: %i\n", (int) argMax);
+//    nd4j_printf("Probability: %f\n", lastNode->getScalar(argMax));
+//    nd4j_printf("Probability ipod: %f\n", lastNode->getScalar(980));
+//    lastNode->printBuffer("Whole output");
+//
+//    ASSERT_EQ(561, (int) argMax);
+
+   delete graph;
+
+}
 
 TEST_F(FlatBuffersTest, FlatGraphTest1) {
     flatbuffers::FlatBufferBuilder builder(4096);
@@ -307,7 +330,7 @@ TEST_F(FlatBuffersTest, ReadFile3) {
 
 
 TEST_F(FlatBuffersTest, ReadInception1) {
-    auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/inception.fb");
+    auto graph = GraphExecutioner<float>::importFromFlatBuffers("/Users/susaneraly/SKYMIND/libnd4j/tests_cpu/resources/inception.fb");
 
     Nd4jStatus status = GraphExecutioner<float>::execute(graph);
 
