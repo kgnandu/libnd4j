@@ -60,7 +60,7 @@ TEST_F(FlatBuffersTest, FlatGraphTestRandom) {
     Nd4jStatus status = GraphExecutioner<float>::execute(graph);
 
     ASSERT_EQ(ND4J_STATUS_OK, status);
-//    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(227));
+    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(1));
 //
 //    auto lastNode = graph->getVariableSpace()->getVariable(227)->getNDArray();
 //
