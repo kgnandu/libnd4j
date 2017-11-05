@@ -105,7 +105,7 @@ namespace nd4j {
             NDArray<T> *z = this->getZ(block);
 
             if (input->isMatrix())
-                input->addiRowVector(bias);
+                input->addRowVector(bias, z);
             else {
                 std::vector<int> shape({-1, (int) bias->lengthOf()});
                 nd4j_debug("Reshaping to: [%i, %i]\n", -1, (int) bias->lengthOf());

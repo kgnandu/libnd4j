@@ -56,11 +56,19 @@ TEST_F(FlatBuffersTest, BasicTest1) {
 }
 
 TEST_F(FlatBuffersTest, FlatGraphTestRandom) {
-    auto graph = GraphExecutioner<float>::importFromFlatBuffers("/Users/susaneraly/SKYMIND/libnd4j/tests_cpu/resources/frozen_model.fb");
+    auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/frozen_model.fb");
+
+    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(1));
+    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(-1));
+
     Nd4jStatus status = GraphExecutioner<float>::execute(graph);
 
     ASSERT_EQ(ND4J_STATUS_OK, status);
-    ASSERT_TRUE(graph->getVariableSpace()->hasVariable(1));
+
+    auto lastArray = graph->getVariableSpace()->getVariable(10)->getNDArray();
+
+    lastArray->printShapeInfo("result shape");
+    lastArray->printIndexedBuffer("result buffer");
 //
 //    auto lastNode = graph->getVariableSpace()->getVariable(227)->getNDArray();
 //
