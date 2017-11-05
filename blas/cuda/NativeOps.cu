@@ -4579,6 +4579,7 @@ Nd4jPointer NativeOps::mallocHost(Nd4jIndex memorySize, int flags) {
 	Nd4jPointer pointer;
 	// cudaHostAllocMapped |cudaHostAllocPortable
 	cudaError_t res = cudaHostAlloc((void **)&pointer, memorySize, cudaHostAllocDefault);
+	checkCudaErrors(res);
 	if (res != 0)
 		pointer = 0L;
 	return pointer;
@@ -4595,6 +4596,7 @@ Nd4jPointer NativeOps::mallocHost(Nd4jIndex memorySize, int flags) {
 Nd4jPointer NativeOps::mallocDevice(Nd4jIndex memorySize, Nd4jPointer ptrToDeviceId, int flags) {
 	Nd4jPointer pointer;
 	cudaError_t res = cudaMalloc((void **)&pointer, memorySize);
+	checkCudaErrors(res);
 	if (res != 0)
 		pointer = 0L;
 	return pointer;
@@ -4607,6 +4609,7 @@ Nd4jPointer NativeOps::mallocDevice(Nd4jIndex memorySize, Nd4jPointer ptrToDevic
  */
 int NativeOps::freeHost(Nd4jPointer pointer) {
 	cudaError_t res = cudaFreeHost((void *) pointer);
+	checkCudaErrors(res);
 	if (res != 0)
 		pointer = 0L;
 	return 1L;
@@ -4620,6 +4623,7 @@ int NativeOps::freeHost(Nd4jPointer pointer) {
  */
 int NativeOps::freeDevice(Nd4jPointer pointer, Nd4jPointer ptrToDeviceId) {
 	cudaError_t res = cudaFree((void *)pointer);
+	checkCudaErrors(res);
 	if (res != 0)
 		pointer = 0L;
 	return 1L;
