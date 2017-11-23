@@ -130,7 +130,7 @@ namespace nd4j {
 
         template <typename T>
         void SparseUtils<T>::sortCooIndicesGeneric(int *indices, T *values, Nd4jIndex length, int rank) {
-            coo_quickSort_parallel(indices, values, length, omp_get_max_threads(), rank);
+            coo_quickSort_parallel(indices, values, length, 12, rank);
             //coo_quickSort_parallel<T>(indices, values, length, 1, rank);
         }
 
