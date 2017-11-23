@@ -13,12 +13,12 @@ using namespace nd4j::graph;
 
 class PlaygroundTests : public testing::Test {
 public:
-    int numIterations = 1000;
+    int numIterations = 500;
 };
 
 
 TEST_F(PlaygroundTests, LambdaTest_1) {
-    NDArray<float> array('c', {16384, 1024});
+    NDArray<float> array('c', {8192, 1024});
     NDArrayFactory<float>::linspace(1, array);
 
     auto lambda = LAMBDA_F(_x) {
@@ -43,7 +43,7 @@ TEST_F(PlaygroundTests, LambdaTest_1) {
 
 
 TEST_F(PlaygroundTests, LambdaTest_2) {
-    NDArray<float> array('c', {16384, 1024});
+    NDArray<float> array('c', {8192, 1024});
     NDArray<float> row('c', {1, 1024});
     NDArrayFactory<float>::linspace(1, array);
 
