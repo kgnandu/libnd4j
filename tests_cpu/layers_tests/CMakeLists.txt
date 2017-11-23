@@ -26,7 +26,7 @@ endif()
 if (APPLE)
     set(CMAKE_CXX_FLAGS  " -fPIC -std=c++11 -fassociative-math -funsafe-math-optimizations -fmax-errors=2")
 else()
-    set(CMAKE_CXX_FLAGS  " -fPIC -std=c++11 -fassociative-math -funsafe-math-optimizations -fmax-errors=2")
+    set(CMAKE_CXX_FLAGS  " -O3 -march=native -mtune=native -fPIC -std=c++11 -fassociative-math -funsafe-math-optimizations -fmax-errors=2")
 endif()
 
 
