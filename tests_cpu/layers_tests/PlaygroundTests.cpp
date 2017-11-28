@@ -64,3 +64,72 @@ TEST_F(PlaygroundTests, LambdaTest_2) {
 
     nd4j_printf("Broadcast time %lld us\n", outerTime / numIterations);
 }
+
+
+TEST_F(PlaygroundTests, NoCacheTest_1) {
+    std::vector<NDArray<float> *> pool(100);
+    NDArray<float> source('c', {8192, 1024});
+    for (int e = 0; e < pool.size(); e++)
+        pool[e] = source.dup();
+
+    auto lambda = LAMBDA_F(_x) {
+        return _x * 32.12f;
+    };
+
+    auto timeStart = std::chrono::system_clock::now();
+    int cnt = 0;
+    for (int e = 0; e < numIterations; e++) {
+        auto v = pool[99 - (cnt++)];
+        v->applyLambda(lambda);
+
+        if (cnt == 100)
+            cnt = 0;
+    }
+
+    auto timeEnd = std::chrono::system_clock::now();
+
+    auto outerTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+
+    nd4j_printf("Non-cached time %lld us\n", outerTime / numIterations);
+
+    for (auto v: pool)
+        delete v;
+}
+
+
+TEST_F(PlaygroundTests, NoCacheTest_2) {
+    std::vector<NDArray<float> *> pool1(100);
+    std::vector<NDArray<float> *> pool2(100);
+    NDArray<float> source('c', {8192, 1024});
+    for (int e = 0; e < pool1.size(); e++) {
+        pool1[e] = source.dup();
+        pool2[e] = source.dup();
+    }
+
+    auto lambda = LAMBDA_FF(_x, _y) {
+        return _x * 32.12f + _y;
+    };
+
+    auto timeStart = std::chrono::system_clock::now();
+    int cnt = 0;
+    for (int e = 0; e < numIterations; e++) {
+        auto v1 = pool1[99 - cnt];
+        auto v2 = pool2[cnt++];
+        v1->applyPairwiseLambda(v2, lambda);
+
+        if (cnt == 100)
+            cnt = 0;
+    }
+
+    auto timeEnd = std::chrono::system_clock::now();
+
+    auto outerTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+
+    nd4j_printf("Non-cached PWT time %lld us\n", outerTime / numIterations);
+
+    for (auto v: pool1)
+        delete v;
+
+    for (auto v: pool2)
+        delete v;
+}
