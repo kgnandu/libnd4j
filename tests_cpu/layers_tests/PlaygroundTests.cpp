@@ -13,7 +13,7 @@ using namespace nd4j::graph;
 
 class PlaygroundTests : public testing::Test {
 public:
-    int numIterations = 500;
+    int numIterations = 1000;
 };
 
 
