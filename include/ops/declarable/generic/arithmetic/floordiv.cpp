@@ -15,7 +15,7 @@ namespace nd4j {
             auto tZ = BroadcastHelper<T>::template broadcast_apply<simdOps::FloorDiv<T>>(x, y, z);
             if (tZ == nullptr)
                 return ND4J_STATUS_KERNEL_FAILURE;
-            else {
+            else if (tZ != z) {
                 OVERWRITE_RESULT(tZ);
             }
 
