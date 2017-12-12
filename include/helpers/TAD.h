@@ -781,7 +781,6 @@ namespace shape {
         const bool isLikeVector = shape::isLikeVector(ret2);
 
         if(dimensionLength == tadRank && compLength == shape::length(ret2) && !isLikeVector) {
-        // if(dimensionLength == tadRank && compLength == shape::length(ret2)) {
             if(dimensionLength == 1 && shape::isVector(ret2) && shape::shapeOf(ret2)[0] == 1) {
                 //go to the bottom and return ret2 after proper freeing of pointers
                 //basic idea; we *don't* permute row vectors
@@ -812,8 +811,8 @@ namespace shape {
                 for(int i = shape::rank(ret2) - 1; i >= 0; i--) {
                     finalPermuteDims[forward++] = i;
                 }
-                bool isRowVector2 = shape::isRowVector(ret2) && !isLikeVector;
-                // bool isRowVector2 = shape::isRowVector(ret2);
+                
+                bool isRowVector2 = shape::isRowVector(ret2) && !isLikeVector;                
                 if(isRowVector2 == false) {
                     shape::permuteShapeBufferInPlace(ret2, finalPermuteDims, ret2);
                 }
