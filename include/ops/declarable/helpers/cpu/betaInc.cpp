@@ -6,7 +6,7 @@
 
 
 #include<cmath> 
-#include<climits> 
+#include <DataTypeUtils.h>
 #include<ops/declarable/helpers/betaInc.h>
 
 namespace nd4j {
@@ -17,7 +17,7 @@ const int maxIter = 10000;				// max number of loop iterations in function for c
 const int maxValue = 3000;				// if a and b are both > maxValue, then apply single step of high-order Gauss-Legendre quadrature.
 
 
-// 18 values of abscissas and weights for by 36-point Gauss-Legendre integration,
+// 18 values of abscissas and weights for 36-point Gauss-Legendre integration,
 // take a note - weights and abscissas are symmetric around the midpoint of the range of integration: 36/2 = 18
 const double abscissas[18] = {0.0021695375159141994,
 0.011413521097787704,0.027972308950302116,0.051727015600492421,
@@ -40,7 +40,7 @@ const double weights[18] = {0.0055657196642445571,
 // modified Lentz’s algorithm for continued fractions, 
 // reference: Lentz, W.J. 1976, “Generating Bessel Functions in Mie Scattering Calculations Using Continued Fractions,” Applied Optics, vol. 15, pp. 668–671
 template <typename T> 
-static T continFract(const T a, const T b, const T x, const T min, const T eps) {
+static T continFract(const T a, const T b, const T x) {	
 
     const T amu = a - (T)1.;
     const T apu = a + (T)1.;
@@ -49,8 +49,8 @@ static T continFract(const T a, const T b, const T x, const T min, const T eps) 
     // first iteration 
     T c = (T)1.;
     T d = (T)1. - apb * x / apu; 
-    if(math::nd4j_abs<T>(d) < min)
-			d = min;
+    if(math::nd4j_abs<T>(d) < DataTypeUtils::DataTypeUtils::min<T>())
+			d = DataTypeUtils::min<T>();
 	d = (T)1./d;
     T f = d;
          
@@ -64,13 +64,13 @@ static T continFract(const T a, const T b, const T x, const T min, const T eps) 
 		val = i * (b - i) * x / ((amu + i2) * (a + i2));		
 
 		d = (T)(1.) + val * d;
-		if(math::nd4j_abs<T>(d) < min)
-			d = min;
+		if(math::nd4j_abs<T>(d) < DataTypeUtils::min<T>())
+			d = DataTypeUtils::min<T>();
 		d = (T)1. / d;
 
 		c = (T)(1.) + val / c;
-		if(math::nd4j_abs<T>(c) < min)
-			c = min;		
+		if(math::nd4j_abs<T>(c) < DataTypeUtils::min<T>())
+			c = DataTypeUtils::min<T>();		
 		
 		f *= c * d;
 
@@ -79,19 +79,19 @@ static T continFract(const T a, const T b, const T x, const T min, const T eps) 
 		val = -(a + i) * (apb + i) * x / ((a + i2) * (apu + i2));
 		
 		d = (T)(1.) + val * d;
-		if(math::nd4j_abs<T>(d) < min)
-			d = min;
+		if(math::nd4j_abs<T>(d) < DataTypeUtils::min<T>())
+			d = DataTypeUtils::min<T>();
 		d = (T)1. / d;
 
 		c = (T)(1.) + val / c;
-		if(math::nd4j_abs<T>(c) < min)
-			c = min;
+		if(math::nd4j_abs<T>(c) < DataTypeUtils::min<T>())
+			c = DataTypeUtils::min<T>();
 
 		delta = c * d;
 		f *= delta;
 		
 		// condition to stop loop		
-		if(math::nd4j_abs<T>(delta - (T)1.) <= eps) 
+		if(math::nd4j_abs<T>(delta - (T)1.) <= DataTypeUtils::eps<T>()) 		
 			break;
     }
     
@@ -141,76 +141,62 @@ static T gausLegQuad(const T a, const T b, const T x) {
 ///////////////////////////////////////////////////////////////////
 // evaluates incomplete beta function for positive a and b, and x between 0 and 1.
 template <typename T> 
-static T betaInc(const T a, const T b, const T x, const T min, const T eps) {	
+static T betaInc(const T a, const T b, const T x) {	
 	// if (a <= (T)0. || b <= (T)0.) 
 	// 	throw("betaInc function: a and b must be > 0 !");
 
 	// if (x < (T)0. || x > (T)1.) 
 	// 	throw("betaInc function: x must be within (0, 1) interval !");
 	
+
+	// t^{n-1} * (1 - t)^{n-1} is symmetric function with respect to x = 0.5
+	if(a == b && x == (T)0.5)
+		return (T)0.5;
+
 	if (x == (T)0. || x == (T)1.) 
 		return x;
 	
 	if (a > (T)maxValue && b > (T)maxValue) 
-		return gausLegQuad<T>(a, b, x);
+		return gausLegQuad<T>(a, b, x);	
 
-	T beta = math::nd4j_exp<T>( lgamma(a + b) - lgamma(a) - lgamma(b) + a * math::nd4j_log<T>(x) + b * math::nd4j_log<T>((T)1. - x));
+	T front = math::nd4j_exp<T>( lgamma(a + b) - lgamma(a) - lgamma(b) + a * math::nd4j_log<T>(x) + b * math::nd4j_log<T>((T)1. - x));	
 	
 	// continued fractions
 	if (x < (a + (T)1.) / (a + b + (T)2.)) 
-		return beta*continFract(a, b, x, min, eps) / a;
+		return front * continFract(a, b, x) / a;
 	// symmetry relation
 	else 
-		return (T)1. - beta * continFract(b, a, (T)1. - x, min, eps) / b;
+		return (T)1. - front * continFract(b, a, (T)1. - x) / b;
 
 }    
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-// the same for arrays 
+// overload betaInc for arrays, shapes of a, b and x must be the same !!!
 template <typename T> 
 NDArray<T> betaInc(const NDArray<T>& a, const NDArray<T>& b, const NDArray<T>& x) {	
 	
-	// evaluate minimum and epsilon values for each possible type T
-	T min, eps;	
-	switch (sizeof(T)) {
-		case 8:				// T = double
-			eps = std::numeric_limits<double>::epsilon();
-			min = std::numeric_limits<double>::min()/eps;
-			break;
-		case 4:				// T = float
-			eps = std::numeric_limits<float>::epsilon();
-			min = std::numeric_limits<float>::min()/eps;
-			break;
-		case 2:				// T = float16
-			eps = 0.00097656;
-			min = 6.1035e-05/eps;
-			break;
-		default:
-			throw("betaInc function: type of T is undefined !");
-			break;
-	}
-
 	NDArray<T> result(&x, false, x.getWorkspace());
-#pragma omp parallel for if(x.lengthOf() > Environment::getInstance()->elementwiseThreshold()) schedule(static)	
+
+#pragma omp parallel for if(x.lengthOf() > Environment::getInstance()->elementwiseThreshold()) schedule(guided)	
 	for(int i = 0; i < x.lengthOf(); ++i)
-		result(i) = betaInc<T>(a(i), b(i), x(i), min, eps);
+		result(i) = betaInc<T>(a(i), b(i), x(i));
 
 	return result;
 }
 
 
-template float   continFract<float>  (const float   a, const float   b, const float   x, const float   min, const float   eps);
-template float16 continFract<float16>(const float16 a, const float16 b, const float16 x, const float16 min, const float16 eps);
-template double  continFract<double> (const double  a, const double  b, const double  x, const double  min, const double  eps);
+template float   continFract<float>  (const float   a, const float   b, const float   x);
+template float16 continFract<float16>(const float16 a, const float16 b, const float16 x);
+template double  continFract<double> (const double  a, const double  b, const double  x);
 
 template float   gausLegQuad<float>  (const float   a, const float   b, const float   x);
 template float16 gausLegQuad<float16>(const float16 a, const float16 b, const float16 x);
 template double  gausLegQuad<double> (const double  a, const double  b, const double  x);
 
-template float   betaInc<float>  (const float   a, const float   b, const float   x, const float   min, const float   eps);
-template float16 betaInc<float16>(const float16 a, const float16 b, const float16 x, const float16 min, const float16 eps);
-template double  betaInc<double> (const double  a, const double  b, const double  x, const double  min, const double  eps);
+template float   betaInc<float>  (const float   a, const float   b, const float   x);
+template float16 betaInc<float16>(const float16 a, const float16 b, const float16 x);
+template double  betaInc<double> (const double  a, const double  b, const double  x);
 
 template NDArray<float>   betaInc<float>  (const NDArray<float>&   a, const NDArray<float>&   b, const NDArray<float>&  x);
 template NDArray<float16> betaInc<float16>(const NDArray<float16>& a, const NDArray<float16>& b, const NDArray<float16>& x);
