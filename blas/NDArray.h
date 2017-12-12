@@ -3,7 +3,6 @@
 
 #include <initializer_list>
 #include <functional>
-#include "NativeOps.h"
 #include <shape.h>
 #include "NativeOpExcutioner.h"
 #include <memory/Workspace.h>
@@ -281,6 +280,9 @@ namespace nd4j {
         // 
         template<typename OpName>
         T reduceNumber(T *extraParams = nullptr);
+
+        template<typename OpName>
+        Nd4jIndex indexReduceNumber(T *extraParams = nullptr);
 
         Nd4jIndex argMax(std::initializer_list<int> dimensions = {});
 
