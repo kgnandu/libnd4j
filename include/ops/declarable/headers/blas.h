@@ -50,6 +50,6 @@ namespace nd4j {
          */
         DECLARE_CUSTOM_OP(batched_gemm, -1, -1, false, 0, 9);
 
-        DECLARE_CUSTOM_OP(batched_gemm_strided, 4, 1, false, 0, 9);
+        DECLARE_CUSTOM_OP(batched_gemm_strided, 4, 1, false, 0, 12);
     }
 }
