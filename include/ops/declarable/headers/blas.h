@@ -49,5 +49,7 @@ namespace nd4j {
          * PLEASE NOTE: M, N, K, ldA, ldB, ldC should be equal for all matrices within batch.
          */
         DECLARE_CUSTOM_OP(batched_gemm, -1, -1, false, 0, 9);
+
+        DECLARE_CUSTOM_OP(batched_gemm_strided, 4, 1, false, 0, 9);
     }
 }
