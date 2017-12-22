@@ -692,6 +692,112 @@ TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_1) {
     delete result;
 }
 
+TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_2) {
+    NDArray<double> a('c', {1, 3}, {1, 1, 1});
+    NDArray<double> b('c', {1, 3}, {0, 0, 0});
+    NDArray<double> x('c', {3, 3, 4});
+    NDArray<double> y('c', {3, 4, 3});
+
+    NDArray<double> x0('c', {3, 4});
+    NDArray<double> y0('c', {4, 3});
+    NDArrayFactory<double>::linspace(1, x0);
+    NDArrayFactory<double>::linspace(1, y0);
+
+    x.template applyBroadcast<simdOps::Copy<double>>({1, 2}, &x0);
+    y.template applyBroadcast<simdOps::Copy<double>>({1, 2}, &y0);
+
+//    x.printIndexedBuffer("x");
+
+    auto z0 = NDArrayFactory<double>::mmulHelper(&x0, &y0);
+
+    //z0->printIndexedBuffer("z0i");
+    //z0->printBuffer("z0r");
+
+    nd4j::ops::batched_gemm_strided<double> op;
+    auto result = op.execute({&a, &b, &x, &y}, {}, {});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+
+    auto z = result->at(0);
+
+//    z->printShapeInfo("Z buff");
+
+    auto tads = NDArrayFactory<double>::allTensorsAlongDimension(z, {1, 2});
+
+    for (int e = 0; e < tads->size(); e++) {
+        auto cz = tads->at(e);
+
+//        cz->printShapeInfo("cz shape");
+//        z0->printIndexedBuffer("z0 buffer");
+//        cz->printIndexedBuffer("cz buffer");
+
+        ASSERT_TRUE(z0->isSameShape(cz));
+        ASSERT_TRUE(z0->equalsTo(cz));
+    }
+
+    delete tads;
+    delete result;
+}
+
+
+TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_3) {
+    NDArray<double> a('c', {1, 3}, {1, 1, 1});
+    NDArray<double> b('c', {1, 3}, {0, 0, 0});
+    NDArray<double> x('f', {3, 3, 4});
+    NDArray<double> y('f', {3, 4, 3});
+
+    NDArray<double> x0('f', {3, 4});
+    NDArray<double> y0('f', {4, 3});
+    NDArrayFactory<double>::linspace(1, x0);
+    NDArrayFactory<double>::linspace(1, y0);
+
+    x.template applyBroadcast<simdOps::Copy<double>>({1, 2}, &x0);
+    y.template applyBroadcast<simdOps::Copy<double>>({1, 2}, &y0);
+
+    auto tadsX = NDArrayFactory<double>::allTensorsAlongDimension(&x, {1, 2});
+    for (int e = 0; e < tadsX->size(); e++) {
+        ASSERT_TRUE(tadsX->at(e)->equalsTo(&x0));
+    }
+
+    auto tadsY = NDArrayFactory<double>::allTensorsAlongDimension(&y, {1, 2});
+    for (int e = 0; e < tadsY->size(); e++) {
+        ASSERT_TRUE(tadsY->at(e)->equalsTo(&y0));
+    }
+    
+
+//    x.printIndexedBuffer("x");
+
+    auto z0 = NDArrayFactory<double>::mmulHelper(&x0, &y0);
+
+    //z0->printIndexedBuffer("z0i");
+    //z0->printBuffer("z0r");
+
+    nd4j::ops::batched_gemm_strided<double> op;
+    auto result = op.execute({&a, &b, &x, &y}, {}, {});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+
+    auto z = result->at(0);
+
+//    z->printShapeInfo("Z buff");
+
+    auto tads = NDArrayFactory<double>::allTensorsAlongDimension(z, {1, 2});
+
+    for (int e = 0; e < tads->size(); e++) {
+        auto cz = tads->at(e);
+
+//        cz->printShapeInfo("cz shape");
+        z0->printIndexedBuffer("z0 buffer");
+        cz->printIndexedBuffer("cz buffer");
+
+        ASSERT_TRUE(z0->isSameShape(cz));
+        ASSERT_TRUE(z0->equalsTo(cz));
+    }
+
+    delete tads;
+    delete tadsX;
+    delete tadsY;
+    delete result;
+}
+
 TEST_F(DeclarableOpsTests3, Test_ReverseDivide_1) {
     NDArray<float> x('c', {1, 3}, {2, 2, 2});
     NDArray<float> y('c', {1, 3}, {4, 6, 8});

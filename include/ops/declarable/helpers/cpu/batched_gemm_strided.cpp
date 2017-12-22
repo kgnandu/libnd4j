@@ -14,17 +14,18 @@ namespace nd4j {
                 CBLAS_TRANSPOSE tA = CblasNoTrans; //vA->ordering() == 'f' ? CblasNoTrans : CblasTrans;
                 CBLAS_TRANSPOSE tB = CblasNoTrans; //vB->ordering() == 'f' ? CblasNoTrans : CblasTrans;
 
-                int M = vA->sizeAt(1);
-                int N = vB->sizeAt(2);
-                int K = vA->sizeAt(2);
+                int M = tA == CblasNoTrans ? vA->sizeAt(1) : vA->sizeAt(2);
+                int N = tA == CblasNoTrans ? vB->sizeAt(2) : vB->sizeAt(1);
+                int K = tA == CblasNoTrans ? vA->sizeAt(2) : vA->sizeAt(1);
 
                 int ldA = tA == CblasNoTrans ? M : K;
                 int ldB = tB == CblasNoTrans ? K : N;
                 int ldC = M;
 
 
-                #pragma omp parallel for
+                //#pragma omp parallel for
                 for (int p = 0; p < P; ++p) {
+
                     auto A = vA->buffer() + (p * vA->sizeAt(1) * vA->sizeAt(2));
                     auto B = vB->buffer() + (p * vB->sizeAt(1) * vB->sizeAt(2));
                     auto C = vC->buffer() + (p * vC->sizeAt(1) * vC->sizeAt(2));
@@ -34,7 +35,7 @@ namespace nd4j {
                         for (int n = 0; n < N; ++n) {
                             T c_mnp = 0;
 
-                            #pragma omp simd
+                            //#pragma omp simd
                             for (int k = 0; k < K; ++k)
                                 c_mnp += A[tA == CblasNoTrans ? (m + k * ldA) : (m * ldA + k)] * B[tB == CblasNoTrans ? (k + n * ldB) : (k * ldB + n)];
 

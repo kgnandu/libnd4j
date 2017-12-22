@@ -41,7 +41,7 @@ namespace nd4j {
                 int *newShape;
                 ALLOCATE(newShape, block.getWorkspace(), shape::shapeInfoLength(3), int);
 
-                shape::shapeBufferFortran(3, shape.data(), newShape);
+                shape::shapeBuffer(3, shape.data(), newShape);
 
                 shapeList->push_back(newShape);
             }
