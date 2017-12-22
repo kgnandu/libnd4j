@@ -671,6 +671,15 @@ TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_7) {
     delete result;
 }
 
+TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_1) {
+    NDArray<double> a('c', {1, 3}, {1, 1, 1});
+    NDArray<double> b('c', {1, 3}, {0, 0, 0});
+    NDArray<double> x('f', {3, 3, 4});
+    NDArray<double> y('f', {3, 4, 3});
+    NDArrayFactory<double>::linspace(1, x);
+    NDArrayFactory<double>::linspace(1, y);
+}
+
 TEST_F(DeclarableOpsTests3, Test_ReverseDivide_1) {
     NDArray<float> x('c', {1, 3}, {2, 2, 2});
     NDArray<float> y('c', {1, 3}, {4, 6, 8});

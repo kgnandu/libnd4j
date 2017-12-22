@@ -3,80 +3,37 @@
 //
 
 #include <ops/declarable/headers/blas.h>
+#include <ops/declarable/helpers/batched_gemm_strided.h>
 
 namespace nd4j {
     namespace ops {
-        CUSTOM_OP_IMPL(batched_gemm_strided, 4, 1, false, 0, 12) {
+        CUSTOM_OP_IMPL(batched_gemm_strided, 4, 1, false, 0, 0) {
             auto alphas = INPUT_VARIABLE(0);
             auto betas = INPUT_VARIABLE(1);
             auto A = INPUT_VARIABLE(2);
             auto B = INPUT_VARIABLE(3);
             auto C = OUTPUT_VARIABLE(4);
 
-            int transA = INT_ARG(0);
-            int transB = INT_ARG(1);
-            int M = INT_ARG(2);
-            int N = INT_ARG(3);
-            int K = INT_ARG(4);
-            int ldA = INT_ARG(5);
-            int ldB = INT_ARG(6);
-            int ldC = INT_ARG(7);
-            int strideA = INT_ARG(8);
-            int strideB = INT_ARG(9);
-            int strideC = INT_ARG(10);
-            int batchSize = INT_ARG(11);
+            REQUIRE_TRUE(A->rankOf() == 3 && B->rankOf() == 3 && C->rankOf() == 3, 0, "BatchedGemmStrided: A, B and C should be rank 3 arrays");
+            REQUIRE_TRUE(A->sizeAt(0) == B->sizeAt(0) && A->sizeAt(0) == C->sizeAt(0), 0, "BatchedGemmStrided: number of subarrays in batch should match for all A, B, C");
+            int batchSize = A->sizeAt(0);
 
-            if (transA == 0)
-                transA = 111;
-            
-            if (transB == 0)
-                transB = 111;
+            REQUIRE_TRUE(batchSize == alphas->lengthOf() && batchSize == betas->lengthOf(), 0, "BatchedGemmStrided: lengths of Alpha and Beta should match batch size of %i, but got alpha of %i, and beta of % instead", batchSize, alphas->lengthOf(), betas->lengthOf());
 
-            if (transA == 1)
-                transA = 112;
-            
-            if (transB == 1)
-                transB = 112;
-
-            REQUIRE_TRUE((transA == 111 || transA == 112) && (transB == 111 || transB == 112), 0, "BatchedGemmStrided: valid values for transA and transB are: 0/1 or 111/112, for NoTrans/Trans respectively")
-            REQUIRE_TRUE(M > 0 && N > 0 && K > 0 && ldA > 0 && ldB > 0 && ldC > 0 && batchSize > 0, 0, "BatchedGemmStrided: M, N, K, ldA, ldB, ldC and batchSize should have positive values");
+            nd4j::ops::helpers::_bgemms(A, B, C, alphas, betas);
 
             return ND4J_STATUS_OK;
         };
 
         DECLARE_SHAPE_FN(batched_gemm_strided) {
-            auto shapeList = new ShapeList();
+            auto shapeList = new ShapeList();            
 
-            int transA = INT_ARG(0);
-            int transB = INT_ARG(1);
-            int M = INT_ARG(2);
-            int N = INT_ARG(3);
-            int K = INT_ARG(4);
-            int ldA = INT_ARG(5);
-            int ldB = INT_ARG(6);
-            int ldC = INT_ARG(7);
-            int strideA = INT_ARG(8);
-            int strideB = INT_ARG(9);
-            int strideC = INT_ARG(10);
-            int batchSize = INT_ARG(11);
+            auto A = inputShape->at(2);
+            auto B = inputShape->at(3);
 
-            if (!(M > 0 && N > 0 && K > 0 && ldA > 0 && ldB > 0 && ldC > 0 && batchSize > 0)) {
-                int *newShape;
-                ALLOCATE(newShape, block.getWorkspace(), shape::shapeInfoLength(2), int);
-
-                newShape[0] = 2;
-                newShape[1] = 1;
-                newShape[2] = 1;
-                newShape[3] = 1;
-                newShape[4] = 1;
-                newShape[5] = 0;
-                newShape[6] = 1;
-                newShape[7] = 99;
-
-                shapeList->push_back(newShape);
-                return shapeList;
-            }
-            
+            int batchSize = shape::sizeAt(A, 0);
+            int M = shape::sizeAt(A, 1);
+            int N = shape::sizeAt(B, 2);
 
             std::vector<int> shape({batchSize, M, N});
 
