@@ -12,7 +12,7 @@ namespace nd4j {
             auto betas = INPUT_VARIABLE(1);
             auto A = INPUT_VARIABLE(2);
             auto B = INPUT_VARIABLE(3);
-            auto C = OUTPUT_VARIABLE(4);
+            auto C = OUTPUT_VARIABLE(0);
 
             REQUIRE_TRUE(A->rankOf() == 3 && B->rankOf() == 3 && C->rankOf() == 3, 0, "BatchedGemmStrided: A, B and C should be rank 3 arrays");
             REQUIRE_TRUE(A->sizeAt(0) == B->sizeAt(0) && A->sizeAt(0) == C->sizeAt(0), 0, "BatchedGemmStrided: number of subarrays in batch should match for all A, B, C");

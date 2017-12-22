@@ -11,23 +11,23 @@ namespace nd4j {
             void _bgemms(NDArray<T> *vA, NDArray<T> *vB, NDArray<T> *vC, NDArray<T> *alphas, NDArray<T> *betas) {
                 int P = vA->sizeAt(0);
 
+                CBLAS_TRANSPOSE tA = CblasNoTrans; //vA->ordering() == 'f' ? CblasNoTrans : CblasTrans;
+                CBLAS_TRANSPOSE tB = CblasNoTrans; //vB->ordering() == 'f' ? CblasNoTrans : CblasTrans;
+
                 int M = vA->sizeAt(1);
                 int N = vB->sizeAt(2);
-                int K = vB->sizeAt(1);
+                int K = vA->sizeAt(2);
 
-                int ldA = 0;
-                int ldB = 0;
-                int ldC = 0;
-
-                CBLAS_TRANSPOSE tA = (CBLAS_TRANSPOSE) 111;
-                CBLAS_TRANSPOSE tB = (CBLAS_TRANSPOSE) 111;
+                int ldA = tA == CblasNoTrans ? M : K;
+                int ldB = tB == CblasNoTrans ? K : N;
+                int ldC = M;
 
 
-                #pragma omp parallel for                   
+                #pragma omp parallel for
                 for (int p = 0; p < P; ++p) {
-                    auto A = vA->buffer() + (vA->sizeAt(1) * vA->sizeAt(2));
-                    auto B = vB->buffer() + (vB->sizeAt(1) * vB->sizeAt(2));
-                    auto C = vC->buffer() + (vC->sizeAt(1) * vC->sizeAt(2));
+                    auto A = vA->buffer() + (p * vA->sizeAt(1) * vA->sizeAt(2));
+                    auto B = vB->buffer() + (p * vB->sizeAt(1) * vB->sizeAt(2));
+                    auto C = vC->buffer() + (p * vC->sizeAt(1) * vC->sizeAt(2));
                     auto alpha = alphas->getScalar(p);
                     auto beta = betas->getScalar(p);
                     for (int m = 0; m < M; ++m) {

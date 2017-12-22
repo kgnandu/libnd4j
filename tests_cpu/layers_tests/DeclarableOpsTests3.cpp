@@ -674,10 +674,22 @@ TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_7) {
 TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_1) {
     NDArray<double> a('c', {1, 3}, {1, 1, 1});
     NDArray<double> b('c', {1, 3}, {0, 0, 0});
-    NDArray<double> x('f', {3, 3, 4});
-    NDArray<double> y('f', {3, 4, 3});
+    NDArray<double> x('c', {3, 3, 4});
+    NDArray<double> y('c', {3, 4, 3});
+    NDArray<double> exp('f', {3, 3, 3}, {70., 80., 90., 158., 184., 210., 246., 288., 330., 1030., 1088., 1146., 1310., 1384., 1458., 1590., 1680., 1770., 3142., 3248., 3354., 3614., 3736., 3858., 4086., 4224., 4362.});
     NDArrayFactory<double>::linspace(1, x);
     NDArrayFactory<double>::linspace(1, y);
+
+    nd4j::ops::batched_gemm_strided<double> op;
+    auto result = op.execute({&a, &b, &x, &y}, {}, {});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+
+    auto z = result->at(0);
+
+    ASSERT_TRUE(exp.isSameShape(z));
+    ASSERT_TRUE(exp.equalsTo(z));
+
+    delete result;
 }
 
 TEST_F(DeclarableOpsTests3, Test_ReverseDivide_1) {
