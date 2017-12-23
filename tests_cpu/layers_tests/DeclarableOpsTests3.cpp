@@ -764,7 +764,7 @@ TEST_F(DeclarableOpsTests3, Test_Batched_Gemm_Strided_3) {
     }
     
 
-//    x.printIndexedBuffer("x");
+    x.printBuffer("x");
 
     auto z0 = NDArrayFactory<double>::mmulHelper(&x0, &y0);
 
