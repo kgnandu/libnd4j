@@ -1392,6 +1392,21 @@ bool NDArray<T>::reshapei(const std::vector<int>& shape) {
     }
 
     template <typename T>
+    template <typename OpName>
+    void NDArray<T>::applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, T *extraParams, NDArray<T> *target, std::initializer_list<int> targetAxis) {
+        std::vector<int> ta(thisAxis);
+        std::vector<int> oa(otherAxis);
+        std::vector<int> za(targetAxis);
+        applyTad<OpName>(ta, other, oa, extraParams, target, za);
+    }
+
+    template <typename T>
+    template <typename OpName>
+    void NDArray<T>::applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, T *extraParams, NDArray<T> *target, std::vector<int>& targetAxis) {
+
+    }
+
+    template <typename T>
     void NDArray<T>::enforce(std::vector<int> &dimensions, char o) {
 
         Nd4jIndex prod = 1;

@@ -445,12 +445,13 @@ namespace nd4j {
         template<typename OpName>
         void applyScalar(NDArray<T>& scalar, NDArray<T>* target = nullptr, T *extraParams = nullptr);
 
+        
+#ifndef __JAVACPP_HACK__
         /** 
         *  apply operation "func" to an array
         *  func - what operation to apply
         *  target - where to store result
         */ 
-#ifndef __JAVACPP_HACK__
         void applyLambda(const std::function<T(T)>& func, NDArray<T>* target = nullptr);
 
         /** 
@@ -461,6 +462,12 @@ namespace nd4j {
         */ 
         void applyPairwiseLambda(NDArray<T>* other, const std::function<T(T, T)>& func, NDArray<T>* target = nullptr);
 #endif
+
+        template<typename OpName>
+        void applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, T *extraParams = nullptr, NDArray<T> *target = nullptr, std::initializer_list<int> targetAxis = {});
+        
+        template<typename OpName>
+        void applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, T *extraParams, NDArray<T> *target, std::vector<int>& targetAxis);
 
         /**
         *  apply OpName random operation to array 
