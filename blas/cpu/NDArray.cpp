@@ -1391,20 +1391,82 @@ bool NDArray<T>::reshapei(const std::vector<int>& shape) {
         enforce(dims, order);
     }
 
+#ifndef __JAVACPP_HACK__
     template <typename T>
     template <typename OpName>
-    void NDArray<T>::applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, T *extraParams, NDArray<T> *target, std::initializer_list<int> targetAxis) {
+    void NDArray<T>::applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, const std::function<T(T, T)>& func, NDArray<T> *target, std::initializer_list<int> targetAxis) {
         std::vector<int> ta(thisAxis);
         std::vector<int> oa(otherAxis);
         std::vector<int> za(targetAxis);
-        applyTad<OpName>(ta, other, oa, extraParams, target, za);
+        applyTad<OpName>(ta, other, oa, func, target, za);
     }
 
     template <typename T>
     template <typename OpName>
-    void NDArray<T>::applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, T *extraParams, NDArray<T> *target, std::vector<int>& targetAxis) {
+    void NDArray<T>::applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, const std::function<T(T, T)>& func, NDArray<T> *target, std::vector<int>& targetAxis) {
+        NDArray<T> *z = target;
+        std::vector<int> *zAxis = &targetAxis;
+        if (z == nullptr) {
+            z = this;
+            zAxis = &thisAxis;
+        }
 
+        shape::TAD tadX(this->_shapeInfo, thisAxis.data(), thisAxis.size());
+        tadX.createTadOnlyShapeInfo();
+        tadX.createOffsets();
+
+        shape::TAD tadY(other->_shapeInfo, otherAxis.data(), otherAxis.size());
+        tadY.createTadOnlyShapeInfo();
+        tadY.createOffsets();
+
+        if (!shape::equalsSoft(tadX.tadOnlyShapeInfo, tadY.tadOnlyShapeInfo)) {
+            // TODO: add proper messages here
+            nd4j_printf("fail\n","");
+            throw "fail";
+        }
+
+        shape::TAD tadZ(z->_shapeInfo, zAxis->data(), zAxis->size());
+        tadZ.createTadOnlyShapeInfo();
+        tadZ.createOffsets();
+
+        const Nd4jIndex tadLength = shape::tadLength(this->_shapeInfo, thisAxis.data(), thisAxis.size());
+        const Nd4jIndex numTads = this->lengthOf() / tadLength;
+
+        int xCoord[MAX_RANK];
+        int yCoord[MAX_RANK];
+        int zCoord[MAX_RANK];
+
+        auto xShape = shape::shapeOf(tadX.tadOnlyShapeInfo);
+        auto yShape = shape::shapeOf(tadY.tadOnlyShapeInfo);
+        auto zShape = shape::shapeOf(tadZ.tadOnlyShapeInfo);
+
+        auto xStrides = shape::stride(tadX.tadOnlyShapeInfo);
+        auto yStrides = shape::stride(tadY.tadOnlyShapeInfo);
+        auto zStrides = shape::stride(tadZ.tadOnlyShapeInfo);
+
+        auto xRank = shape::rank(tadX.tadOnlyShapeInfo);
+        auto yRank = shape::rank(tadY.tadOnlyShapeInfo);
+        auto zRank = shape::rank(tadZ.tadOnlyShapeInfo);
+
+#pragma omp parallel for schedule(static) shared(tadX, tadY, tadZ) private(xCoord, yCoord, zCoord)
+        for (int t = 0; t < numTads; t++) {
+
+#pragma omp simd
+            for (int e = 0; e < tadLength; e++) {
+                shape::ind2subC(xRank, xShape, e, xCoord);
+                shape::ind2subC(yRank, yShape, e, yCoord);
+                shape::ind2subC(zRank, zShape, e, zCoord);
+
+                Nd4jIndex xOffset = shape::getOffset(tadX.tadOffsets[t], xShape, xStrides, xCoord, xRank);
+                Nd4jIndex yOffset = shape::getOffset(tadY.tadOffsets[t], yShape, yStrides, yCoord, yRank);
+                Nd4jIndex zOffset = shape::getOffset(tadZ.tadOffsets[t], zShape, zStrides, zCoord, zRank);
+
+                target->_buffer[zOffset] = func(this->_buffer[xOffset], other->_buffer[yOffset]);
+            }
+        }
     }
+
+#endif
 
     template <typename T>
     void NDArray<T>::enforce(std::vector<int> &dimensions, char o) {

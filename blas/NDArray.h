@@ -461,14 +461,14 @@ namespace nd4j {
         *  target - where to store result
         */ 
         void applyPairwiseLambda(NDArray<T>* other, const std::function<T(T, T)>& func, NDArray<T>* target = nullptr);
-#endif
 
         template<typename OpName>
-        void applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, T *extraParams = nullptr, NDArray<T> *target = nullptr, std::initializer_list<int> targetAxis = {});
+        void applyTad(std::initializer_list<int> &thisAxis, NDArray<T> *other, std::initializer_list<int> &otherAxis, const std::function<T(T, T)>& func, NDArray<T> *target = nullptr, std::initializer_list<int> targetAxis = {});
         
         template<typename OpName>
-        void applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, T *extraParams, NDArray<T> *target, std::vector<int>& targetAxis);
+        void applyTad(std::vector<int> &thisAxis, NDArray<T> *other, std::vector<int> &otherAxis, const std::function<T(T, T)>& func, NDArray<T> *target, std::vector<int>& targetAxis);
 
+#endif
         /**
         *  apply OpName random operation to array 
         *  buffer - pointer on RandomBuffer
