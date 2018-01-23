@@ -6,7 +6,7 @@
 
 namespace nd4j {
     namespace ops {
-        CUSTOM_OP_IMPL(top_k, 1, 2, false, -2, 0) {
+        CUSTOM_OP_IMPL(top_k, 1, 2, false, 0, -2) {
             NDArray<T>* x = INPUT_VARIABLE(0);
             int k = 1;// from params
             bool needSort = true;
@@ -61,6 +61,7 @@ namespace nd4j {
                         else
                             return true;
                     });
+
                     std::sort(vals.begin(), vals.end(), [](int a, int b) {
                         return a > b;   
                     });
@@ -70,7 +71,6 @@ namespace nd4j {
                     values->putScalar(e, vals.at(e));
                     indeces->putScalar(e, inds.at(e));
                 }
-        
                 return ND4J_STATUS_OK;
             }
             else

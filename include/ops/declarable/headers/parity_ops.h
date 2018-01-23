@@ -418,6 +418,6 @@ namespace nd4j {
          *  The second is k (default 1) - optional
          *  The third is boolean value(default is 1) (0 - as is, 1 - sorted by value) optional
          */
-        DECLARE_CUSTOM_OP(top_k, 1, 2, false, -2, 0);
+        DECLARE_CUSTOM_OP(top_k, 1, 2, false, 0, -2);
     }
 }
