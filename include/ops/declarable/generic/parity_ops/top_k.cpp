@@ -32,19 +32,23 @@ namespace nd4j {
             else if (k > 1) {
                 std::vector<int> inds(k);
                 std::vector<T> vals(k);
-
+                std::vector<T> sortedVals;
                 for (int e = 0; e < k; e++) {
                     vals[e] = x->getScalar(e); // start initializing
                     inds[e] = e;
                 }
-
+                sortedVals = vals;
+                std::sort(sortedVals.begin(), sortedVals.end());
                 for (int e = k; e < x->lengthOf(); e++) {
                     T v = x->getScalar(e);
-                    for (int j = 0; j < k; ++j) {
-                        if (v > vals[j]) {
-                            vals[j] = v;
-                            inds[j] = e;
-                            break; // enough
+                    if (v > sortedVals[0]) { // if the value need to be substituted
+                        if (std::find(sortedVals.begin(), sortedVals.end(), v) == sortedVals.end()) {
+                        // only for unique values
+                            ssize_t ind = std::find(vals.begin(), vals.end(), sortedVals[0]) - vals.begin();
+                            vals[ind] = v;
+                            inds[ind] = e;
+                            sortedVals = vals;
+                            std::sort(sortedVals.begin(), sortedVals.end());
                         }
                     }
                 }
@@ -52,7 +56,10 @@ namespace nd4j {
                 // if need to be sort results
                 if (needSort) {
                     std::sort(inds.begin(), inds.end(), [vals](int a, int b) {
-                        return vals[a] > vals[b];   
+                        if (a < vals.size() && b < vals.size())
+                            return vals[a] > vals[b];
+                        else
+                            return true;
                     });
                     std::sort(vals.begin(), vals.end(), [](int a, int b) {
                         return a > b;   

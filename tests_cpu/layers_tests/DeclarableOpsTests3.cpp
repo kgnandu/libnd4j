@@ -135,10 +135,10 @@ TEST_F(DeclarableOpsTests3, Test_TopK_1) {
 
 TEST_F(DeclarableOpsTests3, Test_TopK_2) {
     NDArray<float> x('c', {1, 6}, {1, 5, 4, 2, 3, 2});
-    NDArray<float> expV('c', {3}, {5, 4, 3});
-    NDArray<float> expI('c', {3}, {1, 2, 4});
+    NDArray<float> expV('c', {3}, {5.0f, 4.0f, 3.0f});
+    NDArray<float> expI('c', {3}, {1.0f, 2.0f, 4.0f});
 
-    nd4j::ops::unique<float> op;
+    nd4j::ops::top_k<float> op;
     auto result = op.execute({&x}, {}, {3, 1});
 
     ASSERT_EQ(ND4J_STATUS_OK, result->status());
@@ -146,9 +146,18 @@ TEST_F(DeclarableOpsTests3, Test_TopK_2) {
     
     auto v = result->at(0);
     auto i = result->at(1);
+    
+    v->printShapeInfo("shape v");
+    expV.printShapeInfo("shape expV");
 
-    v->printShapeInfo("v");
+    i->printShapeInfo("shape I");
+    expI.printShapeInfo("shape expI");
 
+    v->printIndexedBuffer("v");
+    expV.printIndexedBuffer("expV");
+    i->printIndexedBuffer("i");
+    expI.printIndexedBuffer("expI");
+    
     ASSERT_TRUE(expV.isSameShape(v));
     ASSERT_TRUE(expV.equalsTo(v));
 
