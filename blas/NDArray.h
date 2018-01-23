@@ -738,6 +738,12 @@ namespace nd4j {
         */
         void operator+=(const NDArray<T>& other);
 
+        /**
+        *  subtraction unary operator array -= other
+        *  other - input array to add
+        */
+        void operator-=(const NDArray<T>& other);
+
         void operator+=(const T other);
         void operator-=(const T other);
         
@@ -839,6 +845,29 @@ namespace nd4j {
         void setIdentity();
 
         /**
+        *  swaps the contents of tow arrays, 
+        *  PLEASE NOTE: method doesn't take into account the shapes of arrays, shapes may be different except one condition: arrays lengths must be the same 
+        */
+        void swapUnsafe(NDArray<T>& other);
+
+        /**
+        *  return vector with buffer which points on corresponding diagonal elements of array
+        *  type - means of vector to be returned: column ('c') or row ('r')
+        */
+        NDArray<T>* diagonal(const char type ) const;
+
+        /**
+        *  set zeros in specified array block, works only with 2D matrix
+        *
+        *  block - block of array where to put zeros. Possible values are:
+        *      "trianUp"   - upper triangular block excluding diagonal 
+        *      "trianUpD"  - upper triangular block including diagonal 
+        *      "trianLow"  - lower triangular block excluding diagonal
+        *      "trianLowD" - lower triangular block including diagonal
+        */
+        void setZeros(const char* block);
+
+		/**
         *  change an array by repeating it the number of times in order to acquire new shape equal to the input shape
         *
         *  shape  - contains new shape to broadcast array to 
@@ -1052,7 +1081,18 @@ namespace nd4j {
         */ 
         FORCEINLINE T& operator()(const int i, const int j, const int k);
 
+        /**
+        *  inline modifying operator for 4D array, i - height, j - width, k - depth
+        */ 
+        FORCEINLINE T& operator()(const int t, const int u, const int v, const int w);
 
+        /**
+        *  inline accessing operator for 4D array, i - height, j - width, k - depth
+        */
+        FORCEINLINE T operator()(const int t, const int u, const int v, const int w) const;
+
+        template <typename T2>
+        FORCEINLINE std::vector<T2> asVectorT();
     };
 
 
@@ -1061,6 +1101,18 @@ namespace nd4j {
 //////////////////////////////////////////////////////////////////////////
 ///// IMLEMENTATION OF INLINE METHODS ///// 
 //////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+template <typename T2>
+FORCEINLINE std::vector<T2> NDArray<T>::asVectorT() {
+    std::vector<T2> result(this->lengthOf());
+
+#pragma omp parallel for simd
+    for (int e = 0; e < this->lengthOf(); e++)
+        result[e] = (T2) this->getIndexedScalar(e);
+
+    return result;
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -1299,6 +1351,28 @@ FORCEINLINE T& NDArray<T>::operator()(const int i, const int j, const int k) {
        throw std::invalid_argument("NDArray::operator(i,j,k): one of input indexes is out of array length or rank!=3 !");
 
     int coords[3] = {i, j, k};
+    Nd4jIndex xOffset = shape::getOffset(0, shapeOf(), stridesOf(), coords, rankOf());
+    return _buffer[xOffset];
+}
+
+template<typename T>
+FORCEINLINE T NDArray<T>::operator()(const int t, const int u, const int v, const int w) const {
+    
+    if (rankOf() != 4 || t >= shapeOf()[0] || u >= shapeOf()[1] || v >= shapeOf()[2] || w >= shapeOf()[3])
+       throw std::invalid_argument("NDArray::operator(t,u,v,w): one of input indexes is out of array length or rank!=4 !");
+
+    int coords[4] = {t, u, v, w};
+    Nd4jIndex xOffset = shape::getOffset(0, shapeOf(), stridesOf(), coords, rankOf());
+    return _buffer[xOffset];
+}
+
+template<typename T>
+FORCEINLINE T& NDArray<T>::operator()(const int t, const int u, const int v, const int w) {
+    
+    if (rankOf() != 4 || t >= shapeOf()[0] || u >= shapeOf()[1] || v >= shapeOf()[2] || w >= shapeOf()[3])
+       throw std::invalid_argument("NDArray::operator(t,u,v,w): one of input indexes is out of array length or rank!=4 !");
+
+    int coords[4] = {t, u, v, w};
     Nd4jIndex xOffset = shape::getOffset(0, shapeOf(), stridesOf(), coords, rankOf());
     return _buffer[xOffset];
 }
