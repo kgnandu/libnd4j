@@ -419,5 +419,15 @@ namespace nd4j {
          *  The third is boolean value(default is 1) (0 - as is, 1 - sorted by value) optional
          */
         DECLARE_CUSTOM_OP(top_k, 1, 2, false, 0, -2);
+
+        /**
+         * in_top_k operation returns a vector of k boolean values for 
+         *  given NDArray as vector of predicted in the NDArray k top values
+         *  The first parameter is a NDArray of predicted values.
+         *  The second is NDArray for one k top values will be search.
+         *  The third is k
+         */
+
+        DECLARE_CONFIGURABLE_OP(in_top_k, 2, 1, true, 1, 1);
     }
 }

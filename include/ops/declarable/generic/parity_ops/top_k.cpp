@@ -2,6 +2,7 @@
 //  @author raver119@gmail.com
 //
 
+//#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
