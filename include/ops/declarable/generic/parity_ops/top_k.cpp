@@ -18,6 +18,8 @@ namespace nd4j {
                 needSort = INT_ARG(1);
             }
 
+            REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "k should not be greater than last dimension");
+/*
             if (k == 1) {
                 // using arg_max for it
 
@@ -56,16 +58,16 @@ namespace nd4j {
             
                 // if need to be sort results
                 if (needSort) {
-                    std::sort(inds.begin(), inds.end(), [vals](int a, int b) {
-                        if (a < vals.size() && b < vals.size())
-                            return vals[a] > vals[b];
-                        else
-                            return true;
-                    });
-
-                    std::sort(vals.begin(), vals.end(), [](int a, int b) {
-                        return a > b;   
-                    });
+//                    std::sort(inds.begin(), inds.end(), [vals](int a, int b) {
+//                        if (a < vals.size() && b < vals.size())
+///                            return vals[a] > vals[b];
+//                        else
+//                            return true;
+//                    });
+//
+//                    std::sort(vals.begin(), vals.end(), [](int a, int b) {
+//                        return a > b;   
+//                    });
                 }
 
                 for (int e = 0; e < k; e++) {
@@ -74,12 +76,13 @@ namespace nd4j {
                 }
                 return ND4J_STATUS_OK;
             }
-            else
+            else*/
                 return ND4J_STATUS_BAD_ARGUMENTS;
         }
 
         DECLARE_SHAPE_FN(top_k) {
             auto shapeList = new ShapeList(); 
+            NDArray<T>* x = INPUT_VARIABLE(0);
 
             int k = 1; // default output shape is size 1
 
@@ -87,12 +90,16 @@ namespace nd4j {
                 k = INT_ARG(0);
             }
 
+            //REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "k should not be greater than last dimension");
+
             for (int e = 0; e < 2; e++) { // 2 element tuple at output
                 int* newshape;
-                ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(k), int);
-                //std::vector<int> shape(k);
-                //{1, 1, k, 1, 1, 0, 1, 99};
-                ShapeBuilder::shapeVector(k, newshape);
+                ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(shape::rank(inputShape->at(0))), int);
+                std::vector<int> internalShape(shape::rank(inputShape->at(0)));
+                for (int e = 0 ; e < internalShape.size() - 1; ++e)
+                    internalShape[e] = x->sizeAt(e);
+                internalShape[e] = k;
+//                ShapeBuilder::shapeVector(shape::rank(inputShape->at(0)), internalShape.data(),  newshape);
                 shapeList->push_back(newshape); 
             }
             return shapeList;
