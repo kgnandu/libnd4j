@@ -16,6 +16,9 @@ namespace nd4j {
 
             int k = INT_ARG(0);
 
+            //*** TO DO: remove this after stable working of top_k
+            return ND4J_STATUS_BAD_ARGUMENTS;
+
             nd4j::ops::top_k<T> op;
             auto topKResult = op.execute({source}, {}, {k, 1}); // with sorting
             if (topKResult->status() != ND4J_STATUS_OK)

@@ -77,13 +77,15 @@ namespace nd4j {
                 return ND4J_STATUS_OK;
             }
             else*/
-                return ND4J_STATUS_BAD_ARGUMENTS;
+            //    return ND4J_STATUS_BAD_ARGUMENTS;
+                return ND4J_STATUS_OK;
+
         }
 
         DECLARE_SHAPE_FN(top_k) {
             auto shapeList = new ShapeList(); 
-            NDArray<T>* x = INPUT_VARIABLE(0);
-
+            auto in = inputShape->at(0);
+            int shapeRank = shape::rank(in);
             int k = 1; // default output shape is size 1
 
             if (block.numI() > 0) {
@@ -94,12 +96,12 @@ namespace nd4j {
 
             for (int e = 0; e < 2; e++) { // 2 element tuple at output
                 int* newshape;
-                ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(shape::rank(inputShape->at(0))), int);
-                std::vector<int> internalShape(shape::rank(inputShape->at(0)));
+                ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(shapeRank), int);
+                std::vector<int> internalShape(shapeRank);
                 for (int e = 0 ; e < internalShape.size() - 1; ++e)
-                    internalShape[e] = x->sizeAt(e);
+                    internalShape[e] = shape::sizeAt(in, e);
                 internalShape[e] = k;
-//                ShapeBuilder::shapeVector(shape::rank(inputShape->at(0)), internalShape.data(),  newshape);
+                shape::shapeBuffer(shapeRank, internalShape.data(),  newshape);
                 shapeList->push_back(newshape); 
             }
             return shapeList;
