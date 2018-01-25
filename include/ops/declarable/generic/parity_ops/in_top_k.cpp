@@ -12,10 +12,10 @@ namespace nd4j {
             NDArray<T>* target = INPUT_VARIABLE(1);
 
             NDArray<T>* result = OUTPUT_VARIABLE(0);
-            REQUIRE_TRUE(block.numI() > 0, 0, "Parameter k is needed to be set");
-            REQUIRE_TRUE(predictions->sizeAt(0) == target->sizeAt(0), 0, "The predictions and target should have equal number of columns");
-            REQUIRE_TRUE(predictions->rankOf() == 2, 0, "The predictions array shoud have rank 2, but %i given", predictions->rankOf());
-            REQUIRE_TRUE(target->rankOf() == 1, 0, "The target should be a vector");
+            REQUIRE_TRUE(block.numI() > 0, 0, "in_top_k: Parameter k is needed to be set");
+            REQUIRE_TRUE(predictions->sizeAt(0) == target->sizeAt(0), 0, "in_top_k: The predictions and target should have equal number of columns");
+            REQUIRE_TRUE(predictions->rankOf() == 2, 0, "in_top_k: The predictions array shoud have rank 2, but %i given", predictions->rankOf());
+            REQUIRE_TRUE(target->rankOf() == 1, 0, "in_top_k: The target should be a vector");
 
             int k = INT_ARG(0);
 
@@ -32,12 +32,12 @@ namespace nd4j {
                         break;
                     }
                 }
-                //if (prediction.getScalar(e) in topKResult.at(0)) { // the first result
                 if (found)
                     result->putScalar(e, 1);
                 else
                     result->putScalar(e, 0);
             }
+            delete topKResult; // free memory from called operation
             return ND4J_STATUS_OK;
         }
 

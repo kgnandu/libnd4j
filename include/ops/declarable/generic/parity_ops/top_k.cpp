@@ -18,7 +18,7 @@ namespace nd4j {
                 needSort = INT_ARG(1);
             }
 
-            REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "k should not be greater than last dimension");
+            REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "top_k: k should not be greater than last dimension");
 
             if (k == 1) {
                 // using arg_max for it
@@ -112,8 +112,6 @@ namespace nd4j {
                 k = INT_ARG(0);
             }
 
-            //REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "k should not be greater than last dimension");
-
             for (int e = 0; e < 2; e++) { // 2 element tuple at output
                 int* newshape;
                 ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(shapeRank), int);
@@ -126,6 +124,5 @@ namespace nd4j {
             }
             return shapeList;
         }
-
     }
 }
