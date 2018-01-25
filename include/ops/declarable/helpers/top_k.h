@@ -11,7 +11,7 @@ namespace ops {
 namespace helpers {
 
     template <typename T>
-    void topKFunctor(NDArray<T>* input, NDArray<T>* values, NDArray<T>* indeces, int k, bool needSort);
+    int topKFunctor(NDArray<T>* input, NDArray<T>* values, NDArray<T>* indeces, int k, bool needSort);
 
 }
 }

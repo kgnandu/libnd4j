@@ -22,10 +22,7 @@ namespace nd4j {
             REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "top_k: k should not be greater than last dimension");
             REQUIRE_TRUE(k >=0, 0, "top_k: k should be non-negative");
 
-            helpers::topKFunctor(x, values, indeces, k, needSort);
-
-
-            return ND4J_STATUS_OK;
+            return helpers::topKFunctor(x, values, indeces, k, needSort);
         }
 
         DECLARE_SHAPE_FN(top_k) {

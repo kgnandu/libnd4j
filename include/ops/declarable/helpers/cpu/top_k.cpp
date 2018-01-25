@@ -10,7 +10,7 @@ namespace ops {
 namespace helpers {
 
     template <typename T>
-    void topKFunctor(NDArray<T>* input, NDArray<T>* values, NDArray<T>* indeces, int k, bool needSort) {
+    int topKFunctor(NDArray<T>* input, NDArray<T>* values, NDArray<T>* indeces, int k, bool needSort) {
             if (k == 1) {
                 // using arg_max for it
                 //nd4j::ops::argmax<T> op;
@@ -38,7 +38,7 @@ namespace helpers {
                 
                 //values->putScalar(0, val);
 
-                return ND4J_STATUS_OK;
+                //return ND4J_STATUS_OK;
             }
             else { // if (k > 1) {
 
@@ -62,7 +62,6 @@ namespace helpers {
                                 ssize_t exchangePos = std::find(topValues.begin(), topValues.end(), sortedVals[0]) - topValues.begin();
                                 // set up sorted sequence for continue
                                 topValues[exchangePos] = val;
-//                                topIndeces[exchangePos] = j;//exchangePos;
                                 sortedVals[0] = val;
                                 std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
                             }
@@ -87,7 +86,12 @@ namespace helpers {
                     }
                 }
         }
+        return ND4J_STATUS_OK;
     }
+    template int topKFunctor<float>(NDArray<float>* input, NDArray<float>* values, NDArray<float>* indeces, int k, bool needSort);
+    template int topKFunctor<float16>(NDArray<float16>* input, NDArray<float16>* values, NDArray<float16>* indeces, int k, bool needSort);
+    template int topKFunctor<double>(NDArray<double>* input, NDArray<double>* values, NDArray<double>* indeces, int k, bool needSort);
+
 }
 }
 }
