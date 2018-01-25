@@ -1,6 +1,6 @@
 //
-//  @author raver119@gmail.com
-//
+//  @author sgazeos@gmail.com
+//  
 
 //#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/CustomOperations.h>
@@ -50,6 +50,53 @@ namespace nd4j {
                 return ND4J_STATUS_OK;
             }
             else if (k > 1) {
+
+                int width = x->sizeAt(-1);
+                int nextPos = 0;
+                for (int e = 0; e < x->lengthOf(); e += width)
+                {
+                    std::vector<int> topIndeces(k);
+                    std::vector<T>   topValues(k);
+                    for (int pos = 0; pos < k; ++pos) {
+                        topIndeces[pos] = pos;
+                        topValues[pos] = x->getScalar(pos + e);
+                    }
+                    std::vector<T> sortedVals(topValues);
+                    std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
+                    
+                    for (int j = k; j < width; j++) {
+                        if (sortedVals[0] < x->getScalar(j + e)) // value can be inserted to top k
+                        {
+                            T val = x->getScalar(j + e);
+                            if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
+                                ssize_t exchangePos = std::find(topValues.begin(), topValues.end(), sortedVals[0]) - topValues.begin();
+                                // set up sorted sequence for continue
+                                topValues[exchangePos] = val;
+//                                topIndeces[exchangePos] = j;//exchangePos;
+                                sortedVals[0] = val;
+                                std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
+                            }
+                        }
+                    }
+                    if (needSort) {
+                        std::sort(topValues.begin(), topValues.end(), [](int a, int b) {
+                            return a > b;   
+                        });
+                        
+                    }
+
+                    for (int j = 0; j < width; j++)
+                        for (int pos = 0; pos < k; ++pos)
+                            if (topValues[pos] == x->getScalar(j + e))
+                                topIndeces[pos] = j;
+
+                    for (int pos = 0; pos < k; ++pos)
+                    {
+                        values->putScalar(nextPos, topValues[pos]);
+                        indeces->putScalar(nextPos++, topIndeces[pos]);
+                    }
+                }
+
 /*                std::vector<int> inds(k);
                 std::vector<T> vals(k);
                 std::vector<T> sortedVals;
@@ -74,18 +121,6 @@ namespace nd4j {
                 }
             
                 // if need to be sort results
-                if (needSort) {
-//                    std::sort(inds.begin(), inds.end(), [vals](int a, int b) {
-//                        if (a < vals.size() && b < vals.size())
-///                            return vals[a] > vals[b];
-//                        else
-//                            return true;
-//                    });
-//
-//                    std::sort(vals.begin(), vals.end(), [](int a, int b) {
-//                        return a > b;   
-//                    });
-                }
 
                 for (int e = 0; e < k; e++) {
                     values->putScalar(e, vals.at(e));
