@@ -391,11 +391,22 @@ TEST_F(DeclarableOpsTests5, Test_TopK_1) {
     auto result = op.execute({&x}, {}, {1, 0}); // without sorting
 
     ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(2, result->size());
 
     auto v = result->at(0);
     auto i = result->at(1);
 
-    ASSERT_EQ(2, result->size());
+    v->printShapeInfo("topK_1: shape v");
+    expV.printShapeInfo("topK_1: shape expV");
+
+    i->printShapeInfo("topK_1: shape I");
+    expI.printShapeInfo("topK_1: shape expI");
+
+    v->printIndexedBuffer("topK_1: v");
+    expV.printIndexedBuffer("topK_1: expV");
+    i->printIndexedBuffer("topK_1: i");
+    expI.printIndexedBuffer("topK_1: expI");
+
 
     ASSERT_TRUE(expV.isSameShape(v));
     ASSERT_TRUE(expV.equalsTo(v));
@@ -407,6 +418,54 @@ TEST_F(DeclarableOpsTests5, Test_TopK_1) {
 }
 
 TEST_F(DeclarableOpsTests5, Test_TopK_2) {
+    NDArray<float> x('c', {2, 3, 4}, {11.0,  3.0, 14.0, 5.0, 
+                                       6.0,  9.0, 3.5, 7.0, 
+                                      21.0, 3.0, 14.0, 15.0, 
+                                       6.0, 9.0, 3.5, 7.0, 
+                                      11.0, 13.0, 14.0, 5.0, 
+                                      16.0, 9.0, 13.5, 7.0
+                                     }
+    );
+// <<<14.>,<9.>>, <<21.>,<9.>>, <<14.>,<16.>>>
+    NDArray<float> expV('c', {2, 3, 1}, {14.0f, 9.0f, 
+                                          21.0f, 
+                                          9.0f, 14.0f, 
+                                          16.0f
+                                        }
+    );
+
+    NDArray<float> expI('c', {2, 3, 1 }, {2, 1, 0, 1, 2, 0});
+
+    nd4j::ops::top_k<float> op;
+    auto result = op.execute({&x}, {}, {1, 1});
+
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(2, result->size());
+    
+    auto v = result->at(0);
+    auto i = result->at(1);
+    
+    v->printShapeInfo("shape v");
+    expV.printShapeInfo("shape expV");
+
+    i->printShapeInfo("shape I");
+    expI.printShapeInfo("shape expI");
+
+    v->printIndexedBuffer("v");
+    expV.printIndexedBuffer("expV");
+    i->printIndexedBuffer("i");
+    expI.printIndexedBuffer("expI");
+    
+    ASSERT_TRUE(expV.isSameShape(v));
+    ASSERT_TRUE(expV.equalsTo(v));
+
+    ASSERT_TRUE(expI.isSameShape(i));
+    ASSERT_TRUE(expI.equalsTo(i));
+
+    delete result;
+}
+
+TEST_F(DeclarableOpsTests5, Test_TopK_3) {
     NDArray<float> x('c', {2, 3, 4}, {11.0,  3.0, 14.0, 5.0, 
                                        6.0,  9.0, 3.5, 7.0, 
                                       21.0, 3.0, 14.0, 15.0, 

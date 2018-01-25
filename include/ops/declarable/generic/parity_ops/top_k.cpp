@@ -19,21 +19,38 @@ namespace nd4j {
             }
 
             REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "k should not be greater than last dimension");
-/*
+
             if (k == 1) {
                 // using arg_max for it
+                //nd4j::ops::argmax<T> op;
+                //auto res = op.execute({x}, {}, {x->sizeAt(-1)});
 
-                x->template applyIndexReduce<simdOps::IndexMax<T>>(indeces, {});
-
-                int index = indeces->getScalar(0);
-                T val = x->getScalar(index);
+                //REQUIRE_TRUE(res->status() == ND4J_STATUS_OK, 0, "Argmax for top_k failed");
+                int width = x->sizeAt(-1);
+                int pos = 0;
+                for (int e = 0; e < x->lengthOf(); e += width)
+                {
+                    T topVal = 0;
+                    int topIndex = 0;
+                    for (int j = 0; j < width; j++) {
+                        if (topVal < x->getScalar(j + e))
+                        {
+                            topVal = x->getScalar(j + e);
+                            topIndex = j;
+                        }
+                    }
+                    values->putScalar(pos, topVal);
+                    indeces->putScalar(pos++, topIndex);
+                }
+                //int index = indeces->getScalar(0);
+                //T val = x->getScalar(index);
                 
-                values->putScalar(0, val);
+                //values->putScalar(0, val);
 
                 return ND4J_STATUS_OK;
             }
             else if (k > 1) {
-                std::vector<int> inds(k);
+/*                std::vector<int> inds(k);
                 std::vector<T> vals(k);
                 std::vector<T> sortedVals;
                 for (int e = 0; e < k; e++) {
@@ -73,13 +90,11 @@ namespace nd4j {
                 for (int e = 0; e < k; e++) {
                     values->putScalar(e, vals.at(e));
                     indeces->putScalar(e, inds.at(e));
-                }
+                }*/
                 return ND4J_STATUS_OK;
             }
-            else*/
-            //    return ND4J_STATUS_BAD_ARGUMENTS;
-                return ND4J_STATUS_OK;
-
+            else
+                return ND4J_STATUS_BAD_ARGUMENTS;
         }
 
         DECLARE_SHAPE_FN(top_k) {
@@ -98,9 +113,9 @@ namespace nd4j {
                 int* newshape;
                 ALLOCATE(newshape, block.getWorkspace(), shape::shapeInfoLength(shapeRank), int);
                 std::vector<int> internalShape(shapeRank);
-                for (int e = 0 ; e < internalShape.size() - 1; ++e)
+                for (int e = 0 ; e < shapeRank - 1; ++e)
                     internalShape[e] = shape::sizeAt(in, e);
-                internalShape[e] = k;
+                internalShape[shapeRank - 1] = k;
                 shape::shapeBuffer(shapeRank, internalShape.data(),  newshape);
                 shapeList->push_back(newshape); 
             }
