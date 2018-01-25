@@ -719,3 +719,35 @@ TEST_F(DeclarableOpsTests5, Test_InTopK_2) {
     delete result;
 
 }
+
+TEST_F(DeclarableOpsTests5, Test_InTopK_3) {
+    NDArray<float> x('f', {6, 4}, {11.0, 3.0, 14.0, 5.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   21.0, 3.0, 14.0, 15.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   11.0, 13.0, 14.0, 5.0,
+                                   16.0, 9.0, 13.5, 7.0}
+    );
+
+    NDArray<float> y('f', {6}, {0, 0, 0, 0, 0, 0});
+    NDArray<float> expV('f', {6}, {1, 0, 1, 0, 0, 1 });
+
+    nd4j::ops::in_top_k<float> op;
+    auto result = op.execute({&x, &y}, {}, {2});
+
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(1, result->size());
+
+    auto v = result->at(0);
+
+    v->printShapeInfo("InTopK: shape v");
+    expV.printShapeInfo("InTopK: shape expV");
+
+    v->printIndexedBuffer("v");
+    expV.printIndexedBuffer("expV");
+
+    ASSERT_TRUE(expV.isSameShape(v));
+    ASSERT_TRUE(expV.equalsTo(v));
+
+    delete result;
+}
