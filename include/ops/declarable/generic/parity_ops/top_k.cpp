@@ -65,8 +65,7 @@ namespace nd4j {
                     std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
                     
                     for (int j = k; j < width; j++) {
-                        if (sortedVals[0] < x->getScalar(j + e)) // value can be inserted to top k
-                        {
+                        if (sortedVals[0] < x->getScalar(j + e)) { // value can be inserted to top k
                             T val = x->getScalar(j + e);
                             if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
                                 ssize_t exchangePos = std::find(topValues.begin(), topValues.end(), sortedVals[0]) - topValues.begin();
@@ -78,11 +77,11 @@ namespace nd4j {
                             }
                         }
                     }
+
                     if (needSort) {
                         std::sort(topValues.begin(), topValues.end(), [](int a, int b) {
                             return a > b;   
                         });
-                        
                     }
 
                     for (int j = 0; j < width; j++)
@@ -97,35 +96,6 @@ namespace nd4j {
                     }
                 }
 
-/*                std::vector<int> inds(k);
-                std::vector<T> vals(k);
-                std::vector<T> sortedVals;
-                for (int e = 0; e < k; e++) {
-                    vals[e] = x->getScalar(e); // start initializing
-                    inds[e] = e;
-                }
-                sortedVals = vals;
-                std::sort(sortedVals.begin(), sortedVals.end());
-                for (int e = k; e < x->lengthOf(); e++) {
-                    T v = x->getScalar(e);
-                    if (v > sortedVals[0]) { // if the value need to be substituted
-                        if (std::find(sortedVals.begin(), sortedVals.end(), v) == sortedVals.end()) {
-                        // only for unique values
-                            ssize_t ind = std::find(vals.begin(), vals.end(), sortedVals[0]) - vals.begin();
-                            vals[ind] = v;
-                            inds[ind] = e;
-                            sortedVals = vals;
-                            std::sort(sortedVals.begin(), sortedVals.end());
-                        }
-                    }
-                }
-            
-                // if need to be sort results
-
-                for (int e = 0; e < k; e++) {
-                    values->putScalar(e, vals.at(e));
-                    indeces->putScalar(e, inds.at(e));
-                }*/
                 return ND4J_STATUS_OK;
             }
             else

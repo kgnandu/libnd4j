@@ -422,12 +422,12 @@ namespace nd4j {
 
         /**
          * in_top_k operation returns a vector of k boolean values for 
-         *  given NDArray as vector of predicted in the NDArray k top values
-         *  The first parameter is a NDArray of predicted values.
-         *  The second is NDArray for one k top values will be search.
+         *  given NDArray as 2D matrix of predicted in the NDArray k top values
+         *  The first parameter is a NDArray of predicted values (2d array).
+         *  The second is NDArray as vector of indeces k top values will be search.
          *  The third is k
          */
 
-        DECLARE_CONFIGURABLE_OP(in_top_k, 2, 1, true, 1, 1);
+        DECLARE_CUSTOM_OP(in_top_k, 2, 1, true, 1, 1);
     }
 }
