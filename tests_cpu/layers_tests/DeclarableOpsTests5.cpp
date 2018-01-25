@@ -663,9 +663,9 @@ TEST_F(DeclarableOpsTests5, Test_TopK_4) {
 }
 
 TEST_F(DeclarableOpsTests5, Test_TopK_5) {
-    NDArray<float> x('f', {3, 2}, {1.0f, 11.0f, 3.0f, 14.0f, 5.0f, 6.0f});
-    NDArray<float> expV('f', {2, 2}, {11.0f, 3.0f, 14.0f, 6.0f});
-    NDArray<float> expI('f', {2, 2}, {1.0f, 2.0f, 0.0f, 2.0f});
+    NDArray<float> x('f', {2, 3}, {1.0f, 11.0f, 3.0f, 14.0f, 5.0f, 6.0f});
+    NDArray<float> expV('f', {2, 2}, {5.0f, 14.0f, 3.0f, 11.0f});
+    NDArray<float> expI('f', {2, 2}, {2.0f, 1.0f, 1.0f, 0.0f});
 
     nd4j::ops::top_k<float> op;
     auto result = op.execute({&x}, {}, {2, 1});
