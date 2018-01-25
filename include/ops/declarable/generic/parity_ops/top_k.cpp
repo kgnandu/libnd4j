@@ -42,7 +42,12 @@ namespace nd4j {
                 for (int e = 0 ; e < shapeRank - 1; ++e)
                     internalShape[e] = shape::sizeAt(in, e);
                 internalShape[shapeRank - 1] = k;
-                shape::shapeBuffer(shapeRank, internalShape.data(),  newshape);
+
+                if (shape::order(in) == 'c')
+                    shape::shapeBuffer(shapeRank, internalShape.data(),  newshape);
+                else
+                    shape::shapeBufferFortran(shapeRank, internalShape.data(),  newshape);
+
                 shapeList->push_back(newshape); 
             }
             return shapeList;
