@@ -765,7 +765,7 @@ TEST_F(DeclarableOpsTests5, Test_InTopK_3) {
     );
 
     NDArray<float> y('f', {6}, {0, 0, 0, 0, 0, 0});
-    NDArray<float> expV('f', {6}, {1, 0, 1, 0, 0, 1 });
+    NDArray<float> expV('f', {6}, {1, 0, 0, 0, 0, 0 });
 
     nd4j::ops::in_top_k<float> op;
     auto result = op.execute({&x, &y}, {}, {2});
