@@ -3,6 +3,7 @@
 //  
 
 //#include <ops/declarable/headers/parity_ops.h>
+#include <ops/declarable/helpers/top_k.h>
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -19,87 +20,12 @@ namespace nd4j {
             }
 
             REQUIRE_TRUE(k <= x->sizeAt(-1), 0, "top_k: k should not be greater than last dimension");
+            REQUIRE_TRUE(k >=0, 0, "top_k: k should be non-negative");
 
-            if (k == 1) {
-                // using arg_max for it
-                //nd4j::ops::argmax<T> op;
-                //auto res = op.execute({x}, {}, {x->sizeAt(-1)});
+            helpers::topKFunctor(x, values, indeces, k, needSort);
 
-                //REQUIRE_TRUE(res->status() == ND4J_STATUS_OK, 0, "Argmax for top_k failed");
-                int width = x->sizeAt(-1);
-                int pos = 0;
-                for (int e = 0; e < x->lengthOf(); e += width)
-                {
-                    T topVal = 0;
-                    int topIndex = 0;
-                    for (int j = 0; j < width; j++) {
-                        if (topVal < x->getScalar(j + e))
-                        {
-                            topVal = x->getScalar(j + e);
-                            topIndex = j;
-                        }
-                    }
-                    values->putScalar(pos, topVal);
-                    indeces->putScalar(pos++, topIndex);
-                }
-                //int index = indeces->getScalar(0);
-                //T val = x->getScalar(index);
-                
-                //values->putScalar(0, val);
 
-                return ND4J_STATUS_OK;
-            }
-            else if (k > 1) {
-
-                int width = x->sizeAt(-1);
-                int nextPos = 0;
-                for (int e = 0; e < x->lengthOf(); e += width)
-                {
-                    std::vector<int> topIndeces(k);
-                    std::vector<T>   topValues(k);
-                    for (int pos = 0; pos < k; ++pos) {
-                        topIndeces[pos] = pos;
-                        topValues[pos] = x->getScalar(pos + e);
-                    }
-                    std::vector<T> sortedVals(topValues);
-                    std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
-                    
-                    for (int j = k; j < width; j++) {
-                        if (sortedVals[0] < x->getScalar(j + e)) { // value can be inserted to top k
-                            T val = x->getScalar(j + e);
-                            if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
-                                ssize_t exchangePos = std::find(topValues.begin(), topValues.end(), sortedVals[0]) - topValues.begin();
-                                // set up sorted sequence for continue
-                                topValues[exchangePos] = val;
-//                                topIndeces[exchangePos] = j;//exchangePos;
-                                sortedVals[0] = val;
-                                std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
-                            }
-                        }
-                    }
-
-                    if (needSort) {
-                        std::sort(topValues.begin(), topValues.end(), [](int a, int b) {
-                            return a > b;   
-                        });
-                    }
-
-                    for (int j = 0; j < width; j++)
-                        for (int pos = 0; pos < k; ++pos)
-                            if (topValues[pos] == x->getScalar(j + e))
-                                topIndeces[pos] = j;
-
-                    for (int pos = 0; pos < k; ++pos)
-                    {
-                        values->putScalar(nextPos, topValues[pos]);
-                        indeces->putScalar(nextPos++, topIndeces[pos]);
-                    }
-                }
-
-                return ND4J_STATUS_OK;
-            }
-            else
-                return ND4J_STATUS_BAD_ARGUMENTS;
+            return ND4J_STATUS_OK;
         }
 
         DECLARE_SHAPE_FN(top_k) {
