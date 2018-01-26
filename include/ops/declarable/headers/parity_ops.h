@@ -429,5 +429,14 @@ namespace nd4j {
          */
 
         DECLARE_CUSTOM_OP(in_top_k, 2, 1, true, 1, 1);
+
+        /**
+         * moments operation calculate a mean and variation for given NDArray
+         * with reduce a result according to axis array given.
+         * For full axis the result is both mean and variance of all members in array.
+         * Otherwise there are two NDArrays with means and variances for 
+         */
+        DECLARE_CUSTOM_OP(moments, 1, 2, false, 0, -2);
+
     }
 }
