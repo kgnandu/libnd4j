@@ -9,7 +9,7 @@ namespace nd4j {
         CUSTOM_OP_IMPL(moments, 1, 2, false, 0, -2) {
             NDArray<T>* input = INPUT_VARIABLE(0);
             NDArray<T>* means = OUTPUT_VARIABLE(0);
-            NDArray<T>* variances = OUTPUT_VARIABLE(1);
+//            NDArray<T>* variances = OUTPUT_VARIABLE(1);
 
             std::vector<int> axis = *block.getIArguments();
 
@@ -31,30 +31,11 @@ namespace nd4j {
                 //auto output = new NDArray<T>(shape, false, block.getWorkspace());
 //            std::vector<int> dims = ShapeUtils<T>::convertAxisToTadTarget(input->rankOf(), {axis});
             std::vector<int>& dims = axis;
-            NDArray<T>* vars = input->template varianceAlongDimension<simdOps::SummaryStatsVariance<T>>(false, {dims});
-            //NDArray<T>* means = input->template meanAlongDimension<simdOps::SummaryStatsMean<T>>(false, {dims});
-            OVERWRITE_2_RESULTS(means, vars);
-            if (means->isScalar()) {
-                T mean = input->template reduceNumber<simdOps::Mean<T>>();
-                //T variance = input->template reduceNumber<simdOps::Variance<T>>();
-
-                means->putScalar(0, mean);
-                //variances->putScalar(0, vars->getScalar(0));
-                //delete vars;
-            }
-            else {
-                // process the case when 
-                auto tads = NDArrayFactory<T>::allTensorsAlongDimension(input, dims);
-                for (int e = 0; e < vars->lengthOf(); e++) {
-                    T mean = tads->at(e)->template reduceNumber<simdOps::Mean<T>>();
-                //    T variance = tads->at(e)->template reduceNumber<simdOps::Variance<T>>();
-                    means->putScalar(e, mean);
-                    //variances->putScalar(e, variance);
-                }
-                delete tads;
-            }                
-            //RELEASE(resultShape, input->getWorkspace());
-            OVERWRITE_2_RESULTS(means, vars);
+            NDArray<T>* vars = input->template varianceAlongDimension<simdOps::SummaryStatsVariance<T>>(false, axis);
+            input->template reduceAlongDimension<simdOps::Mean<T>>(means, axis);
+            //OVERWRITE_2_RESULTS(means, vars);
+            //overwriteResult(block, 1, vars);
+            this->overwriteResult(block, 1, vars);
 
             return ND4J_STATUS_OK;
         }
@@ -76,10 +57,10 @@ namespace nd4j {
                 }
 
             }
-            std::vector<int> dims = ShapeUtils<T>::convertAxisToTadTarget(input->rankOf(), {axis});
+            //std::vector<int> dims = ShapeUtils<T>::convertAxisToTadTarget(input->rankOf(), {axis});
 
-            int* meanShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), dims, *input, false);
-            int* varianceShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), dims, *input, false);
+            int* meanShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), axis, *input, false);
+            int* varianceShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), axis, *input, false);
             auto shapeList = new ShapeList(); 
             shapeList->push_back(meanShape);
             shapeList->push_back(varianceShape);
