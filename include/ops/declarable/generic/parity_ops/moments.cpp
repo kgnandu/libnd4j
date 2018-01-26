@@ -9,7 +9,7 @@ namespace nd4j {
         CUSTOM_OP_IMPL(moments, 1, 2, false, 0, -2) {
             NDArray<T>* input = INPUT_VARIABLE(0);
             NDArray<T>* means = OUTPUT_VARIABLE(0);
-//            NDArray<T>* variances = OUTPUT_VARIABLE(1);
+            NDArray<T>* variances = OUTPUT_VARIABLE(1);
 
             std::vector<int> axis = *block.getIArguments();
 
@@ -27,15 +27,9 @@ namespace nd4j {
 
             }
 
-            //int* resultShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), axis, *input, false);
-                //auto output = new NDArray<T>(shape, false, block.getWorkspace());
-//            std::vector<int> dims = ShapeUtils<T>::convertAxisToTadTarget(input->rankOf(), {axis});
             std::vector<int>& dims = axis;
-            NDArray<T>* vars = input->template varianceAlongDimension<simdOps::SummaryStatsVariance<T>>(false, axis);
+            input->template varianceAlongDimension<simdOps::SummaryStatsVariance<T>>(variances, false, axis);
             input->template reduceAlongDimension<simdOps::Mean<T>>(means, axis);
-            //OVERWRITE_2_RESULTS(means, vars);
-            //overwriteResult(block, 1, vars);
-            this->overwriteResult(block, 1, vars);
 
             return ND4J_STATUS_OK;
         }
@@ -59,8 +53,8 @@ namespace nd4j {
             }
             //std::vector<int> dims = ShapeUtils<T>::convertAxisToTadTarget(input->rankOf(), {axis});
 
-            int* meanShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), axis, *input, false);
-            int* varianceShape = ShapeUtils<T>::evalReduceShapeInfo(input->ordering(), axis, *input, false);
+            int* meanShape = ShapeUtils<T>::evalReduceShapeInfo('c', axis, *input, false);
+            int* varianceShape = ShapeUtils<T>::evalReduceShapeInfo('c', axis, *input, false);
             auto shapeList = new ShapeList(); 
             shapeList->push_back(meanShape);
             shapeList->push_back(varianceShape);
