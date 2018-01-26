@@ -786,3 +786,70 @@ TEST_F(DeclarableOpsTests5, Test_InTopK_3) {
 
     delete result;
 }
+
+TEST_F(DeclarableOpsTests5, Test_Moments_1) {
+    NDArray<float> x('c', {2, 3, 4}, {11.0, 3.0, 14.0, 5.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   21.0, 3.0, 14.0, 15.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   11.0, 13.0, 14.0, 5.0,
+                                   16.0, 9.0, 13.5, 7.0}
+    );
+
+    NDArray<float> y('c', {3}, {0, 1, 2});
+    //NDArray<float> expV('f', {6}, {1, 0, 0, 0, 0, 0 });
+
+    nd4j::ops::moments<float> op;
+    auto result = op.execute({&x, &y}, {}, {});
+
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(2, result->size());
+
+    auto v = result->at(0);
+    auto d = result->at(1);
+    v->printShapeInfo("moments: shape v");
+//    expV.printShapeInfo("InTopK: shape expV");
+
+    v->printIndexedBuffer("Result is ");
+    d->printIndexedBuffer("Result is ");
+//    expV.printIndexedBuffer("expV");
+
+    ASSERT_TRUE(v->isScalar());
+//    ASSERT_TRUE(expV.equalsTo(v));
+
+    delete result;
+}
+
+TEST_F(DeclarableOpsTests5, Test_Moments_2) {
+    NDArray<float> x('c', {2, 3, 4}, {11.0, 3.0, 14.0, 5.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   21.0, 3.0, 14.0, 15.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   11.0, 13.0, 14.0, 5.0,
+                                   16.0, 9.0, 13.5, 7.0}
+    );
+
+    NDArray<float> y('c', {2}, {0, 1});
+    //NDArray<float> expV('f', {6}, {1, 0, 0, 0, 0, 0 });
+
+    nd4j::ops::moments<float> op;
+    auto result = op.execute({&x, &y}, {}, {});
+
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(2, result->size());
+
+    auto v = result->at(0);
+    auto d = result->at(1);
+    v->printShapeInfo("moments: shape v is");
+    d->printShapeInfo("moments: shape d is");
+//    expV.printShapeInfo("InTopK: shape expV");
+
+    v->printIndexedBuffer("Means are ");
+    d->printIndexedBuffer("Deviations are ");
+//    expV.printIndexedBuffer("expV");
+
+    ASSERT_TRUE(!v->isScalar());
+//    ASSERT_TRUE(expV.equalsTo(v));
+
+    delete result;
+}
