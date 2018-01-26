@@ -59,7 +59,8 @@ namespace helpers {
                         if (sortedVals[0] < input->getScalar(j + e)) { // value can be inserted to top k
                             T val = input->getScalar(j + e);
                             if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
-                                ssize_t exchangePos = std::find(topValues.begin(), topValues.end(), sortedVals[0]) - topValues.begin();
+                                // exchangePos - a distance between begin and minimum to be suppressed by val
+                                auto exchangePos = std::distance(std::find(topValues.begin(), topValues.end(), sortedVals[0]), topValues.begin());
                                 // set up sorted sequence for continue
                                 topValues[exchangePos] = val;
                                 sortedVals[0] = val;
