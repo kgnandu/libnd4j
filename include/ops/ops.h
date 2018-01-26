@@ -119,27 +119,6 @@ namespace simdOps {
 	};
 
 
-	template<typename T>
-	class Polysq {
-	public:
-		op_def static T op(T d1, T d2) {
-			return (d1 * d1 + d2);
-		}
-
-		op_def static T op(T d1, T d2, T *params) {
-			return (d1 * d1 + d2);
-		}
-
-		op_def static T op(T d1) {
-			return d1 * d1;
-		}
-
-		// op for MetaOps
-		op_def static T op(T d1, T *params) {
-			return d1 * d1 + params[0];
-		}
-	};
-
         
 	template<typename T>
 	class Subtract {
@@ -897,6 +876,19 @@ namespace simdOps {
 		}
 	};
 
+	template<typename T>
+	class Reciprocal {
+	public:
+		no_op_exec_special
+		no_op_exec_special_cuda
+//		op_def static T op(T d1) {
+//			return (T(1.0f) / d1);
+//		}
+		// op for MetaOps
+		op_def static T op(T d1, T *params) {
+			return (T(1.0f)/d1);
+		}
+	};
 
 	template<typename T>
 	class Pow {

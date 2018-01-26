@@ -60,7 +60,9 @@ namespace helpers {
                             T val = input->getScalar(j + e);
                             if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
                                 // exchangePos - a distance between begin and minimum to be suppressed by val
-                                auto exchangePos = std::distance(std::find(topValues.begin(), topValues.end(), sortedVals[0]), topValues.begin());
+                                auto exchangePos = std::distance(topValues.begin(), std::find(topValues.begin(), topValues.end(), sortedVals[0]));
+//                                if ((exchangePos < 0 || exchangePos >= k), 1, "top_k: invalid index")
+//                                    return ; 
                                 // set up sorted sequence for continue
                                 topValues[exchangePos] = val;
                                 sortedVals[0] = val;
