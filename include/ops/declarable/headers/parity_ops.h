@@ -435,6 +435,7 @@ namespace nd4j {
          * with reduce a result according to axis array given.
          * For full axis the result is both mean and variance of all members in array.
          * Otherwise there are two NDArrays with means and variances for 
+         * Axes can be put as the second NDArray or as int vector.
          */
         DECLARE_CUSTOM_OP(moments, 1, 2, false, 0, -2);
 
