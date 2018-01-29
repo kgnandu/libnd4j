@@ -1300,13 +1300,16 @@ TEST_F(DeclarableOpsTests5, EmbeddingLookup_1) {
                                       14, 24, 15, 25, 16, 26, 17, 27,
                                       18, 28, 19, 29, 20, 30, 21, 31});
     
-    NDArray<float> y('c', {1, 1, 1, 0, 0, 0, 2, 2, 2});
+    NDArray<float> y({1.f, 1.f, 1.f, 0.f, 0.f, 0.f, 2.f, 2.f, 2.f});
     NDArray<float> exp('c', {9, 4, 2}, {14, 24, 15, 25, 16, 26, 17, 27, 14, 24, 15, 25,
                                         16, 26, 17, 27, 14, 24, 15, 25, 16, 26, 17, 27,
                                         10, 20, 11, 21, 12, 22, 13, 23, 10, 20, 11, 21,
                                         12, 22, 13, 23, 10, 20, 11, 21, 12, 22, 13, 23,
                                         18, 28, 19, 29, 20, 30, 21, 31, 18, 28, 19, 29,
                                         20, 30, 21, 31, 18, 28, 19, 29, 20, 30, 21, 31});
+
+    y.printShapeInfo("y shape");
+    y.printIndexedBuffer("y buffer");
 
     nd4j::ops::embedding_lookup<float> op;
     ResultSet<float>* result = op.execute({&x, &y}, {}, {0});
