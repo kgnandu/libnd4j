@@ -18,16 +18,25 @@ CUSTOM_OP_IMPL(embedding_lookup, 2, 1, false, 0, 1) {
     NDArray<T>* input   = INPUT_VARIABLE(0); // lookup param
     NDArray<T>* indeces = INPUT_VARIABLE(1); // indeces, as is
     NDArray<T>* output  = OUTPUT_VARIABLE(0); // 
-
-
+    int indexRank = indeces->rankOf();
    
-    REQUIRE_TRUE(indices->rankOf() > 0, 0, "embeded_lookup: input array of indexes can't be single scalar, the requirement is: rank > 0 !");
+    REQUIRE_TRUE(indexRank > 0, 0, "embeded_lookup: input array of indexes can't be single scalar, the requirement is: rank > 0 !");
 
     int inputRank = input->rankOf();
-    int indexRank = indices->rankOf();
     int lastIndDim = indeces->lengthOf();
     int partition_mode = INT_ARG(0); // partition_mode == 0 - i.e. 'mod' , 1 - 'div'
     
+    nd4j::ops::gather<T> op;
+
+    ResultSet<T>* result = op.execute({input, indeces}, {}, {0});
+    REQUIRE_TRUE(result->status() == ND4J_STATUS_OK, 0, "embedding_lookup: cannot retrieve results from gather op.");
+    REQUIRE_TRUE(result->at(0)->isSameShape(output), 0, "embedding_lookup: wrong shape of return from gather op.");
+    
+    //if (partition_mode) {
+        for (int e = 0; e < output->lengthOf(); e++)
+            (*output)(e) = result->at(0)->getScalar(e);
+    //}
+    delete result;
     return ND4J_STATUS_OK;
 }
 
