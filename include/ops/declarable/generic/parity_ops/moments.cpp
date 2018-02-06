@@ -12,7 +12,10 @@ namespace nd4j {
             NDArray<T>* variances = OUTPUT_VARIABLE(1);
 
             std::vector<int> axis = *block.getIArguments();
-
+            T shift(0);
+            if (block.getTArguments()->size() > 0) {
+                shift = T_ARG(0);
+            }
             // axis might be dynamic (i.e. tf mode)
             if (block.width() > 1 && axis.size() == 0) {
                 auto axisVector = INPUT_VARIABLE(1);
@@ -30,6 +33,10 @@ namespace nd4j {
             std::vector<int>& dims = axis;
             input->template varianceAlongDimension<simdOps::SummaryStatsVariance<T>>(variances, false, axis);
             input->template reduceAlongDimension<simdOps::Mean<T>>(means, axis);
+            if (shift) {
+                means->template applyScalar<simdOps::Add<T>>(shift, means, nullptr);
+                variances->template applyScalar<simdOps::Add<T>>(shift, variances, nullptr);
+            }
 
             return ND4J_STATUS_OK;
         }
