@@ -1203,6 +1203,45 @@ TEST_F(DeclarableOpsTests5, Test_Moments_4) {
     delete result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+TEST_F(DeclarableOpsTests5, Test_Moments_5) {
+    NDArray<double> x('c', {2, 3, 4}, {11.0, 3.0, 14.0, 5.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   21.0, 3.0, 14.0, 15.0,
+                                   6.0, 9.0, 3.5, 7.0,
+                                   11.0, 13.0, 14.0, 5.0,
+                                   16.0, 9.0, 13.5, 7.0}
+    );
+
+    NDArray<double> y('c', {3}, {0., 1., 2.});
+    //NDArray<float> expV('f', {6}, {1, 0, 0, 0, 0, 0 });
+
+    double expMean = 19.395833;
+    double expDeviation = 32.4579;
+//Mean 9.395833
+//Deviance 22.4579
+
+    double inf = 1.e-5;
+
+    nd4j::ops::moments<double> op;
+    auto result = op.execute({&x, &y}, {10.0}, {});
+
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    ASSERT_EQ(2, result->size());
+
+    auto v = result->at(0);
+    auto d = result->at(1);
+
+//    v->printIndexedBuffer("Result is ");
+//    d->printIndexedBuffer("Result is ");
+
+    ASSERT_TRUE(v->isScalar());
+    ASSERT_NEAR(expMean, (*v)(0), inf);
+    ASSERT_NEAR(expDeviation, (*d)(0), inf);
+
+    delete result;
+}
+
 //////////////////////////////////////////////////////////////////////
 TEST_F(DeclarableOpsTests5, trace_test1) {
     
