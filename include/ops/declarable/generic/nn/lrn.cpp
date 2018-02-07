@@ -1,12 +1,60 @@
 //
 // Created by raver119 on 29/10/17.
 //
+// Modified by GS <sgazeos@gmail.com> 2/7/18
+//
 
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
     namespace ops {
-        CUSTOM_OP_IMPL(lrn, 1, 3, true, 4, 0) {
+        CONFIGURABLE_OP_IMPL(lrn, 1, 1, true, 3, 1) {
+
+            NDArray<T>* input  = INPUT_VARIABLE(0);
+            NDArray<T>* output = OUTPUT_VARIABLE(0);
+
+            REQUIRE_TRUE(input->rankOf() == 4, 0, "Input rank of 4 expected, but got %i instead", input->rankOf());
+
+            T alpha = T_ARG(1);
+            T beta = T_ARG(2);
+            T bias = T_ARG(0);
+            int depth = INT_ARG(0);
+
+//         * TF define this as follow:
+//         * sqr_sum[a, b, c, d] =
+//         *    sum(input[a, b, c, d - depth_radius : d + depth_radius + 1] ** 2)
+//         *    output = input / (bias + alpha * sqr_sum) ** beta
+            T dividor;
+
+//            std::unique_ptr<NDArray<T>> patch(NDArrayFactory<T>::createUninitialized(input));
+            int totalLength = input->lengthOf();
+            int lastDim = input->sizeAt(-1);
+            int chunkCount = totalLength / lastDim;
+            //std::unique_ptr<NDArray<T>> patch(input->subArray({first, last - 1}); //dup('c'));
+            for (int c = 0; c < chunkCount; c++) {
+                for (int e = 0; e < lastDim; e++) {
+                    int begin = std::max(0, e - depth);
+                    int end = std::min(depth + e + 1, lastDim);
+                    T quadSum = 0;
+
+                    for (int pos = begin; pos < end; ++pos) {
+                        T val = (*input)(c * lastDim + pos);
+                        quadSum += val * val;
+                    }
+                    T dividor = nd4j::math::nd4j_pow(bias + alpha * quadSum, beta);
+                    (*output)(c * lastDim + e) = (*input)(c * lastDim + e) / dividor;
+                }
+
+//                for (int pos = 0; pos < lastDim; ++pos) {
+//                    T dividor = nd4j::math::nd4j_pow(bias + alpha * quadSum, beta);
+//                    (*output)(c * lastDim + pos) = (*input)(c * lastDim + pos) / dividor;
+//                }
+            }
+            //input->template applyScalar<simdOps::Divide<T>>(dividor, output, nullptr);
+            return ND4J_STATUS_OK;
+        }
+
+        CUSTOM_OP_IMPL(lrn_bp, 1, 3, true, 4, 0) {
             // LocalResponseNormalization
 
             NDArray<T>* input = INPUT_VARIABLE(0);
@@ -67,9 +115,9 @@ namespace nd4j {
 
             return ND4J_STATUS_OK;
         }
-        DECLARE_SYN(LRN, lrn);
+        DECLARE_SYN(LRN, lrn_bp);
 
-        DECLARE_SHAPE_FN(lrn) {
+        DECLARE_SHAPE_FN(lrn_bp) {
             int *inp = inputShape->at(0);
 
             auto shapeList = new ShapeList();
