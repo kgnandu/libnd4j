@@ -3,7 +3,7 @@
 //
 // Modified by GS <sgazeos@gmail.com> 2/7/18
 //
-
+#include <ops/declarable/helpers/lrn.h>
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -20,38 +20,7 @@ namespace nd4j {
             T bias = T_ARG(0);
             int depth = INT_ARG(0);
 
-//         * TF define this as follow:
-//         * sqr_sum[a, b, c, d] =
-//         *    sum(input[a, b, c, d - depth_radius : d + depth_radius + 1] ** 2)
-//         *    output = input / (bias + alpha * sqr_sum) ** beta
-            T dividor;
-
-//            std::unique_ptr<NDArray<T>> patch(NDArrayFactory<T>::createUninitialized(input));
-            int totalLength = input->lengthOf();
-            int lastDim = input->sizeAt(-1);
-            int chunkCount = totalLength / lastDim;
-            //std::unique_ptr<NDArray<T>> patch(input->subArray({first, last - 1}); //dup('c'));
-            for (int c = 0; c < chunkCount; c++) {
-                for (int e = 0; e < lastDim; e++) {
-                    int begin = std::max(0, e - depth);
-                    int end = std::min(depth + e + 1, lastDim);
-                    T quadSum = 0;
-
-                    for (int pos = begin; pos < end; ++pos) {
-                        T val = (*input)(c * lastDim + pos);
-                        quadSum += val * val;
-                    }
-                    T dividor = nd4j::math::nd4j_pow(bias + alpha * quadSum, beta);
-                    (*output)(c * lastDim + e) = (*input)(c * lastDim + e) / dividor;
-                }
-
-//                for (int pos = 0; pos < lastDim; ++pos) {
-//                    T dividor = nd4j::math::nd4j_pow(bias + alpha * quadSum, beta);
-//                    (*output)(c * lastDim + pos) = (*input)(c * lastDim + pos) / dividor;
-//                }
-            }
-            //input->template applyScalar<simdOps::Divide<T>>(dividor, output, nullptr);
-            return ND4J_STATUS_OK;
+            return helpers::lrnFunctor(input, output, depth, bias, alpha, beta);
         }
 
         CUSTOM_OP_IMPL(lrn_bp, 1, 3, true, 4, 0) {
