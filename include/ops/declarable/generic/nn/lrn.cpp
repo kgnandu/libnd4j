@@ -1,12 +1,29 @@
 //
 // Created by raver119 on 29/10/17.
 //
-
+// Modified by GS <sgazeos@gmail.com> 2/7/18
+//
+#include <ops/declarable/helpers/lrn.h>
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
     namespace ops {
-        CUSTOM_OP_IMPL(lrn, 1, 3, true, 4, 0) {
+        CONFIGURABLE_OP_IMPL(lrn, 1, 1, true, 3, 1) {
+
+            NDArray<T>* input  = INPUT_VARIABLE(0);
+            NDArray<T>* output = OUTPUT_VARIABLE(0);
+
+            REQUIRE_TRUE(input->rankOf() == 4, 0, "Input rank of 4 expected, but got %i instead", input->rankOf());
+
+            T alpha = T_ARG(1);
+            T beta = T_ARG(2);
+            T bias = T_ARG(0);
+            int depth = INT_ARG(0);
+
+            return helpers::lrnFunctor(input, output, depth, bias, alpha, beta);
+        }
+
+        CUSTOM_OP_IMPL(lrn_bp, 1, 3, true, 4, 0) {
             // LocalResponseNormalization
 
             NDArray<T>* input = INPUT_VARIABLE(0);
@@ -67,9 +84,9 @@ namespace nd4j {
 
             return ND4J_STATUS_OK;
         }
-        DECLARE_SYN(LRN, lrn);
+        DECLARE_SYN(LRN, lrn_bp);
 
-        DECLARE_SHAPE_FN(lrn) {
+        DECLARE_SHAPE_FN(lrn_bp) {
             int *inp = inputShape->at(0);
 
             auto shapeList = new ShapeList();

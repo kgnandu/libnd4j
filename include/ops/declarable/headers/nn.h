@@ -22,7 +22,26 @@ namespace nd4j {
          * 2: bias
          * 3: depth
          */
-        DECLARE_CUSTOM_OP(lrn, 1, 3, true, 4, 0);
+        DECLARE_CUSTOM_OP(lrn_bp, 1, 3, true, 4, 0);
+        
+        /**
+         * Local response normalization with TF signature
+         * 
+         * input - 4D tensor
+         * 1 int param - (optinal?) depth - default 5.
+         * 3 float point params (optional) are:
+         *    bias (default 1.0)
+         *    alpha (default 1.0)
+         *    beta  (default 0.5)
+         *
+         * TF define this as follow:
+         * sqr_sum[a, b, c, d] =
+         *    sum(input[a, b, c, d - depth_radius : d + depth_radius + 1] ** 2)
+         *    output = input / (bias + alpha * sqr_sum) ** beta
+         *
+         * so output is 4D tensor as input
+         */
+        DECLARE_CONFIGURABLE_OP(lrn, 1, 1, true, 3, 1);
 
         /**
         * Batch normalization implementation. 
