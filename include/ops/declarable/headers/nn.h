@@ -22,12 +22,13 @@ namespace nd4j {
          * 2: bias
          * 3: depth
          */
-        DECLARE_CUSTOM_OP(lrn_bp, 1, 3, true, 4, 0);
+        DECLARE_CUSTOM_OP(lrn_old, 1, 3, true, 4, 0);
         
         /**
          * Local response normalization with TF signature
          * 
          * input - 4D tensor
+         * (for _bp - another 4D tensor with eplisons will be given)
          * 1 int param - (optinal?) depth - default 5.
          * 3 float point params (optional) are:
          *    bias (default 1.0)
@@ -42,6 +43,7 @@ namespace nd4j {
          * so output is 4D tensor as input
          */
         DECLARE_CONFIGURABLE_OP(lrn, 1, 1, true, 3, 1);
+        DECLARE_CONFIGURABLE_OP(lrn_bp, 2, 1, true, 3, 1);
 
         /**
         * Batch normalization implementation. 

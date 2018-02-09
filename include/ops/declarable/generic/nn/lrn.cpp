@@ -13,7 +13,7 @@ namespace nd4j {
             NDArray<T>* input  = INPUT_VARIABLE(0);
             NDArray<T>* output = OUTPUT_VARIABLE(0);
 
-            REQUIRE_TRUE(input->rankOf() == 4, 0, "Input rank of 4 expected, but got %i instead", input->rankOf());
+            REQUIRE_TRUE(input->rankOf() == 4, 0, "lrn: Input rank of 4 expected, but got %i instead", input->rankOf());
 
             T alpha = T_ARG(1);
             T beta = T_ARG(2);
@@ -23,7 +23,31 @@ namespace nd4j {
             return helpers::lrnFunctor(input, output, depth, bias, alpha, beta);
         }
 
-        CUSTOM_OP_IMPL(lrn_bp, 1, 3, true, 4, 0) {
+        CONFIGURABLE_OP_IMPL(lrn_bp, 2, 1, true, 3, 1) {
+
+            NDArray<T>* input  = INPUT_VARIABLE(0);
+            NDArray<T>* errors  = INPUT_VARIABLE(1);
+            NDArray<T>* output = OUTPUT_VARIABLE(0);
+
+            REQUIRE_TRUE(input->rankOf() == 4, 0, "lrn_bp: Input rank of 4 expected, but got %i instead", input->rankOf());
+            REQUIRE_TRUE(input->isSameShape(errors), 0, "lrn_bp: Both input and errors should have the same shape");
+            T alpha = T_ARG(1);
+            T beta = T_ARG(2);
+            T bias = T_ARG(0);
+            int depth = INT_ARG(0);
+            nd4j::ops::lrn<T> op;
+
+            //auto res = op.execute({input}, {bias, alpha, beta}, {depth});
+            //REQUIRE_TRUE(ND4J_STATUS_OK == res->status(), 0, "lrn_bp: Failed to get lrn for given input." );
+            REQUIRE_TRUE(ND4J_STATUS_OK == helpers::lrnFunctor(input, output, depth, bias, alpha, beta), 0, "lrn_bp: Failed to get lrn for given input." );
+            output->template applyPairwiseTransform<simdOps::SquaredSubtract<T>>(errors, output, nullptr);
+            //output->template applyTransform<simdOps::Sqrt<T>>();
+
+            return ND4J_STATUS_OK;
+        }
+        DECLARE_SYN(local_response_normalization, lrn);
+
+        CUSTOM_OP_IMPL(lrn_old, 1, 3, true, 4, 0) {
             // LocalResponseNormalization
 
             NDArray<T>* input = INPUT_VARIABLE(0);
@@ -84,9 +108,9 @@ namespace nd4j {
 
             return ND4J_STATUS_OK;
         }
-        DECLARE_SYN(LRN, lrn_bp);
-
-        DECLARE_SHAPE_FN(lrn_bp) {
+        DECLARE_SYN(LRN, lrn_old);
+        
+        DECLARE_SHAPE_FN(lrn_old) {
             int *inp = inputShape->at(0);
 
             auto shapeList = new ShapeList();
