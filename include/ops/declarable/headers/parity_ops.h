@@ -569,13 +569,13 @@ namespace nd4j {
          * This op calculates weighted logarithmic loss of input
          * Input arguments
          *  0 - input tensor
-         *  1 - probability (scalar tensor, should be between 0 and 1)
          *  2 - noise_shape - (vector with shape to reduce)
          *  
          *  int parameter - seed for random numbers
+         *  T parameter - probability (should be between 0 and 1)
          *  return value - a tensor with the same shape as target or input
          */
-        DECLARE_CONFIGURABLE_OP(dropout, 3, 1, true, 0, 1);
+        DECLARE_CONFIGURABLE_OP(dropout, 1, 1, true, 1, 1);
 
     }
 }
