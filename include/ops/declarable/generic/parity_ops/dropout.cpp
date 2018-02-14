@@ -33,39 +33,40 @@ CONFIGURABLE_OP_IMPL(dropout, 3, 1, true, 0, 1) {
         return ND4J_STATUS_OK;
     }
 
-    Nd4jIndex *buffer = new Nd4jIndex[100000];
+    REQUIRE_TRUE(reduceShape->lengthOf() <= input->rankOf(), 0, "dropout: Noise shape should be fittable to input");
+
+    std::vector<Nd4jIndex> buffer(100000);
     NativeOps nativeOps;
-    //int seed = 100;
-    nd4j::random::RandomBuffer *rng = (nd4j::random::RandomBuffer *) nativeOps.initRandom(nullptr, seed, 100000, (Nd4jPointer) buffer);
+    nd4j::random::RandomBuffer* rng = (nd4j::random::RandomBuffer *) nativeOps.initRandom(nullptr, seed, buffer.size(), (Nd4jPointer) &buffer[0]);
 
     if (rng == nullptr)
-        throw "RNG initialization failed";
+        return ND4J_STATUS_BAD_RNG;
 
-    VariableSpace<T>* variableSpace = new VariableSpace<T>();
-    std::unique_ptr<NDArray<T>> tempInput(new NDArray<T>(*input));
-    variableSpace->putVariable(-1, tempInput.get());
-    Context<T>* theVBlock = new Context<T>(1, variableSpace, true);
-    theVBlock->fillInputs({-1});
-    theVBlock->setRNG(rng);
-    theVBlock->getTArguments()->push_back(probValue);
-    theVBlock->getTArguments()->push_back(probValue + T(1.0f));
 
-    nd4j::ops::randomuniform<T> uniform;
+    std::vector<int> dims(reduceShape->lengthOf());
 
-    Nd4jStatus  status = uniform.execute(theVBlock);
+    bool fit = true;
+/*
+    for( int i = 0; i < dims.size(); i++ ) {
+        dims[i] = (*reduceShape)(i);
+        for (int e = 0; e < input->rankOf(); ++e)
+            if (input->sizeAt(e) % dims[i]) {
+                fit = false;
+                break;
+            }
 
-    REQUIRE_TRUE(ND4J_STATUS_OK == status, 0, "dropout: Cannot make uniform matrix for dropout process");
+        if(!fit) break;
+    }
+*/
+    // check dims to fit input
+    REQUIRE_TRUE(fit, 0, "dropout: Noise shape should fit to input rank.");
 
-    tempInput->template applyTransform<simdOps::Floor<T>>();
-    tempInput->template applyScalar<simdOps::Multiply<T>>(T(1.0) / probValue);
+//    Nd4jIndex tensorCount = x.tensorsAlongDimension({1});
+//    nd4j_printf("Total subarray are %i\n", tensorCount);
+    
+    input->template applyRandom<randomOps::DropOutInverted<T>>(rng, nullptr, output, &probValue);
 
-    nativeOps.destroyRandom((Nd4jPointer) rng);
-    delete[] buffer;
-
-    delete variableSpace;
-    delete theVBlock;
-
-    *output = *input * *tempInput;
+    nativeOps.destroyRandom(rng);
 
     return ND4J_STATUS_OK;
 }

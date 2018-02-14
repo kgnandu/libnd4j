@@ -241,11 +241,77 @@ TEST_F(DeclarableOpsTests6, TestDropout_1) {
     NDArray<float> shape({2.f, 2.f});
     nd4j::ops::dropout<float> op;
 
-    auto ress = op.execute({&x, &pr, &shape}, {}, {100});
+    auto ress = op.execute({&x, &pr, &shape}, {}, {113});
 
     ASSERT_EQ(ND4J_STATUS_OK, ress->status());
-
-    x.printIndexedBuffer("Random matrix");
+    ress->at(0)->printIndexedBuffer("Result is ");
+    x.printIndexedBuffer("Input is");
 
     delete ress;
+}
+
+
+TEST_F(DeclarableOpsTests6, TestDropout_2) {
+//    NDArray<float> x0('c', {10, 10});
+//    NDArray<float> x1('c', {10, 10});
+    NDArray<float> x('c', {3, 3}, {1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f});
+
+//    NDArrayFactory<float>::linspace(1, x0);
+//    NDArrayFactory<float>::linspace(1, x1);
+
+    NativeOps nativeOps;
+
+    float prob[] = {0.2f};
+
+//    Nd4jIndex *_bufferA;
+    Nd4jIndex *_bufferB;
+
+    long _seed = 119L;
+    nd4j::random::RandomBuffer *_rngA;
+    nd4j::random::RandomBuffer *_rngB;
+
+//    _bufferA = new Nd4jIndex[100000];
+    _bufferB = new Nd4jIndex[100000];
+
+//    _rngA = (nd4j::random::RandomBuffer *) nativeOps.initRandom(nullptr, _seed, 100000, (Nd4jPointer) _bufferA);
+    _rngB = (nd4j::random::RandomBuffer *) nativeOps.initRandom(nullptr, _seed, 100000, (Nd4jPointer) _bufferB);
+
+//    x0.template applyRandom<randomOps::DropOut<float>>(_rngA, nullptr, &x0, prob);
+    //x.template reduceAlongDimensions<
+    Nd4jIndex tensorCount = x.tensorsAlongDimension({1});
+    nd4j_printf("Total subarray are %i\n", tensorCount);
+    
+    NDArray<float>* vectorTensor = x.tensorAlongDimension(0, {0,1});
+    NDArray<float>* vectorCopy(new NDArray<float>(*vectorTensor));
+    //vectorTensor->printIndexedBuffer("Before");
+    vectorTensor->template applyRandom<randomOps::DropOutInverted<float>>(_rngB, nullptr, vectorCopy, prob);
+    //vectorCopy->printIndexedBuffer("Dropout res");
+//    vectorCopy->template applyScalar<simdOps::Multiply<float>>(1.0f / prob[0], vectorTensor, nullptr); //, &xnullptr, &x, prob);
+    //vectorTensor->printIndexedBuffer("After");
+    
+    //vectorTensor = x.tensorAlongDimension(1, {1});
+    //vectorTensor->template applyRandom<randomOps::DropOut<float>>(_rngB, nullptr, vectorTensor, prob);
+    //vectorTensor->template applyPairwiseTransform<simdOps::Multiply<float>>(vectorCopy, vectorTensor, nullptr);
+//    vectorTensor->template applyScalar<simdOps::Multiply<float>>(1.0f / prob[0], vectorTensor, nullptr); //, &xnullptr, &x, prob);
+    
+    //v//ectorTensor = x.tensorAlongDimension(2, {1});
+    //vectorTensor->template applyPairwiseTransform<simdOps::Multiply<float>>(vectorCopy, vectorTensor, nullptr);
+    //vectorTensor->template applyRandom<randomOps::DropOut<float>>(_rngB, nullptr, vectorTensor, prob);
+//    vectorTensor->template applyScalar<simdOps::Multiply<float>>(1.0f / prob[0], vectorTensor, nullptr); //, &xnullptr, &x, prob);
+
+//    x1.template applyRandom<randomOps::DropOut<float>>(_rngB, nullptr, &x1, prob);
+    vectorCopy->printIndexedBuffer("X");
+    //x1.printIndexedBuffer("X1");
+    //ASSERT_TRUE(x0.equalsTo(&x1));
+    
+//    nativeOps.destroyRandom(_rngA);
+    nativeOps.destroyRandom(_rngB);
+//    delete[] _bufferA;
+    delete[] _bufferB;
+    delete vectorCopy;
+    delete vectorTensor;
+    // this check is required to ensure we're calling wrong signature
+//    ASSERT_FALSE(x0.equalsTo(nexp0));
+//    ASSERT_FALSE(x0.equalsTo(nexp1));
+//    ASSERT_FALSE(x0.equalsTo(nexp2));
 }
