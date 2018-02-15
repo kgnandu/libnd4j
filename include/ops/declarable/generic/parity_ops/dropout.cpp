@@ -3,7 +3,7 @@
 //
 
 #include <NativeOps.h>
-#include <ops/declarable/CustomOperations.h>
+#include <ops/declarable/headers/parity_ops.h>
 
 //#include <helpers/ShapeUtils.h>
 //#include <vector>
