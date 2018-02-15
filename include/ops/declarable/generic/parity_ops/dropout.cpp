@@ -72,18 +72,20 @@ CONFIGURABLE_OP_IMPL(dropout, 1, 1, true, 1, 1) {
     // check dims to fit input
     REQUIRE_TRUE(fit, 0, "dropout: Noise shape should fit to input rank.");
     NDArray<T> chunk('c', dims);
-    chunk.assign(1);
+    chunk.assign(T(1.0));
     chunk.template applyRandom<randomOps::DropOutInverted<T>>(rng, nullptr, &chunk, &probValue);
 
     // broadcast chunk to full matrix
     NDArray<T>* multiplier = new NDArray<T>(*input);
     chunk.printIndexedBuffer("Chunk is ");
+    multiplier->assign(T(0.0));
     //chunk.repeat(0, *multiplier);
-    int k = 0;
-    for (int e = 0; e < multiplier->lengthOf(); ++e) {
-        (*multiplier)(e) = chunk(k++);
-        if (k >= chunk.lengthOf()) k = 0;
-    }
+    *multiplier += chunk;
+//    int k = 0;
+//    for (int e = 0; e < multiplier->lengthOf(); ++e) {
+//        (*multiplier)(e) = chunk(k++);
+//        if (k >= chunk.lengthOf()) k = 0;
+//    }
     multiplier->printIndexedBuffer("Multiplier is");
     input->template applyPairwiseTransform<simdOps::Multiply<T>>(multiplier, output, nullptr);
     delete multiplier;
