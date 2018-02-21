@@ -746,7 +746,9 @@ namespace shape {
                 int *permutedRet2 = shape::permuteShapeBuffer(shapeInfo,permuted);
                 return permutedRet2;
             } else if(dimension[0] == 1 && shape::isVector(shapeInfo) && theShape[0] == 1) {
-                return shape::copyOf(shape::shapeInfoLength(shape::rank(shapeInfo)),shapeInfo);
+                int *ret = shape::copyOf(shape::shapeInfoLength(shape::rank(shapeInfo)),shapeInfo);
+                int* stride = shape::stride(ret);
+                return ret;
             }
             else if(shape::shapeOf(shapeInfo)[dimension[0]] == 1) {
                 int *scalarInfo = shape::createScalarShapeInfo();

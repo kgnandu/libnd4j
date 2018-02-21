@@ -3445,7 +3445,7 @@ __host__ __device__
                                int *ret) {
         int count = 0;
         int absLength = dataLength - indexesLength;
-        for (int i = 0; i < dataLength && count < absLength; i++) {
+        for (int i = 0; i < absLength && count < absLength; i++) {
             int contains = 0;
             for (int j = 0; j < indexesLength; j++) {
                 if (i == indexes[j]) {

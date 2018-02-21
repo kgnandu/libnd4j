@@ -2,7 +2,7 @@
 #ifndef OPS_H_
 #define OPS_H_
 
-#include <DataTypeUtils.h>
+#include <array/DataTypeUtils.h>
 #include <helpers/shape.h>
 #include <vector>
 #include <Environment.h>

@@ -14,15 +14,18 @@ public:
     int dimension[1] = {1};
     int dimensionLength = 1;
     int opNum = 1;
+    float extraVals[1] = {0};
+    float result[4] = {0.0,0.0,0.0,0.0};
 
 };
 
 TEST_F(EuclideanTest,Test1) {
     int *shapeBuffer = shape::shapeBuffer(2,yShape);
+    int *xShapeBuffer = shape::shapeBuffer(2,xShape);
     int *tadShapeBuffer = shape::computeResultShape(shapeBuffer,dimension,dimensionLength);
     functions::reduce3::Reduce3<float>::exec(opNum,
                                              x,
-                                             shapeBuffer,
+                                             xShapeBuffer,
                                              extraVals,
                                              y,
                                              shapeBuffer,
@@ -30,6 +33,11 @@ TEST_F(EuclideanTest,Test1) {
                                              tadShapeBuffer,
                                              dimension,
                                              dimensionLength);
+
+    float distancesAssertion[4] = {0.0,8.0,16.0,24.0};
+    for(int i = 0; i < 4; i++) {
+        ASSERT_EQ(distancesAssertion[i],result[i]);
+    }
 
     //ASSERT_EQ(result[1],result[0]);
     delete[] shapeBuffer;
