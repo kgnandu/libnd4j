@@ -10,8 +10,10 @@
 
 template<typename T>
 nd4j::NDArray<T>  processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray<T> *comp, T compScalar);
+
 template <typename T>
 T processElementCondition(int mode,T d1,T d2);
+
 
 
 
@@ -23,14 +25,14 @@ nd4j::NDArray<T>  processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray
             //Other input for compare could be an ndarray or a secondary scalar
             //for comparison
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition(mode,arg[i],comp[i]));
+                result.push_back(processElementCondition<T>(mode,arg[i],comp[i]));
             }
         } else {
            // REQUIRE_TRUE(comp.isSameShape(arg));
             //Other input for compare could be an ndarray or a secondary scalar
             //for comparison
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition(mode,arg[i],compScalar));
+                result.push_back(processElementCondition<T>(mode,arg[i],compScalar));
             }
         }
 
@@ -39,7 +41,7 @@ nd4j::NDArray<T>  processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray
         //Other input for compare could be an ndarray or a secondary scalar
         //for comparison
         for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-            result.push_back(processElementCondition(mode,arg[i],compScalar));
+            result.push_back(processElementCondition<T>(mode,arg[i],compScalar));
         }
     }
 
@@ -64,36 +66,17 @@ namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(choose, -1, 1, false, 0, 1) {
             int mode = INT_ARG(0);
-            auto arg1 = INPUT_VARIABLE(0);
             if (block.width() > 1) {
-
-                if (arg1->dataType() == DataType_FLOAT) {
-                    auto arg = (nd4j::NDArray<float> *) INPUT_VARIABLE(0);
-                    auto comp = (nd4j::NDArray<float> *) INPUT_VARIABLE(1);
-                    nd4j::NDArray<float> result = processCondition<float>(mode,arg,comp,0.0f);
-                    STORE_RESULT(result);
-
-                } else if (arg1->dataType() == DataType_DOUBLE) {
-                    auto arg = (nd4j::NDArray<double> *) INPUT_VARIABLE(0);
-                    auto comp = (nd4j::NDArray<double> *) INPUT_VARIABLE(1);
-                    nd4j::NDArray<double> result = processCondition<double>(mode,arg,comp,0.0);
-                    STORE_RESULT(result);
-
-                }
+                auto arg = INPUT_VARIABLE(0);
+                auto comp = INPUT_VARIABLE(1);
+                auto result = processCondition<T>(mode,arg,comp,0.0f);
+                OVERWRITE_RESULT(result);
             }//scalar case
             else {
-                if (arg1->dataType() == DataType_FLOAT) {
-                    float scalar = (float) T_ARG(0);
-                    auto arg = (nd4j::NDArray<float> *) INPUT_VARIABLE(0);
-                    nd4j::NDArray<float> result = processCondition<float>(mode,arg,nullptr,scalar);
-                    STORE_RESULT(result);
-
-                } else if (arg1->dataType() == DataType_DOUBLE) {
-                    double scalar = (double) T_ARG(0);
-                    auto arg = (nd4j::NDArray<double> *) INPUT_VARIABLE(0);
-                    nd4j::NDArray<double> result = processCondition<double>(mode,arg,nullptr,scalar);
-                    STORE_RESULT(result);
-                }
+                T scalar = (T) T_ARG(0);
+                auto arg = INPUT_VARIABLE(0);
+                auto  result = processCondition<T>(mode,arg,nullptr,scalar);
+                OVERWRITE_RESULT(result);
             }
 
 
