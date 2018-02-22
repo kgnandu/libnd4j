@@ -117,6 +117,6 @@ namespace nd4j {
          *  > 2. Libnd4j already implements a number of pre defined conditions.
          * @tparam T
          */
-        DECLARE_CUSTOM_OP(choose, -1, 1, false, 0, 1);
+        DECLARE_CUSTOM_OP(choose, -1, 1, false, -1, -1);
     }
 }

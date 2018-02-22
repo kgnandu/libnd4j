@@ -31,12 +31,12 @@ TEST_F(DeclarableOpsTests7, Test_CHOOSE_SCALAR) {
 
     NDArray<double> x('c',{1,4},data);
     nd4j::ops::choose<double> op;
-
-    auto result = op.execute({&x}, {1.0}, {1, 1,5,7,1, 1,2,3,1});
+   //greater than test
+    auto result = op.execute({&x}, {1.0},{3});
     ASSERT_EQ(Status::OK(), result->status());
 
     auto z = result->at(0);
-
+    ASSERT_EQ(2,z->lengthOf());
     //ASSERT_TRUE(exp.isSameShape(z));
 
     delete result;
