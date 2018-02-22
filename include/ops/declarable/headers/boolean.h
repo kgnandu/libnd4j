@@ -103,5 +103,20 @@ namespace nd4j {
          * array of the same shape, with elements, either from x or y, depending on the condition.
          */
         DECLARE_CUSTOM_OP(select, 3, 1, false, 0, 0);
+
+        /**
+         * This op takes either 1 argument and 1 scalar
+         * or 1 argument and another comparison array
+         * and runs a pre defined conditional op.
+         *
+         *  The output of the op is dynamic in size and returns a flat vector of elements
+         *  that return true on the given condition.
+         *  In numpy parlance, most people might understand:
+         *  a[a > 2]
+         *  where a is a numpy array and the condition is true when an element is
+         *  > 2. Libnd4j already implements a number of pre defined conditions.
+         * @tparam T
+         */
+        DECLARE_CUSTOM_OP(choose, -1, 1, false, 0, 1);
     }
 }

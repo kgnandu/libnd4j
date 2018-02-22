@@ -274,6 +274,7 @@ namespace nd4j {
             }
         }
 
+
         template <typename T>
         bool Context<T>::isValueAvailable(int idx) {
             auto var = ensureVariable(idx);
