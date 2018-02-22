@@ -24,24 +24,28 @@ nd4j::NDArray<T>  processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray
         if (comp->isScalar()) {
             //Other input for compare could be an ndarray or a secondary scalar
             //for comparison
+            nd4j::NDArray<T> arg1 = *arg;
+            nd4j::NDArray<T> comp1 = *comp;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition<T>(mode,arg[i],comp[i]));
+                result.push_back(processElementCondition<T>(mode,arg1(i),comp1(i)));
             }
         } else {
            // REQUIRE_TRUE(comp.isSameShape(arg));
             //Other input for compare could be an ndarray or a secondary scalar
             //for comparison
+            nd4j::NDArray<T> arg1 = *arg;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition<T>(mode,arg[i],compScalar));
+                result.push_back(processElementCondition<T>(mode,arg1(i),compScalar));
             }
         }
 
     }
     else {
+        nd4j::NDArray<T> arg1 = *arg;
         //Other input for compare could be an ndarray or a secondary scalar
         //for comparison
         for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-            result.push_back(processElementCondition<T>(mode,arg[i],compScalar));
+            result.push_back(processElementCondition<T>(mode,arg1(i),compScalar));
         }
     }
 
@@ -70,13 +74,13 @@ namespace nd4j {
                 auto arg = INPUT_VARIABLE(0);
                 auto comp = INPUT_VARIABLE(1);
                 auto result = processCondition<T>(mode,arg,comp,0.0f);
-                OVERWRITE_RESULT(result);
+                OVERWRITE_RESULT(&result);
             }//scalar case
             else {
                 T scalar = (T) T_ARG(0);
                 auto arg = INPUT_VARIABLE(0);
                 auto  result = processCondition<T>(mode,arg,nullptr,scalar);
-                OVERWRITE_RESULT(result);
+                OVERWRITE_RESULT(&result);
             }
 
 
