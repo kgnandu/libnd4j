@@ -28,7 +28,9 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             nd4j::NDArray<T> arg1 = *arg;
             nd4j::NDArray<T> comp1 = *comp;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition<T>(mode,arg1(i),comp1(i)));
+                T result2 = processElementCondition<T>(mode,arg1(i),comp1(i));
+                if(result2 > 0)
+                    result.push_back(arg1(i));
             }
         } else {
             // REQUIRE_TRUE(comp.isSameShape(arg));
@@ -36,7 +38,9 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             //for comparison
             nd4j::NDArray<T> arg1 = *arg;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                result.push_back(processElementCondition<T>(mode,arg1(i),compScalar));
+                T result2 = processElementCondition<T>(mode,arg1(i),compScalar);
+                if(result2 > 0)
+                    result.push_back(arg1(i));
             }
         }
 
@@ -55,6 +59,7 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
     std::vector<int> shape;
     shape.push_back(result.size());
     nd4j::NDArray<T> *ret = new nd4j::NDArray<T>(result.data(),'c',shape,arg->getWorkspace());
+    nd4j_printf("Choose returning size %d array\n",result.size());
     return ret;
 
 }
@@ -80,6 +85,7 @@ namespace nd4j {
                 OVERWRITE_RESULT(result);
             }//scalar case
             else {
+                nd4j_printf("In scalar case %d\n",1);
                 T scalar = (T) T_ARG(0);
                 auto arg = INPUT_VARIABLE(0);
                 auto  result = processCondition<T>(mode,arg,nullptr,scalar);
@@ -91,6 +97,7 @@ namespace nd4j {
         }
 
         DECLARE_SHAPE_FN(choose) {
+            
             return new ShapeList();
         }
 
