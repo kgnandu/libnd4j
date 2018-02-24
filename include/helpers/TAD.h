@@ -803,6 +803,10 @@ namespace shape {
         else {
             int length = tensorLength;
             int lengthPerSlice = this->lengthPerSlice(ret2);
+            if(lengthPerSlice < 1) {
+                return ret2;
+            }
+
             int offset = tadIndex * tensorLength /lengthPerSlice;
             if(sliceIndex == 0 && length == lengthPerSlice) {
                 int *newRet2 = shape::sliceOfShapeBuffer(offset,ret2);
