@@ -118,10 +118,6 @@ if ($ENV{CLION_IDE})
 
 endif ()
 
-# DenseLayerTests.cpp
-<<<<<<< HEAD
-=======
-add_executable(runtests GraphStateTests.cpp SingleDimTests.cpp ScalarTests.cpp BackpropTests.cpp RNGTests.cpp ShapeTests.cpp StashTests.cpp VariableProxyTests.cpp SessionLocalTests.cpp FlatBuffersTests.cpp ConvolutionTests.cpp DeclarableOpsTests1.cpp DeclarableOpsTests2.cpp DeclarableOpsTests3.cpp DeclarableOpsTests4.cpp GraphTests.cpp HashUtilsTests.cpp NDArrayTests.cpp NDArrayTests2.cpp TadTests.cpp VariableSpaceTests.cpp VariableTests.cpp WorkspaceTests.cpp JavaInteropTests.cpp MemoryUtilsTests.cpp OpsArena.cpp OpTupleTests.cpp ParityOpsTests.cpp BooleanOpsTests.cpp SwitchTests.cpp ScopeTests.cpp ConditionalTests.cpp LegacyOpsTests.cpp ContextTests.cpp IndexingTests.cpp ShapeUtilsTests.cpp NDArrayListTests.cpp ListOperationsTests.cpp NDArrayFactoryTests.cpp BitwiseUtilsTests.cpp SanityTests.cpp PlaygroundTests.cpp BroadcastableOpsTests.cpp GraphExecutionerTests.cpp GraphHolderTests.cpp OpTrackerTests.cpp HelpersTests1.cpp DeclarableOpsTests5.cpp DeclarableOpsTests6.cpp NodeTests.cpp)
->>>>>>> c84753304f10e811819b33cbee3c61ea6b4cb069
-#add_executable(runtests CyclicTests.cpp)
+
+
 target_link_libraries(runtests nd4jcpu gtest gtest_main)
