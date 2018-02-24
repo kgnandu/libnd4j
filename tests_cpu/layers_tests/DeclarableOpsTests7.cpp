@@ -69,3 +69,26 @@ TEST_F(DeclarableOpsTests7, Test_CHOOSE_SCALAR_LEFT) {
     delete result;
 
 }
+
+
+TEST_F(DeclarableOpsTests7, Test_CHOOSE_ONLY_SCALAR) {
+    std::vector<double> data;
+    for(Nd4jIndex i = 0; i < 4; i++) {
+        data.push_back(i);
+    }
+
+
+
+    NDArray<double> x('c',{1,4},data);
+    nd4j::ops::choose<double> op;
+    //greater than test
+    auto result = op.execute({&x}, {1.0},{3});
+    ASSERT_EQ(Status::OK(), result->status());
+
+    auto z = result->at(0);
+    ASSERT_EQ(4,z->lengthOf());
+    //ASSERT_TRUE(exp.isSameShape(z));
+
+    delete result;
+
+}
