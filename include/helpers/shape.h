@@ -4294,14 +4294,12 @@ __host__ __device__
 
         traceNew(30);
 
-        int *shape = new int[2];
+        int *shape = new int[1];
         shape[0] = 1;
-        shape[1] = 1;
-        int *stride = new int[2];
+        int *stride = new int[1];
         stride[0] = 1;
-        stride[1] = 1;
         ShapeInformation *shapeInformation2 = new ShapeInformation();
-        shapeInformation2->rank = 2;
+        shapeInformation2->rank = 1;
         shapeInformation2->offset = 0;
         shapeInformation2->stride = stride;
         shapeInformation2->shape = shape;

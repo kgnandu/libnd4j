@@ -19,8 +19,11 @@ T processElementCondition(int mode,T d1,T d2);
 
 
 template<typename T>
-nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray<T> *comp, T compScalar) {
-    std::vector<T> result;
+nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray<T> *comp,nd4j::NDArray<T> *output, nd4j::NDArray<T> *numResult,T compScalar) {
+    /**
+     * Convert to straight ndarray based on input
+     */
+    int numResults = 0;
     if(comp != nullptr) {
         if (comp->isScalar()) {
             //Other input for compare could be an ndarray or a secondary scalar
@@ -29,8 +32,10 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             nd4j::NDArray<T> comp1 = *comp;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
                 T result2 = processElementCondition<T>(mode,arg1(i),comp1(i));
-                if(result2 > 0)
-                    result.push_back(arg1(i));
+                if(result2 > 0) {
+                    output->putScalar(i, arg1(i));
+                    numResults++;
+                }
             }
         } else {
             // REQUIRE_TRUE(comp.isSameShape(arg));
@@ -39,8 +44,10 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             nd4j::NDArray<T> arg1 = *arg;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
                 T result2 = processElementCondition<T>(mode,arg1(i),compScalar);
-                if(result2 > 0)
-                    result.push_back(arg1(i));
+                if(result2 > 0) {
+                    output->putScalar(i, arg1(i));
+                    numResults++;
+                }
             }
         }
 
@@ -51,16 +58,17 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
         //for comparison
         for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
             T result2 = processElementCondition<T>(mode,arg1(i),compScalar);
-            if(result2 > 0)
-                result.push_back(arg1(i));
+            if(result2 > 0) {
+                output->putScalar(i, arg1(i));
+                numResults++;
+            }
         }
     }
 
-    std::vector<int> shape;
-    shape.push_back(result.size());
-    nd4j::NDArray<T> *ret = new nd4j::NDArray<T>(result.data(),'c',shape,arg->getWorkspace());
-    nd4j_printf("Choose returning size %d array\n",result.size());
-    return ret;
+    if(numResult != nullptr)
+        numResult->putScalar(0,numResults);
+
+    return output;
 
 }
 
@@ -76,20 +84,25 @@ T processElementCondition(int mode,T d1,T d2) {
 
 namespace nd4j {
     namespace ops {
-        CUSTOM_OP_IMPL(choose, -1, 1, false, -1, -1) {
+        CUSTOM_OP_IMPL(choose, -1, 2, false, -1, -1) {
             int mode = INT_ARG(0);
             if (block.width() > 1) {
                 auto arg = INPUT_VARIABLE(0);
                 auto comp = INPUT_VARIABLE(1);
-                auto result = processCondition<T>(mode,arg,comp,0.0f);
-                OVERWRITE_RESULT(result);
+                auto result = OUTPUT_VARIABLE(0);
+                auto numResults = OUTPUT_VARIABLE(1);
+                processCondition<T>(mode,arg,comp,result,numResults,0.0f);
+                STORE_2_RESULTS(result,numResults);
+
             }//scalar case
             else {
                 nd4j_printf("In scalar case %d\n",1);
                 T scalar = (T) T_ARG(0);
                 auto arg = INPUT_VARIABLE(0);
-                auto  result = processCondition<T>(mode,arg,nullptr,scalar);
-                OVERWRITE_RESULT(result);
+                auto numResults = OUTPUT_VARIABLE(1);
+                auto result = OUTPUT_VARIABLE(0);
+                processCondition<T>(mode,arg,nullptr,result,numResults,scalar);
+                STORE_2_RESULTS(result,numResults);
             }
 
 
@@ -97,8 +110,24 @@ namespace nd4j {
         }
 
         DECLARE_SHAPE_FN(choose) {
-            
-            return new ShapeList();
+            int *shape = block.getVariable(0)->getNDArray()->getShapeInfo();
+            int rank = block.getVariable(0)->getNDArray()->rankOf();
+            int* newShape;
+            ALLOCATE(newShape, block.getWorkspace(), shape::shapeInfoLength(rank), int);
+            memcpy(newShape, shape, shape::shapeInfoLength(rank) * sizeof(int));
+
+            int *shapeScalar;
+            int *shapeScalarInfo = shape::createScalarShapeInfo();
+
+            ALLOCATE(shapeScalar, block.getWorkspace(),shape::shapeInfoLength(1), int);
+            memcpy(shapeScalar, shapeScalarInfo, shape::shapeInfoLength(1) * sizeof(int));
+
+
+            delete[] shapeScalarInfo;
+            auto ret =  new ShapeList();
+            ret->push_back(newShape);
+            ret->push_back(shapeScalar);
+            return ret;
         }
 
 

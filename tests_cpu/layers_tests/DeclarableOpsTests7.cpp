@@ -29,15 +29,19 @@ TEST_F(DeclarableOpsTests7, Test_CHOOSE_SCALAR) {
         data.push_back(i);
     }
 
+
+
     NDArray<double> x('c',{1,4},data);
+    NDArray<double> scalar('c',{1,1},{0.0});
     nd4j::ops::choose<double> op;
    //greater than test
-    auto result = op.execute({&x}, {1.0},{3});
+    auto result = op.execute({&x,&scalar}, {1.0},{3});
     ASSERT_EQ(Status::OK(), result->status());
 
     auto z = result->at(0);
-    ASSERT_EQ(2,z->lengthOf());
+    ASSERT_EQ(4,z->lengthOf());
+    delete z;
     //ASSERT_TRUE(exp.isSameShape(z));
 
-    delete result;
+    delete[] result;
 }
