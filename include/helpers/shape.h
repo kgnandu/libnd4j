@@ -3462,6 +3462,7 @@ __host__ __device__
 
     INLINEDEF void removeIndex(int *data, int *indexes, int dataLength, int indexesLength,
                                int *ret) {
+
         int count = 0;
         int absLength = dataLength - indexesLength;
         for (int i = 0; i < absLength && count < absLength; i++) {
@@ -3501,7 +3502,9 @@ __host__ __device__
         if(lengthOfArr < 0) {
             printf("Remove index call created a <= 0 length array. This was likely not intended.");
         }
+
         int *ret = new int[lengthOfArr];
+        memset(ret,0,sizeof(int)  * lengthOfArr);
         removeIndex(data,indexes,dataLength,indexesLength,ret);
         return ret;
     }
