@@ -2560,6 +2560,16 @@ __host__ __device__
 #endif
 
     INLINEDEF void doPermuteSwap(int length, int **shape, int *rearrange) {
+        if(length == 1) {
+            return;
+        }
+        else {
+            int *shapeDeref = *shape;
+            if(shape::prod(shapeDeref,length) < 2) {
+                return;
+            }
+        }
+
         bool inOrder = true;
         for(int i = 0; i < length - 1; i++) {
             inOrder = inOrder && rearrange[i] + 1 == rearrange[i + 1];
@@ -2578,6 +2588,10 @@ __host__ __device__
             int shapeSecond = shapeDeref[1];
             shapeDeref[0] = shapeSecond;
             shapeDeref[1] = shapeFirst;
+            return;
+        }
+        else if(length == 1) {
+            //no permute
             return;
         }
 
@@ -2616,6 +2630,11 @@ __host__ __device__
 #endif
 
     INLINEDEF void doPermuteShapeBuffer(int *shapeBuffer,int *rearrange) {
+        //no swapping needs to happen
+        if(shape::isScalar(shapeBuffer)) {
+            return;
+        }
+
         int *shapeRef = shapeBuffer;
         //rank of the rearrange array == rank of shape buffer
         int rearrageRank = shape::rank(shapeRef);

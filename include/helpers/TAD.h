@@ -720,7 +720,7 @@ namespace shape {
 
 
     INLINEDEF int* TAD::shapeInfoOnlyShapeAndStride() {
-        if(wholeThing && (dimensionLength == 1 && dimension[0] == MAX_DIMENSION) )
+        if(wholeThing && (dimensionLength == 1 && dimension[0] == MAX_DIMENSION) || shape::isScalar(shapeInfo))
             return shape::createScalarShapeInfo();
 
         //ensure tad shapes get setup right for vectors
@@ -747,7 +747,6 @@ namespace shape {
                 return permutedRet2;
             } else if(dimension[0] == 1 && shape::isVector(shapeInfo) && theShape[0] == 1) {
                 int *ret = shape::copyOf(shape::shapeInfoLength(shape::rank(shapeInfo)),shapeInfo);
-                int* stride = shape::stride(ret);
                 return ret;
             }
             else if(shape::shapeOf(shapeInfo)[dimension[0]] == 1) {
