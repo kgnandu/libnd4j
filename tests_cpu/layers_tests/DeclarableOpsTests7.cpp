@@ -40,8 +40,32 @@ TEST_F(DeclarableOpsTests7, Test_CHOOSE_SCALAR) {
 
     auto z = result->at(0);
     ASSERT_EQ(4,z->lengthOf());
-    delete z;
     //ASSERT_TRUE(exp.isSameShape(z));
 
-    delete[] result;
+    delete result;
+
+}
+
+
+TEST_F(DeclarableOpsTests7, Test_CHOOSE_SCALAR_LEFT) {
+    std::vector<double> data;
+    for(Nd4jIndex i = 0; i < 4; i++) {
+        data.push_back(i);
+    }
+
+
+
+    NDArray<double> x('c',{1,4},data);
+    NDArray<double> scalar('c',{1,1},{0.0});
+    nd4j::ops::choose<double> op;
+    //greater than test
+    auto result = op.execute({&scalar,&x}, {1.0},{3});
+    ASSERT_EQ(Status::OK(), result->status());
+
+    auto z = result->at(0);
+    ASSERT_EQ(4,z->lengthOf());
+    //ASSERT_TRUE(exp.isSameShape(z));
+
+    delete result;
+
 }

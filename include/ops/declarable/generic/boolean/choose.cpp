@@ -31,7 +31,7 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             nd4j::NDArray<T> arg1 = *arg;
             nd4j::NDArray<T> comp1 = *comp;
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
-                T result2 = processElementCondition<T>(mode,arg1(i),comp1(i));
+                T result2 = processElementCondition<T>(mode,arg1(i),comp1(0));
                 if(result2 > 0) {
                     output->putScalar(i, arg1(i));
                     numResults++;
@@ -91,12 +91,31 @@ namespace nd4j {
                 auto comp = INPUT_VARIABLE(1);
                 auto result = OUTPUT_VARIABLE(0);
                 auto numResults = OUTPUT_VARIABLE(1);
-                processCondition<T>(mode,arg,comp,result,numResults,0.0f);
+                auto  arg1 = *arg;
+                auto comp1 = *comp;
+                if(arg->isScalar() || comp->isScalar()) {
+                    if(arg->isScalar()) {
+                        T scalar = arg1(0);
+                        processCondition<T>(mode,comp,nullptr,result,numResults,scalar);
+
+                    }
+                    else {
+                        T scalar = comp1(0);
+                        processCondition<T>(mode,arg,nullptr,result,numResults,scalar);
+
+                    }
+                }
+                else {
+                    processCondition<T>(mode,arg,comp,result,numResults,0.0f);
+
+                }
+
+
+
                 STORE_2_RESULTS(result,numResults);
 
             }//scalar case
             else {
-                nd4j_printf("In scalar case %d\n",1);
                 T scalar = (T) T_ARG(0);
                 auto arg = INPUT_VARIABLE(0);
                 auto numResults = OUTPUT_VARIABLE(1);
@@ -110,8 +129,26 @@ namespace nd4j {
         }
 
         DECLARE_SHAPE_FN(choose) {
-            int *shape = block.getVariable(0)->getNDArray()->getShapeInfo();
-            int rank = block.getVariable(0)->getNDArray()->rankOf();
+            int *shape;
+            int rank;
+            if(block.width() > 1) {
+                auto first = INPUT_VARIABLE(0);
+                auto second = INPUT_VARIABLE(1);
+                if(first->lengthOf() > second->lengthOf()) {
+                    shape = first->getShapeInfo();
+                    rank = first->rankOf();
+                }
+                else {
+                    shape = second->getShapeInfo();
+                    rank = second->rankOf();
+                }
+            }
+            else {
+                auto first = INPUT_VARIABLE(0);
+                shape = first->getShapeInfo();
+                rank = first->rankOf();
+            }
+
             int* newShape;
             ALLOCATE(newShape, block.getWorkspace(), shape::shapeInfoLength(rank), int);
             memcpy(newShape, shape, shape::shapeInfoLength(rank) * sizeof(int));
