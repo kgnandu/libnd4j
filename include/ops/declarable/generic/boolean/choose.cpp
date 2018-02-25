@@ -33,7 +33,7 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
                 T result2 = processElementCondition<T>(mode,arg1(i),comp1(0));
                 if(result2 > 0) {
-                    output->putScalar(i, arg1(i));
+                    output->putScalar(numResults, arg1(i));
                     numResults++;
                 }
             }
@@ -45,7 +45,7 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
             for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
                 T result2 = processElementCondition<T>(mode,arg1(i),compScalar);
                 if(result2 > 0) {
-                    output->putScalar(i, arg1(i));
+                    output->putScalar(numResults, arg1(i));
                     numResults++;
                 }
             }
@@ -59,7 +59,7 @@ nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArr
         for (Nd4jIndex i = 0; i < arg->lengthOf(); i++) {
             T result2 = processElementCondition<T>(mode,arg1(i),compScalar);
             if(result2 > 0) {
-                output->putScalar(i, arg1(i));
+                output->putScalar(numResults, arg1(i));
                 numResults++;
             }
         }
