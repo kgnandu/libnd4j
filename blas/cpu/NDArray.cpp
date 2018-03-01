@@ -833,7 +833,7 @@ template <typename T>
     // FIXME: we know that EWS is always 1 after dup() result
     newShapeInfo[rankOf() * 2 + 2] = 1;
 
-    auto result = new NDArray<T>(newBuffer, newShapeInfo, _workspace);
+    NDArray<T> *result = new NDArray<T>(newBuffer, newShapeInfo, _workspace);
     // this values should be set, to avoid memleak
     result->_isBuffAlloc = true;
     result->_isShapeAlloc = true;
@@ -1120,7 +1120,7 @@ template <typename T>
     }
 
     template <typename T>
-    void NDArray<T>::printIndexedBuffer(const char* msg, int limit) {
+    void NDArray<T>::printIndexedBuffer(const char* msg, int limit) const {
         if (limit == -1)
             limit = (int) this->lengthOf();
 
@@ -1511,6 +1511,7 @@ bool NDArray<T>::reshapei(const std::vector<int>& shape) {
     return reshapei('c', shape);
 }
 
+//////////////////////////////////////////////////////////////////////////
     template <typename T>
     void NDArray<T>::enforce(const std::initializer_list<int> &dimensions, char order) {
         std::vector<int> dims(dimensions);
@@ -1672,7 +1673,7 @@ template <typename T>
 //////////////////////////////////////////////////////////////////////////
 // create new array with corresponding order and shape, new array will point to the same _buffer as this array
 template <typename T>
-    NDArray<T>* NDArray<T>::reshape(const char order, const std::vector<int>& shape) {
+NDArray<T>* NDArray<T>::reshape(const char order, const std::vector<int>& shape) {
 	int shapeInfoLength = shape::shapeInfoLength(rankOf());
 	int* newShapeInfo = nullptr;
 
@@ -1896,6 +1897,7 @@ NDArray<T>* NDArray<T>::permute(const int* dimensions, const int rank) const {
 
     return ret;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -2592,6 +2594,7 @@ bool NDArray<T>::isUnitary() {
                     throw "NDArray::operator(Intervals): the interval must contain only two numbers {first, last} !";
                 first = idx[d][0] >= 0 ? idx[d][0] : idx[d][0] + this->sizeAt(d) + 1;
                 last  = idx[d][1] >= 0 ? idx[d][1] : idx[d][1] + this->sizeAt(d) + 1;
+
                 shapeOf[d] = last - first;
                 // for offset we're taking only the first index
                 offset += first * stridesOf[d];
