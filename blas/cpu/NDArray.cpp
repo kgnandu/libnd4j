@@ -707,7 +707,7 @@ void NDArray<T>::replacePointers(T *buffer, int *shapeInfo, const bool releaseEx
     template<typename T>
     void NDArray<T>::assign(const NDArray<T> *other) {
         if (this->isScalar() && other->isScalar()) {
-            this->_buffer[0] = other->_buffer[0];
+            this ->_buffer[0] = other->_buffer[0];
             return;
         } else if (other->isScalar()) {
             this->assign(other->_buffer[0]);

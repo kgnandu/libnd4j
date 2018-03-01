@@ -21,20 +21,26 @@ namespace nd4j {
                 // if cond matches x/y shape - we have per-element mask
                 if (condition->isSameShape(x)) {
                     // FIXME: for perf it might be better to issue memcpy here, and fill only mismatched values from either X or Y
-                   if(y->isScalar()) {
-                       for (int e = 0; e < condition->lengthOf(); e++) {
-                           T v = condition->getIndexedScalar(e);
-                           T r = v == (T) 0.0f ? y->getIndexedScalar(0) : x->getIndexedScalar(e);
-                           z->putIndexedScalar(e, r);
-                       }
-                   }
+                    if(y->isScalar()) {
+                        for (int e = 0; e < condition->lengthOf(); e++) {
+                            T v = condition->getIndexedScalar(e);
+                            T r = v > (T) 0.0f ? y->getIndexedScalar(0) : x->getIndexedScalar(e);
+                            z->putIndexedScalar(e, r);
+                        }
+                    }
                     else {
-                       for (int e = 0; e < condition->lengthOf(); e++) {
-                           T v = condition->getIndexedScalar(e);
-                           T r = v == (T) 0.0f ? y->getIndexedScalar(e) : x->getIndexedScalar(e);
-                           z->putIndexedScalar(e, r);
-                       }
-                   }
+                        for (int e = 0; e < condition->lengthOf(); e++) {
+                            T v = condition->getIndexedScalar(e);
+                            if (v > 0.0f) {
+                                T r = y->getIndexedScalar(e);
+                                z->putIndexedScalar(e, r);
+                            }
+                            else {
+                                T r = x->getIndexedScalar(e);
+                                z->putIndexedScalar(e, r);
+                            }
+                        }
+                    }
 
                 }
                 else {
