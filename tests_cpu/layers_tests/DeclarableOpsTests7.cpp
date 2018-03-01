@@ -138,6 +138,32 @@ TEST_F(DeclarableOpsTests7, Test_CHOOSE_ONLY_SCALAR) {
 }
 
 
+TEST_F(DeclarableOpsTests7, Test_CHOOSE_ONLY_SCALAR_GTE) {
+    std::vector<double> data;
+    for(Nd4jIndex i = 0; i < 4; i++) {
+        data.push_back(i);
+    }
+
+
+
+    NDArray<double> x('c',{1,4},data);
+    nd4j::ops::choose<double> op;
+    //greater than test
+    auto result = op.execute({&x}, {1.0},{5});
+    ASSERT_EQ(Status::OK(), result->status());
+
+    auto z = result->at(0);
+    ASSERT_EQ(4,z->lengthOf());
+    //ASSERT_TRUE(exp.isSameShape(z));
+
+    delete result;
+
+}
+
+
+
+
+
 TEST_F(DeclarableOpsTests7, TEST_WHERE) {
     std::vector<double> data;
     std::vector<double> mask;
@@ -165,6 +191,51 @@ TEST_F(DeclarableOpsTests7, TEST_WHERE) {
     NDArray<double> x('c',{1,4},data);
     NDArray<double> maskArr('c',{1,4},mask);
     NDArray<double> putArr('c',{1,4},put);
+    NDArray<double> resultArr('c',{1,4},resultData);
+    nd4j::ops::where<double> op;
+    //greater than test
+    //            Nd4jStatus execute(std::initializer_list<NDArray<T>*> inputs, std::initializer_list<NDArray<T>*> outputs , std::initializer_list<T> tArgs, std::initializer_list<int> iArgs, bool isInplace = false);
+
+    auto result = op.execute({&maskArr,&x,&putArr},{&resultArr}, {},{3},false);
+    // ASSERT_EQ(Status::OK(), result->status());
+    for(int i = 0; i < 4; i++)
+        ASSERT_EQ(assertion[i],resultArr(i));
+    // auto z = result->at(0);
+    //ASSERT_EQ(4,z->lengthOf());
+    //ASSERT_TRUE(exp.isSameShape(z));
+
+
+}
+
+
+
+TEST_F(DeclarableOpsTests7, TEST_WHERE_SCALAR) {
+    std::vector<double> data;
+    std::vector<double> mask;
+    std::vector<double> put;
+    std::vector<double> resultData;
+    std::vector<double> assertion;
+    for(Nd4jIndex i = 0; i < 4; i++) {
+        data.push_back(i);
+        if(i >  1) {
+            assertion.push_back(5.0);
+            mask.push_back(1);
+        }
+        else {
+            assertion.push_back(i);
+            mask.push_back(0);
+        }
+
+        resultData.push_back(0.0);
+    }
+
+
+    put.push_back(5.0);
+
+
+    NDArray<double> x('c',{1,4},data);
+    NDArray<double> maskArr('c',{1,4},mask);
+    NDArray<double> putArr('c',{1,1},put);
     NDArray<double> resultArr('c',{1,4},resultData);
     nd4j::ops::where<double> op;
     //greater than test
