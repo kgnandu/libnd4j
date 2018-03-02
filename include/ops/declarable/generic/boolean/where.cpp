@@ -15,9 +15,7 @@ namespace nd4j {
                 auto y = INPUT_VARIABLE(2);
 
                 auto z = OUTPUT_VARIABLE(0);
-                if(!y->isScalar())
-                    REQUIRE_TRUE(x->isSameShape(y), 0, "X and Y must have equal shapes");
-
+               int numMatches = 0;
                 // if cond matches x/y shape - we have per-element mask
                 if (condition->isSameShape(x)) {
                     // FIXME: for perf it might be better to issue memcpy here, and fill only mismatched values from either X or Y
@@ -29,17 +27,22 @@ namespace nd4j {
                         }
                     }
                     else {
+
                         for (int e = 0; e < condition->lengthOf(); e++) {
                             T v = condition->getIndexedScalar(e);
                             if (v > 0.0f) {
-                                T r = y->getIndexedScalar(e);
+                                T r = y->getIndexedScalar(numMatches);
                                 z->putIndexedScalar(e, r);
+                                numMatches++;
                             }
                             else {
                                 T r = x->getIndexedScalar(e);
-                                z->putIndexedScalar(e, r);
+                                z->putIndexedScalar(numMatches, r);
                             }
                         }
+
+                        REQUIRE_TRUE(numMatches == y->lengthOf(), 44, "Num matches %d != length of put array %d", numMatches,y->lengthOf());
+
                     }
 
                 }
