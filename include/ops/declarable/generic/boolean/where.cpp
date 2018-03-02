@@ -14,10 +14,6 @@ namespace nd4j {
                 auto x = INPUT_VARIABLE(1);
                 auto y = INPUT_VARIABLE(2);
 
-                condition->printIndexedBuffer("c met", 10);
-                x->printIndexedBuffer("x met", 10);
-                y->printIndexedBuffer("y met", 10);
-
                 auto z = OUTPUT_VARIABLE(0);
                int numMatches = 0;
                 // if cond matches x/y shape - we have per-element mask
@@ -44,8 +40,6 @@ namespace nd4j {
                                 z->putIndexedScalar(e, r);
                             }
                         }
-
-                        z->printIndexedBuffer("z in op", 20);
 
                         REQUIRE_TRUE(numMatches == y->lengthOf(), 44, "Num matches %d != length of put array %d", numMatches,y->lengthOf());
 
