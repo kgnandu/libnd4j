@@ -12,7 +12,7 @@ int
 main(int argc, char *argv[]) {
     GraphOpt opt;
 
-    int err = GraphOpt::optionsWithArgs(opt, argc, argv);
+    int err = GraphOpt::optionsWithArgs(argc, argv, opt);
     
     //std::cout << opt << std::endl;
     if (err > 0) {   
@@ -26,8 +26,8 @@ main(int argc, char *argv[]) {
         return err;
     }
     
-    for (char option: opt.options()) {
-        std::cout << "Option \'" << opt << std::endl;
+    for (int option: opt.options()) {
+        std::cout << "Option \'" << (char)option <<"\': ";
         switch (option) {
         case 'l':
             std::cout << "Build library" << std::endl;
@@ -42,7 +42,7 @@ main(int argc, char *argv[]) {
             std::cout << "Output result with name " << opt.outputName() << std::endl;
             break;
         default:
-            std::cerr << "Wrong parameter " << option << std::endl;
+            std::cerr << "Wrong parameter " << (char)option << std::endl;
         }
     }
     
@@ -68,9 +68,11 @@ main(int argc, char *argv[]) {
                 std::cout << "File " << file << " exists and can be read" << std::endl;
             else 
                 std::cerr << "File " << file << " exists, but has zero size" << std::endl;
+                return 2;
         }
         else {
             std::cerr << "File " << file << " does not exists " << std::endl;
+            return 10;
         }
     }
     return EXIT_SUCCESS;

@@ -41,7 +41,6 @@ int
 GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
     char* optArg = nullptr;
     int optIndex = 1;
-    GraphOpt res;
     
     char const* optionStr = "lxo:e";
     std::string const defaultOutputName("nd4jlib_mini");
@@ -77,7 +76,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
                     std::cerr << "optIndex " << optIndex << " is out of bounds " << argc << std::endl;
                     res.reset();
                     res._opts.push_back('?');
-                    return res;
+                    return -2;
                 }
                 res._args[opt] = std::string(argv[optIndex]);
             }
@@ -89,7 +88,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
                      " one of them." << std::endl;
         res.reset();
         res._opts.push_back('?');
-        return -2;
+        return -3;
     }
 
     if (res._args.empty())
