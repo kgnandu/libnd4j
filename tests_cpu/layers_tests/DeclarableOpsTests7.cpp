@@ -222,7 +222,6 @@ TEST_F(DeclarableOpsTests7,TEST_WHERE_MASK) {
     NDArray<double> resultArr(x,threeHundredShapePointer);
     NDArray<double> assertArr(assertion,threeHundredShapePointer);
     Nd4jStatus result = op.execute({&maskArr,&xArr,&putArr},{&resultArr},{},{},false);
-    resultArr.printIndexedBuffer("Result array",10);
     ASSERT_EQ(Status::OK(),result);
     ASSERT_TRUE (assertArr.equalsTo(&resultArr));
 
