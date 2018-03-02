@@ -150,21 +150,11 @@ namespace nd4j {
             }
 
             int* newShape;
-            ALLOCATE(newShape, block.getWorkspace(), shape::shapeInfoLength(rank), int);
-            memcpy(newShape, shape, shape::shapeInfoLength(rank) * sizeof(int));
+            COPY_SHAPE(shape, newShape);
 
-            int *shapeScalar;
-            int *shapeScalarInfo = shape::createScalarShapeInfo();
+            int *shapeScalar = ShapeUtils<T>::createScalarShapeInfo(block.workspace());
 
-            ALLOCATE(shapeScalar, block.getWorkspace(),shape::shapeInfoLength(1), int);
-            memcpy(shapeScalar, shapeScalarInfo, shape::shapeInfoLength(1) * sizeof(int));
-
-
-            delete[] shapeScalarInfo;
-            auto ret =  new ShapeList();
-            ret->push_back(newShape);
-            ret->push_back(shapeScalar);
-            return ret;
+            return SHAPELIST(newShape, shapeScalar);
         }
 
 
