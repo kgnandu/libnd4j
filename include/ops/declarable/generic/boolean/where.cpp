@@ -18,7 +18,6 @@ namespace nd4j {
                int numMatches = 0;
                 // if cond matches x/y shape - we have per-element mask
                 if (condition->isSameShape(x)) {
-                    printf("");
                     // FIXME: for perf it might be better to issue memcpy here, and fill only mismatched values from either X or Y
                     if(y->isScalar()) {
                         for (int e = 0; e < condition->lengthOf(); e++) {
@@ -28,7 +27,6 @@ namespace nd4j {
                         }
                     }
                     else {
-                        printf("Before loop\n");
 
                         for (int e = 0; e < condition->lengthOf(); e++) {
                             T v = condition->getIndexedScalar(e);
@@ -39,14 +37,9 @@ namespace nd4j {
                             }
                             else {
                                 T r = x->getIndexedScalar(e);
-                                z->putIndexedScalar(numMatches, r);
-                                numMatches++;
+                                z->putIndexedScalar(e, r);
                             }
-
-                            printf("Element condition %d is %f\n",e,v);
                         }
-
-                        printf("After loop\n");
 
                         REQUIRE_TRUE(numMatches == y->lengthOf(), 44, "Num matches %d != length of put array %d", numMatches,y->lengthOf());
 
