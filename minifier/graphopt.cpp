@@ -37,8 +37,8 @@ operator<< (std::ostream& out, GraphOpt const& opts) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-GraphOpt 
-GraphOpt::optionsWithArgs(int argc, char* argv[]) {
+int 
+GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
     char* optArg = nullptr;
     int optIndex = 1;
     GraphOpt res;
@@ -54,7 +54,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[]) {
         if (opt == '?' || opt == 'h') {
             res.help(argv[0], std::cout);
             res.reset();
-            return res;
+            return 1;
         }
 
         char const* p = strchr(optionStr, opt);
@@ -64,7 +64,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[]) {
             std::cerr << "opt " << (char)opt << " not found with " << optionStr << std::endl;
             res._opts.push_back('?');
             res.reset();
-            return res;
+            return -1;
         }
         else {
             res._opts.push_back(opt);
@@ -89,7 +89,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[]) {
                      " one of them." << std::endl;
         res.reset();
         res._opts.push_back('?');
-        return res;
+        return -2;
     }
 
     if (res._args.empty())
@@ -98,7 +98,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[]) {
     for ( ; optIndex < argc; optIndex++) {
         res._files.push_back(std::string(argv[optIndex]));
     }
-    return res;
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

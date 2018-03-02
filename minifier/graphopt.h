@@ -26,7 +26,7 @@ public:
     GraphOpt()
     {}
 
-    static GraphOpt optionsWithArgs(int argc, char* argv[]);
+    static int optionsWithArgs(int argc, char* argv[], GraphOpt& options);
 
     FileList& files() { return _files; }
     FileList const& files() const { return _files; } 

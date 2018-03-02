@@ -10,18 +10,20 @@
 
 int
 main(int argc, char *argv[]) {
-    GraphOpt opt = GraphOpt::optionsWithArgs(argc, argv);
+    GraphOpt opt;
+
+    int err = GraphOpt::optionsWithArgs(opt, argc, argv);
     
     //std::cout << opt << std::endl;
-    if (opt.options().empty()) {   
+    if (err > 0) {   
         // only help message
-        return 0;
+        return err;
     }
 
-    if (opt.files().empty()) {
+    if (err < 0) {
         std::cerr << "Wrong parameter list" << std::endl;
         opt.help(argv[0], std::cerr); 
-        return -2;
+        return err;
     }
     
     for (char option: opt.options()) {
