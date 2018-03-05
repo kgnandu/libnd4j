@@ -76,6 +76,7 @@ template <typename T>
 T processElementCondition(int mode,T d1,T d2) {
     T modePointer = (T ) mode;
     T input[3] = {d2,EPS,(T) mode};
+
     T res = simdOps::MatchCondition<T>::op(d1, input);
     return res;
 
