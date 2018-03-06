@@ -1369,7 +1369,7 @@ TEST_F(GraphTests, OpListTest_1) {
     auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/ae_00.fb"); ;
 
     std::vector<OpDescriptor> ops = graph->getOperations();
-    graph->printOut();
+
     nd4j_printf("Total ops %i\n", (int)ops.size());
     for (auto op: ops) {
         if (op.getOpName()) {
