@@ -1091,6 +1091,32 @@ namespace nd4j {
             return res;
         }
 
+        template <typename T>
+        bool Graph<T>::filterOperations(std::vector<OpDescriptor>& ops) {
+            bool modified = false;
+
+            std::vector<OpDescriptor>& filtered(ops);
+
+            std::sort(filtered.begin(), filtered.end(), [](OpDescriptor a, OpDescriptor b) {
+                return a.getOpName()->compare(*(b.getOpName())) > 0;
+            });
+            std::string name = *(filtered[0].getOpName());
+
+            for (int x = 1; x < filtered.size(); x++) {
+                if (filtered[x].getOpName()->compare(name) == 0) {
+                    // there is a match
+                    auto fi = std::find_if(ops.begin(), ops.end(), 
+                        [name](OpDescriptor a) { 
+                            return a.getOpName()->compare(name) == 0; 
+                    });
+                    ops.erase(fi);
+                    modified = true;
+                }
+                name = *(filtered[x].getOpName());
+            }
+            return modified;
+        }
+
 
         template <typename T>
         Scope<T> *Graph<T>::scopeById(int id) {

@@ -1376,5 +1376,15 @@ TEST_F(GraphTests, OpListTest_1) {
             nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
         }
     }
+    graph->filterOperations(ops);
+
+    nd4j_printf("Total ops after filtering: %i\n", (int)ops.size());
+
+    for (auto op: ops) {
+        if (op.getOpName()) {
+            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
+        }
+    }
+
     delete graph;
 }
