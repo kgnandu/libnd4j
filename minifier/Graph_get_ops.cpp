@@ -29,11 +29,11 @@ namespace nd4j {
                     int numInputs = 0;
                     int numOutputs = 0;
 
-                    if (node->inputs())
-                        numInputs = node->inputs()->size();
+                    if (node->input())
+                        numInputs = node->input()->size();
 
-                    if (node->outputs())
-                        numOutputs = node->outputs()->size();
+                    if (node->output())
+                        numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
                     OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);
@@ -61,11 +61,11 @@ namespace nd4j {
                     int numInputs = 0;
                     int numOutputs = 0;
 
-                    if (node->inputs())
-                        numInputs = node->inputs()->size();
+                    if (node->input())
+                        numInputs = node->input()->size();
 
-                    if (node->outputs())
-                        numOutputs = node->outputs()->size();
+                    if (node->output())
+                        numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
                     OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);

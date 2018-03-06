@@ -998,6 +998,73 @@ namespace nd4j {
         }
 
         template <typename T>
+        std::vector<OpDescriptor> Graph<T>::getOperations() {
+            buildGraph();
+            nd4j_printf("\nRetrieving ops from the Graph and collect them...\n", "");
+            std::vector<OpDescriptor> res;
+
+            int opCnt = 0;
+            for (int l = 0; l < _onion->size(); l++) {
+                int layerSize = _onion->count(l) == 1 ? _onion->at(l)->size() : 0;
+
+                for (int n = 0; n < layerSize; n++) {
+                    Node<T>* node = _onion->at(l)->at(n);
+                    if (node->name() == nullptr) continue;
+                    std::string* opName = node->name();
+                    int numInputs = 0;
+                    int numOutputs = 0;
+
+                    if (node->input())
+                        numInputs = node->input()->size();
+
+                    if (node->output())
+                        numOutputs = node->output()->size();
+                    bool inplace = node->isInplace();
+
+                    OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);
+
+                    // we're skipping Scopes here
+                    if (node->opType() == OpType_LOGIC && node->opNum() == 10)
+                        continue;
+
+                    //printOutNode(node);
+                    res.emplace_back(opDescriptor);
+                }
+            }
+
+
+            nd4j_printf("\nCollecting out Scopes...\n","");
+            for (int s = 0; s < _scopes.size(); s++) {
+                Scope<T>* scope = _scopes.at(s);
+                nd4j_printf("Scope %i:<%s>:\n", scope->id(), scope->name()->c_str());
+
+                for (int n = 0; n < scope->nodes()->size(); n++) {
+                    Node<T>* node = scope->nodes()->at(n);
+                    //printOutNode(node);
+                    if (node->name() == nullptr) continue;
+                    std::string* opName = node->name();
+                    int numInputs = 0;
+                    int numOutputs = 0;
+
+                    if (node->input())
+                        numInputs = node->input()->size();
+
+                    if (node->output())
+                        numOutputs = node->output()->size();
+                    bool inplace = node->isInplace();
+
+                    OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);
+
+                    res.emplace_back(opDescriptor);
+
+                }
+            }
+
+            return res;
+        }
+
+
+        template <typename T>
         Scope<T> *Graph<T>::scopeById(int id) {
             if (_mappedScopes.count(id) == 0) {
                 nd4j_printf("Requested Scope [%i] doesn't exist\n", id);

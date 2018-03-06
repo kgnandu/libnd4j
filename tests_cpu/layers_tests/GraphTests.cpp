@@ -1364,3 +1364,17 @@ TEST_F(GraphTests, Test_Hash_Function_1) {
     delete graph0D;
     delete graph1D;
 }
+
+TEST_F(GraphTests, OpListTest_1) {
+    auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/ae_00.fb"); ;
+
+    std::vector<OpDescriptor> ops = graph->getOperations();
+    graph->printOut();
+    nd4j_printf("Total ops %i\n", (int)ops.size());
+    for (auto op: ops) {
+        if (op.getOpName()) {
+            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
+        }
+    }
+    delete graph;
+}
