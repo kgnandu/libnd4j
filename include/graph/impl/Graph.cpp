@@ -926,7 +926,7 @@ namespace nd4j {
 
         template <typename T>
         void Graph<T>::printOutNode(Node<T>* node) {
-            printf("%i. ", node->id());
+            nd4j_printf("%i. ", node->id());
             switch(node->opType()) {
                 case OpType_CUSTOM: {
                     printf("%s; ", node->getCustomOp()->getOpName()->c_str());
@@ -941,18 +941,18 @@ namespace nd4j {
                 }
             }
 
-            printf("Inputs: [");
+            nd4j_printf("Inputs: [", "");
             //auto block = node->getBlock();
             for (int e = 0; e < node->input()->size(); e++) {
 
                 auto in = node->input()->at(e);
                 printf("{%i:%i}", in.first, in.second);
                 if (e < node->input()->size() - 1)
-                    printf(", ");
+                    nd4j_printf(", ", "");
             }
-            printf("]; ");
+            nd4j_printf("]; \n", "");
 
-            printf("\n");
+//            printf("\n");
             fflush(stdout);
         }
 
@@ -1010,9 +1010,24 @@ namespace nd4j {
                 for (int n = 0; n < layerSize; n++) {
                     Node<T>* node = _onion->at(l)->at(n);
                     if (node->name() == nullptr) continue;
-                    std::string* opName = node->name();
+                    
+                    std::string opNameStr; //node->name();
                     int numInputs = 0;
                     int numOutputs = 0;
+
+                    switch(node->opType()) {
+                        case OpType_CUSTOM: {
+                            opNameStr = *(node->getCustomOp()->getOpName());
+                        }
+                        break;
+                        case OpType_LOGIC: {
+                            opNameStr = std::string(EnumUtils::_LogicOpToString(node->opNum()));
+                        }
+                        break;
+                        default: {
+                            opNameStr = std::string(EnumUtils::_OpTypeToString(node->opType()))+"{" + std::to_string((int) node->opNum()) + "}";
+                        }
+                    }
 
                     if (node->input())
                         numInputs = node->input()->size();
@@ -1021,13 +1036,12 @@ namespace nd4j {
                         numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
-                    OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);
+                    OpDescriptor opDescriptor(numInputs, numOutputs, opNameStr, inplace);
 
                     // we're skipping Scopes here
                     if (node->opType() == OpType_LOGIC && node->opNum() == 10)
                         continue;
 
-                    //printOutNode(node);
                     res.emplace_back(opDescriptor);
                 }
             }
@@ -1042,9 +1056,23 @@ namespace nd4j {
                     Node<T>* node = scope->nodes()->at(n);
                     //printOutNode(node);
                     if (node->name() == nullptr) continue;
-                    std::string* opName = node->name();
+                    std::string opNameStr; //node->name();
                     int numInputs = 0;
                     int numOutputs = 0;
+
+                    switch(node->opType()) {
+                        case OpType_CUSTOM: {
+                            opNameStr = *(node->getCustomOp()->getOpName());
+                        }
+                        break;
+                        case OpType_LOGIC: {
+                            opNameStr = std::string(EnumUtils::_LogicOpToString(node->opNum()));
+                        }
+                        break;
+                        default: {
+                            opNameStr = std::string(EnumUtils::_OpTypeToString(node->opType()))+"{" + std::to_string((int) node->opNum()) + "}";
+                        }
+                    }
 
                     if (node->input())
                         numInputs = node->input()->size();
@@ -1053,7 +1081,7 @@ namespace nd4j {
                         numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
-                    OpDescriptor opDescriptor(numInputs, numOutputs, *opName, inplace);
+                    OpDescriptor opDescriptor(numInputs, numOutputs, opNameStr, inplace);
 
                     res.emplace_back(opDescriptor);
 
