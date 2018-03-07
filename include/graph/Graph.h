@@ -146,11 +146,6 @@ namespace nd4j {
              * This method collect all ops from the graph into ops vector
              */
             std::vector<OpDescriptor> getOperations();
-            
-            /**
-             * Remove duplicant ops from the ops list
-             */
-            bool filterOperations(std::vector<OpDescriptor>& ops);
 
             /**
              * This method returns Scope ptr specified with id

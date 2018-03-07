@@ -8,6 +8,7 @@
 #include <graph/generated/graph_generated.h>
 #include <graph/Node.h>
 #include <graph/Graph.h>
+#include <graph/GraphUtils.h>
 #include <NDArray.h>
 #include <ops/declarable/DeclarableOp.h>
 #include <ops/declarable/generic/parity_ops.cpp>
@@ -1376,7 +1377,8 @@ TEST_F(GraphTests, OpListTest_1) {
             nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
         }
     }
-    graph->filterOperations(ops);
+
+    GraphUtils::filterOperations(ops);
 
     nd4j_printf("Total ops after filtering: %i\n", (int)ops.size());
 
@@ -1385,6 +1387,14 @@ TEST_F(GraphTests, OpListTest_1) {
             nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
         }
     }
+
+    if (!ops.empty()) {
+        nd4j_printf("\n ./buildnativeoperations.sh -g \"-D_%s", ops[0].getOpName()->c_str());
+        for (int i = 1; i < ops.size(); i++)
+            nd4j_printf(";-D_%s", ops[i].getOpName()->c_str());
+        nd4j_printf("\"\n", "");
+    }
+    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops).c_str());
 
     delete graph;
 }

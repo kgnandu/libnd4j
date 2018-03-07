@@ -1010,14 +1010,14 @@ namespace nd4j {
                 for (int n = 0; n < layerSize; n++) {
                     Node<T>* node = _onion->at(l)->at(n);
                     if (node->name() == nullptr) continue;
-                    
+                    OpDescriptor* pOpDescriptor = nullptr;
                     std::string opNameStr; //node->name();
                     int numInputs = 0;
                     int numOutputs = 0;
 
                     switch(node->opType()) {
                         case OpType_CUSTOM: {
-                            opNameStr = *(node->getCustomOp()->getOpName());
+                            pOpDescriptor = node->getCustomOp()->getOpDescriptor();
                         }
                         break;
                         case OpType_LOGIC: {
@@ -1036,13 +1036,15 @@ namespace nd4j {
                         numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
-                    OpDescriptor opDescriptor(numInputs, numOutputs, opNameStr, inplace);
+                    //OpDescriptor opDescriptor(numInputs, numOutputs, opNameStr, inplace);
 
                     // we're skipping Scopes here
                     if (node->opType() == OpType_LOGIC && node->opNum() == 10)
                         continue;
-
-                    res.emplace_back(opDescriptor);
+                    if (pOpDescriptor)
+                        res.emplace_back(*pOpDescriptor);
+                    else
+                        res.emplace_back(OpDescriptor(numInputs, numOutputs, opNameStr, inplace));
                 }
             }
 
@@ -1057,12 +1059,13 @@ namespace nd4j {
                     //printOutNode(node);
                     if (node->name() == nullptr) continue;
                     std::string opNameStr; //node->name();
+                    OpDescriptor* pOpDescriptor = nullptr;
                     int numInputs = 0;
                     int numOutputs = 0;
 
                     switch(node->opType()) {
                         case OpType_CUSTOM: {
-                            opNameStr = *(node->getCustomOp()->getOpName());
+                            pOpDescriptor = node->getCustomOp()->getOpDescriptor();
                         }
                         break;
                         case OpType_LOGIC: {
@@ -1081,42 +1084,15 @@ namespace nd4j {
                         numOutputs = node->output()->size();
                     bool inplace = node->isInplace();
 
-                    OpDescriptor opDescriptor(numInputs, numOutputs, opNameStr, inplace);
-
-                    res.emplace_back(opDescriptor);
-
+                    if (pOpDescriptor != nullptr)
+                        res.emplace_back(*pOpDescriptor);
+                    else
+                        res.emplace_back(OpDescriptor(numInputs, numOutputs, opNameStr, inplace));
                 }
             }
 
             return res;
         }
-
-        template <typename T>
-        bool Graph<T>::filterOperations(std::vector<OpDescriptor>& ops) {
-            bool modified = false;
-
-            std::vector<OpDescriptor>& filtered(ops);
-
-            std::sort(filtered.begin(), filtered.end(), [](OpDescriptor a, OpDescriptor b) {
-                return a.getOpName()->compare(*(b.getOpName())) > 0;
-            });
-            std::string name = *(filtered[0].getOpName());
-
-            for (int x = 1; x < filtered.size(); x++) {
-                if (filtered[x].getOpName()->compare(name) == 0) {
-                    // there is a match
-                    auto fi = std::find_if(ops.begin(), ops.end(), 
-                        [name](OpDescriptor a) { 
-                            return a.getOpName()->compare(name) == 0; 
-                    });
-                    ops.erase(fi);
-                    modified = true;
-                }
-                name = *(filtered[x].getOpName());
-            }
-            return modified;
-        }
-
 
         template <typename T>
         Scope<T> *Graph<T>::scopeById(int id) {
