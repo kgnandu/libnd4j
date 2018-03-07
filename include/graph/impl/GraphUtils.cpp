@@ -40,7 +40,7 @@ GraphUtils::makeCommandLine(GraphUtils::OpList& ops) {
     std::string res;
 
     if (!ops.empty()) {
-        res += std::string("\n ./buildnativeoperations.sh -g \"-D_"); 
+        res += std::string("./buildnativeoperations.sh -g \"-D_"); 
         res += *(ops[0].getOpName());
         for (int i = 1; i < ops.size(); i++) {
             res += std::string(";-D_");

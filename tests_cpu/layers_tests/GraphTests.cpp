@@ -1369,32 +1369,18 @@ TEST_F(GraphTests, Test_Hash_Function_1) {
 TEST_F(GraphTests, OpListTest_1) {
     auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/ae_00.fb"); ;
 
+    ASSERT_TRUE(graph != nullptr);
     std::vector<OpDescriptor> ops = graph->getOperations();
 
-    nd4j_printf("Total ops %i\n", (int)ops.size());
-    for (auto op: ops) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
-
+    ASSERT_TRUE(ops.size() == 11);
     GraphUtils::filterOperations(ops);
+    ASSERT_TRUE(ops.size() == 7);
 
-    nd4j_printf("Total ops after filtering: %i\n", (int)ops.size());
-
-    for (auto op: ops) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
-
-    if (!ops.empty()) {
-        nd4j_printf("\n ./buildnativeoperations.sh -g \"-D_%s", ops[0].getOpName()->c_str());
-        for (int i = 1; i < ops.size(); i++)
-            nd4j_printf(";-D_%s", ops[i].getOpName()->c_str());
-        nd4j_printf("\"\n", "");
-    }
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops).c_str());
+    std::string exp("./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15}\"");
+    std::string out = GraphUtils::makeCommandLine(ops);
+//    nd4j_printf("EXP: >%s<\n", exp.c_str());
+//    nd4j_printf("OUT: >%s<\n", out.c_str());
+    ASSERT_TRUE(0 == out.compare(exp));
 
     delete graph;
 }
@@ -1404,113 +1390,63 @@ TEST_F(GraphTests, OpListTest_2) {
     auto graph0 = GraphExecutioner<float>::importFromFlatBuffers("./resources/ae_00.fb");
     auto graph1 = GraphExecutioner<float>::importFromFlatBuffers("./resources/tensor_slice.fb");
 
+    ASSERT_TRUE(graph0 != nullptr);
+    ASSERT_TRUE(graph1 != nullptr);
+
     std::vector<OpDescriptor> ops = graph0->getOperations();
     std::vector<OpDescriptor> ops1 = graph1->getOperations();
     std::copy ( ops1.begin(), ops1.end(),  std::back_inserter(ops));
 
-    nd4j_printf("Total ops %i\n", (int)ops.size());
-    for (auto op: ops) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
+    ASSERT_TRUE(ops.size() == 13);
 
     GraphUtils::filterOperations(ops);
 
-    nd4j_printf("Total ops after filtering: %i\n", (int)ops.size());
-
-    for (auto op: ops) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
-
-    if (!ops.empty()) {
-        nd4j_printf("\n ./buildnativeoperations.sh -g \"-D_%s", ops[0].getOpName()->c_str());
-        for (int i = 1; i < ops.size(); i++)
-            nd4j_printf(";-D_%s", ops[i].getOpName()->c_str());
-        nd4j_printf("\"\n", "");
-    }
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops).c_str());
+    ASSERT_TRUE(ops.size() == 9);
+    ASSERT_TRUE(0 == GraphUtils::makeCommandLine(ops).compare("./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15};-D_strided_slice;-D_ACCUMULATION{1}\""));
 
     delete graph0;
     delete graph1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_F(GraphTests, OpListTest3) {
+TEST_F(GraphTests, OpListTest_3) {
     auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/ae_00.fb"); ;
 
+    ASSERT_TRUE(graph != nullptr);
     std::vector<OpDescriptor> ops = graph->getOperations();
     std::vector<OpDescriptor> ops2(ops);
     std::copy(ops.begin(), ops.end(),  std::back_inserter(ops2));
     
-    nd4j_printf("Total ops %i\n", (int)ops2.size());
-    for (auto op: ops2) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
+    ASSERT_TRUE(ops.size() == 11);
+    ASSERT_TRUE(ops2.size() == 2 * ops.size());
 
     GraphUtils::filterOperations(ops2);
     GraphUtils::filterOperations(ops);
-
-    nd4j_printf("Total ops after filtering: %i\n", (int)ops2.size());
-
-    for (auto op: ops2) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
-
-    if (!ops2.empty()) {
-        nd4j_printf("\n ./buildnativeoperations.sh -g \"-D_%s", ops[0].getOpName()->c_str());
-        for (int i = 1; i < ops.size(); i++)
-            nd4j_printf(";-D_%s", ops[i].getOpName()->c_str());
-        nd4j_printf("\"\n", "");
-    }
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops2).c_str());
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops).c_str());
-//    ASSERT_TRUE(GraphUtils::makeCommandLine(ops) == GraphUtils::makeCommandLine(ops2));
-
+    ASSERT_TRUE(ops.size() == ops2.size());
+    ASSERT_TRUE(ops.size() == 7);
+    ASSERT_TRUE(GraphUtils::makeCommandLine(ops) == GraphUtils::makeCommandLine(ops2));
+    
     delete graph;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_F(GraphTests, OpListTest4) {
+TEST_F(GraphTests, OpListTest_4) {
     auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/conv_0.fb"); ;
 
+    ASSERT_TRUE(graph != nullptr);
     std::vector<OpDescriptor> ops = graph->getOperations();
     std::vector<OpDescriptor> ops2(ops);
     std::copy(ops.begin(), ops.end(),  std::back_inserter(ops2));
-    
-    nd4j_printf("Total ops %i\n", (int)ops2.size());
-    for (auto op: ops2) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
+
+    nd4j_printf("Total ops before %i\n", ops.size());
+    ASSERT_TRUE(ops.size() == 6);
+    ASSERT_TRUE(ops2.size() == 2 * ops.size());
 
     GraphUtils::filterOperations(ops2);
     GraphUtils::filterOperations(ops);
-
-    nd4j_printf("Total ops after filtering: %i\n", (int)ops2.size());
-
-    for (auto op: ops2) {
-        if (op.getOpName()) {
-            nd4j_printf("OP with name %s.\n", op.getOpName()->c_str());
-        }
-    }
-
-    if (!ops2.empty()) {
-        nd4j_printf("\n ./buildnativeoperations.sh -g \"-D_%s", ops[0].getOpName()->c_str());
-        for (int i = 1; i < ops.size(); i++)
-            nd4j_printf(";-D_%s", ops[i].getOpName()->c_str());
-        nd4j_printf("\"\n", "");
-    }
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops2).c_str());
-    nd4j_printf("\n and \n%s\n", GraphUtils::makeCommandLine(ops).c_str());
-//    ASSERT_TRUE(GraphUtils::makeCommandLine(ops) == GraphUtils::makeCommandLine(ops2));
+    ASSERT_TRUE(ops.size() == ops2.size());
+    ASSERT_TRUE(ops.size() == 5);
+    ASSERT_TRUE(GraphUtils::makeCommandLine(ops) == GraphUtils::makeCommandLine(ops2));
 
     delete graph;
 }
