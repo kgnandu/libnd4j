@@ -11,24 +11,26 @@ bool
 GraphUtils::filterOperations(GraphUtils::OpList& ops) {
     bool modified = false;
 
-    std::vector<OpDescriptor>& filtered(ops);
+    std::vector<OpDescriptor> filtered(ops);
 
     std::sort(filtered.begin(), filtered.end(), [](OpDescriptor a, OpDescriptor b) {
-        return a.getOpName()->compare(*(b.getOpName())) > 0;
+        return a.getOpName()->compare(*(b.getOpName())) < 0;
     });
     std::string name = *(filtered[0].getOpName());
 
-    for (int x = 1; x < filtered.size(); x++) {
-        if (filtered[x].getOpName()->compare(name) == 0) {
+    for (int e = 1; e < filtered.size(); e++) {
+//        nd4j_printf(">%s<, %lu %lu\n", name.c_str(), ops.size(), filtered.size());
+        if (0 == filtered[e].getOpName()->compare(name)) {
             // there is a match
             auto fi = std::find_if(ops.begin(), ops.end(), 
                 [name](OpDescriptor a) { 
                     return a.getOpName()->compare(name) == 0; 
             });
-            ops.erase(fi);
+            if (fi != ops.end())
+                ops.erase(fi);
             modified = true;
         }
-        name = *(filtered[x].getOpName());
+        name = *(filtered[e].getOpName());
     }
     return modified;
 }
