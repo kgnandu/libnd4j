@@ -23,7 +23,9 @@ namespace nd4j {
         class ND4J_EXPORT OpRegistrator {
         private:
             static OpRegistrator* _INSTANCE;
-            OpRegistrator() {};
+            OpRegistrator() {
+                nd4j_printf("OpRegistrator started\n","");
+            };
             ~OpRegistrator();
 
             std::map<Nd4jIndex, std::string> _msvc;

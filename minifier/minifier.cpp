@@ -7,6 +7,7 @@
 #endif
 
 #include "graphopt.h"
+#include <GraphExecutioner.h>
 
 int
 main(int argc, char *argv[]) {
@@ -50,8 +51,10 @@ main(int argc, char *argv[]) {
         std::cout << "Ouput name is " << opt.outputName() << std::endl;
     }
 
+    std::vector<OpDescriptor> descriptors;
+
     for (auto file: opt.files()) {
-        // файлы надо проверять на наличие, читаемость и не-нулевую длину
+        // all files will be checked for accessibility & size
 #ifdef _WIN32
         if (_access(file.c_str(), 1) != -1) {
 #else
@@ -64,16 +67,28 @@ main(int argc, char *argv[]) {
             struct stat st;
             stat(file.c_str(), &st);
 #endif  
-            if (st.st_size != 0)
-                std::cout << "File " << file << " exists and can be read" << std::endl;
-            else 
+            if (st.st_size != 0) {
+                //std::cout << "File " << file << " exists and can be read" << std::endl;
+                auto graph = GraphExecutioner<float>::importFromFlatBuffers(file.c_str());
+                auto ops = graph->getOperations();
+
+                for (auto &v:ops) {
+                    descriptors.emplace_back(v);
+                }
+            } else {
                 std::cerr << "File " << file << " exists, but has zero size" << std::endl;
                 return 2;
+            }
         }
         else {
             std::cerr << "File " << file << " does not exists " << std::endl;
             return 10;
         }
     }
+
+    for(auto &v:descriptors) {
+        nd4j_printf("Op: %lld\n", v.getHash());
+    }
+
     return EXIT_SUCCESS;
 }

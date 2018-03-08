@@ -84,8 +84,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
     }
 
     if ( !res.hasParam('l') && !res.hasParam('x') ) {
-        std::cerr << "No -l or -x params are provided. It is needed at least"
-                     " one of them." << std::endl;
+        std::cerr << "No -l or -x params are provided. At least one of them should be used." << std::endl;
         res.reset();
         res._opts.push_back('?');
         return -3;
@@ -104,11 +103,11 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
 std::ostream& 
 GraphOpt::help(std::string app, std::ostream& out) {
     out << "Usage: \n" << app << " [-lxe] [-o outname] filename1 "
-                            "[filename 2 filename3 ... filenameN]" << std::endl;
+                            "[filename2 filename3 ... filenameN]" << std::endl;
     out << "Parameters:" << std::endl;
-    out << "\t-l\t Generate Library" << std::endl;
-    out << "\t-x\t Generate Executable" << std::endl;
-    out << "\t-e\t Append the Graph into Executable as Resource" << std::endl;
+    out << "\t-l\t Generate library" << std::endl;
+    out << "\t-x\t Generate executable" << std::endl;
+    out << "\t-e\t Embed the Graph(s) into executable as resource" << std::endl;
     out << "\t-o <name> Set up output name (for library, executable or both)" 
         << std::endl;
     out << "\t-h\t This help" << std::endl;
