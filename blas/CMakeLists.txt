@@ -22,6 +22,10 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,$ORIGIN/")
 
+if ("${_ALL_OPS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__ALL_OPS=true")
+endif()
+
 IF(${ARCH} MATCHES "arm*")
     set(ARCH_TUNE "-march=${ARCH}")
 ELSEIF(${ARCH} MATCHES "power*")

@@ -91,8 +91,10 @@ main(int argc, char *argv[]) {
     GraphUtils::filterOperations(descriptors);
 
     for(auto &v:descriptors) {
-        nd4j_printf("Op: %lld\n", v.getHash());
+        nd4j_printf("Op: %s\n", v.getOpName()->c_str());
     }
+
+    auto str = GraphUtils::makeCommandLine(descriptors);
 
     return EXIT_SUCCESS;
 }

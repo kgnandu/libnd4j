@@ -31,6 +31,7 @@ PACKAGING=
 CHIP_EXTENSION=
 CHIP_VERSION=
 EXPERIMENTAL=
+OPERATIONS=
 CLEAN="false"
 while [[ $# > 0 ]]
 do
@@ -76,6 +77,10 @@ case $key in
     ;;
     -x|--experimental)
     EXPERIMENTAL="$value"
+    shift # past argument
+    ;;
+    -g|--generator)
+    OPERATIONS="$value"
     shift # past argument
     ;;
     clean)
@@ -312,6 +317,12 @@ if [ -z "$ARCH" ]; then
  ARCH="x86-64"
 fi
 
+OPERATIONS_ARG=
+
+if [ -z "$OPERATIONS" ]; then
+ OPERATIONS_ARG="-D_ALL_OPS=true"
+fi
+
 if [ -z "$EXPERIMENTAL" ]; then
  EXPERIMENTAL="no"
 fi
@@ -413,9 +424,10 @@ echo CHIP_VERSION    = "${CHIP_VERSION}"
 echo GPU_COMPUTE_CAPABILITY    = "${COMPUTE}"
 echo EXPERIMENTAL = ${EXPERIMENTAL}
 echo LIBRARY TYPE    = "${LIBTYPE}"
+echo OPERATIONS = "${OPERATIONS}"
 mkbuilddir
 pwd
-eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG"  "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
+eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG" "$OPERATIONS_ARG" "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
 if [ "$PARALLEL" == "true" ]; then
         eval $MAKE_COMMAND -j$MAKEJ && cd ../../..
     else
