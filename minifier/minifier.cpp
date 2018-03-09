@@ -13,7 +13,6 @@
 int
 main(int argc, char *argv[]) {
     GraphOpt opt;
-
     int err = GraphOpt::optionsWithArgs(argc, argv, opt);
     
     //std::cout << opt << std::endl;
