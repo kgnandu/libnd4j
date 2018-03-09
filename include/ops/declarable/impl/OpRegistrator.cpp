@@ -160,7 +160,7 @@ namespace nd4j {
             std::pair<Nd4jIndex, nd4j::ops::DeclarableOp<float>*> pair2(hash, op);
             _declarablesLF.insert(pair2);
 
-            //nd4j_printf("Adding op [%s]:[%lld]\n", name, hash);
+            nd4j_printf("Adding op [%s]:[%lld]\n", name, hash);
             return true;
         }
 
@@ -326,6 +326,40 @@ namespace nd4j {
         template <>
         DeclarableOp<double> * OpRegistrator::getOperationT<double>(Nd4jIndex hash) {
             return this->getOperationDouble(hash);
+        }
+
+
+        template <>
+        std::vector<Nd4jIndex> OpRegistrator::getAllHashes<float>() {
+            std::vector<Nd4jIndex> result;
+
+            for (auto &v:_declarablesLF) {
+                result.emplace_back(v.first);
+            }
+
+            return result;
+        }
+
+        template <>
+        std::vector<Nd4jIndex> OpRegistrator::getAllHashes<double>() {
+            std::vector<Nd4jIndex> result;
+
+            for (auto &v:_declarablesLD) {
+                result.emplace_back(v.first);
+            }
+
+            return result;
+        }
+
+        template <>
+        std::vector<Nd4jIndex> OpRegistrator::getAllHashes<float16>() {
+            std::vector<Nd4jIndex> result;
+
+            for (auto &v:_declarablesLH) {
+                result.emplace_back(v.first);
+            }
+
+            return result;
         }
 
         nd4j::ops::OpRegistrator* nd4j::ops::OpRegistrator::_INSTANCE = 0;

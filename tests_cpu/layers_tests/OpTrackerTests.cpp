@@ -33,6 +33,16 @@ TEST_F(OpTrackerTests, Test_Existence_1) {
     OpTracker::getInstance()->exportOperations();
 }
 
+TEST_F(OpTrackerTests, Test_Ops_List_1) {
+    auto vec = OpRegistrator::getInstance()->getAllHashes<float>();
+
+    for (const auto &v: vec) {
+        if (v == -5359834205960882260L) {
+            auto op = OpRegistrator::getInstance()->getOperationFloat(v);
+            nd4j_printf("OpName: %s\n", op->getOpName()->c_str());
+        }
+    }
+}
 
 
 

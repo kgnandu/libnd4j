@@ -8,6 +8,7 @@
 
 #include "graphopt.h"
 #include <GraphExecutioner.h>
+#include <ops/declarable/CustomOperations.h>
 
 int
 main(int argc, char *argv[]) {
