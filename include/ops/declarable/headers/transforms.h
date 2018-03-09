@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_TRANSFORMS_H
+#define LIBND4J_HEADERS_TRANSFORMS_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -70,6 +73,7 @@ namespace nd4j {
          *  and global_norm as scalar tensor at the end
          */
         DECLARE_CUSTOM_OP(clip_by_global_norm, 1, 2, true, 1, 0);
-
     }
 }
+
+#endif

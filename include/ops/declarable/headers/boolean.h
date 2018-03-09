@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_BOOLEAN_H
+#define LIBND4J_HEADERS_BOOLEAN_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -136,3 +139,5 @@ namespace nd4j {
         DECLARE_BOOLEAN_OP(is_numeric_tensor, 1, true);
     }
 }
+
+#endif

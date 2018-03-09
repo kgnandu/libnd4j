@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_SHAPE_H
+#define LIBND4J_HEADERS_SHAPE_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -35,3 +38,5 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(tile_to_shape_bp, 2, 1, true, 0, -1);
     }
 }
+
+#endif

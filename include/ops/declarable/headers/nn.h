@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_NN_H
+#define LIBND4J_HEADERS_NN_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -119,3 +122,5 @@ namespace nd4j {
 
     }
 }
+
+#endif

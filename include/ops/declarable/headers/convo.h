@@ -2,6 +2,9 @@
 //
 //
 
+#ifndef LIBND4J_HEADERS_CONVOL_H
+#define LIBND4J_HEADERS_CONVOL_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -241,3 +244,5 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(max_pool_with_argmax, 1, 2, false, 0, 9);
     }
 }
+
+#endif

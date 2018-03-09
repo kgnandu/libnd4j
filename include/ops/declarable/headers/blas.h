@@ -1,6 +1,8 @@
 //
 //  @author raver119@gmail.com
 //
+#ifndef LIBND4J_HEADERS_BLAS_H
+#define LIBND4J_HEADERS_BLAS_H
 
 #include <ops/declarable/headers/common.h>
 
@@ -80,3 +82,5 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(svd, 1, 1, false, 0, 3);   
     }
 }
+
+#endif

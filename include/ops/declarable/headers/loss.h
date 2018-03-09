@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_LOSS_H
+#define LIBND4J_HEADERS_LOSS_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -237,11 +240,7 @@ namespace ops {
        *       Can be an array with the same shape as predictions or just single scalar, depending on reduction mode (see input integer argument)
        */         
     DECLARE_CUSTOM_OP(cosine_distance_loss, 3, 1, false, 0, 2);
-
-
-
-
-
-
 }
 }
+
+#endif

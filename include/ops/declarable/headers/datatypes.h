@@ -1,6 +1,8 @@
 //
 //  @author raver119@gmail.com
 //
+#ifndef LIBND4J_HEADERS_DTYPE_H
+#define LIBND4J_HEADERS_DTYPE_H
 
 #include <ops/declarable/headers/common.h>
 
@@ -67,3 +69,5 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(cast, 1, 1, false, 0, 1);
     }
 }
+
+#endif

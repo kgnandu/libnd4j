@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_RANDOM_H
+#define LIBND4J_HEADERS_RANDOM_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -16,3 +19,5 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(random_exponential, 1, 1, true, 1, 0);
     }
 }
+
+#endif

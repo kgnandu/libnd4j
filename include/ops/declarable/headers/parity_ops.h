@@ -2,6 +2,9 @@
 //  @author raver119@gmail.com
 //
 
+#ifndef LIBND4J_HEADERS_PARITY_H
+#define LIBND4J_HEADERS_PARITY_H
+
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -668,3 +671,5 @@ namespace nd4j {
         DECLARE_OP(matrix_inverse, 1, 1, true);
     }
 }
+
+#endif
