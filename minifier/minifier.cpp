@@ -9,6 +9,7 @@
 #include "graphopt.h"
 #include <GraphExecutioner.h>
 #include <ops/declarable/CustomOperations.h>
+#include <graph/GraphUtils.h>
 
 int
 main(int argc, char *argv[]) {
@@ -52,6 +53,7 @@ main(int argc, char *argv[]) {
     }
 
     std::vector<OpDescriptor> descriptors;
+    nd4j_printf("Total available operations: %i\n", OpRegistrator::getInstance()->numberOfOperations());
 
     for (auto file: opt.files()) {
         // all files will be checked for accessibility & size
@@ -85,6 +87,8 @@ main(int argc, char *argv[]) {
             return 10;
         }
     }
+
+    GraphUtils::filterOperations(descriptors);
 
     for(auto &v:descriptors) {
         nd4j_printf("Op: %lld\n", v.getHash());

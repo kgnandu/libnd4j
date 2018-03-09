@@ -24,7 +24,7 @@ namespace nd4j {
         private:
             static OpRegistrator* _INSTANCE;
             OpRegistrator() {
-                nd4j_printf("OpRegistrator started\n","");
+                nd4j_debug("OpRegistrator started\n","");
             };
             ~OpRegistrator();
 
@@ -89,6 +89,8 @@ namespace nd4j {
 
             template <typename T>
             std::vector<Nd4jIndex> getAllHashes();
+
+            int numberOfOperations();
     };
 
 

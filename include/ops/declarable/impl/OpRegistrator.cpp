@@ -97,6 +97,18 @@ namespace nd4j {
             return os.str() ;
         }
 
+        template <>
+        std::string OpRegistrator::local_to_string(int value) {
+            //create an output string stream
+            std::ostringstream os ;
+
+            //throw the value into the string stream
+            os << value ;
+
+            //convert the string stream into a string and return
+            return os.str() ;
+        }
+
         OpRegistrator::~OpRegistrator() {
             _msvc.clear();
 
@@ -160,7 +172,7 @@ namespace nd4j {
             std::pair<Nd4jIndex, nd4j::ops::DeclarableOp<float>*> pair2(hash, op);
             _declarablesLF.insert(pair2);
 
-            nd4j_printf("Adding op [%s]:[%lld]\n", name, hash);
+            //nd4j_printf("Adding op [%s]:[%lld]\n", name, hash);
             return true;
         }
 
@@ -328,6 +340,9 @@ namespace nd4j {
             return this->getOperationDouble(hash);
         }
 
+        int OpRegistrator::numberOfOperations() {
+            return (int) _declarablesLF.size();
+        }
 
         template <>
         std::vector<Nd4jIndex> OpRegistrator::getAllHashes<float>() {

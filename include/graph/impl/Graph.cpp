@@ -7,6 +7,7 @@
 #include <graph/FlatUtils.h>
 #include <NativeOps.h>
 #include <helpers/ShapeUtils.h>
+#include <ops/declarable/OpRegistrator.h>
 
 namespace nd4j {
     namespace graph {
@@ -1025,7 +1026,7 @@ namespace nd4j {
                         }
                         break;
                         default: {
-                            opNameStr = std::string(EnumUtils::_OpTypeToString(node->opType()))+"{" + std::to_string((int) node->opNum()) + "}";
+                            opNameStr = std::string(EnumUtils::_OpTypeToString(node->opType()))+"{" + OpRegistrator::getInstance()->local_to_string<int>((int) node->opNum()) + "}";
                         }
                     }
 
