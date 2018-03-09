@@ -1,7 +1,8 @@
 //
 //  @author raver119@gmail.com
 //
-
+#ifndef __H__DECLARABLE__PARITY__OPS__
+#define __H__DECLARABLE__PARITY__OPS__
 #include <ops/declarable/headers/common.h>
 
 namespace nd4j {
@@ -666,5 +667,24 @@ namespace nd4j {
          *    tensor with dimension (x * y * z * ::: * M * M) with inverse M x M matricies in it 
          */
         DECLARE_OP(matrix_inverse, 1, 1, true);
+
+        /**
+         * multinomial op.
+         *
+         * input params:
+         *    0 - 2D tensor with shape (x, y)
+         *
+         * integer params:
+         *    0 - num_samples
+         *    1 - seed (optional)
+         *
+         * return value:
+         *    2D tensor with dimension (x, num_samples)
+         */
+        DECLARE_CUSTOM_OP(multinomial, 1, 1, false, 0, 0);
+
+
     }
+
 }
+#endif
