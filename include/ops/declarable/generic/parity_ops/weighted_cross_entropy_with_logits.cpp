@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__weighted_cross_entropy_with_logits)
+
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/cross.h>
 
@@ -50,3 +52,5 @@ namespace ops {
     }
 }
 }
+
+#endif

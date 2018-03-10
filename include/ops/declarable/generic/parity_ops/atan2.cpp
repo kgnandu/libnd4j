@@ -1,6 +1,7 @@
 //
 // Created by raver119 on 10.02.18.
 //
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__tf_atan2)
 
 #include <ops/declarable/headers/parity_ops.h>
 
@@ -18,3 +19,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

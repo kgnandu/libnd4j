@@ -2,6 +2,8 @@
 // Created by yurii@skymind.io on 06.11.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pad)
+
 #include <ops/declarable/CustomOperations.h>
 #include <vector>
 #include <numeric>
@@ -229,3 +231,5 @@ void recursiveLoop(const int mode, Context<T>& block, NDArray<T>* input, const N
 
 }
 }
+
+#endif

@@ -2,6 +2,8 @@
 // Created by raver119 on 06.11.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__create_list)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -37,3 +39,5 @@ namespace nd4j {
         DECLARE_SYN(tensorarraycreatev3, create_list);
     }
 }
+
+#endif

@@ -9,14 +9,29 @@
 
 namespace nd4j {
     namespace ops {
-        
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__set_seed)
         DECLARE_CUSTOM_OP(set_seed, -2, 1, false, 0, -2);
+        #endif
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__get_seed)
         DECLARE_CUSTOM_OP(get_seed, -2, 1, false, 0, 0);
+        #endif
        
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__randomuniform)
         DECLARE_CUSTOM_OP(randomuniform, 1, 1, true, 2, 0);
+        #endif
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_normal)
         DECLARE_CUSTOM_OP(random_normal, 1, 1, true, 2, 0);
+        #endif
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_bernoulli)
         DECLARE_CUSTOM_OP(random_bernoulli, 1, 1, true, 0, 1);
+        #endif
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_exponential)
         DECLARE_CUSTOM_OP(random_exponential, 1, 1, true, 1, 0);
+        #endif
     }
 }
 

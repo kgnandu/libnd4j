@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 20.11.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__absolute_difference_loss)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -132,14 +134,7 @@ DECLARE_SHAPE_FN(absolute_difference_loss) {
 // INT_ARG(0) - reduction mode
 
 
-
-
-
-
-
-
-
-
-
 }
 }
+
+#endif

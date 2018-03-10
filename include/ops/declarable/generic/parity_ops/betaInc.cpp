@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 12.12.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__betainc)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/betaInc.h>
 
@@ -34,3 +36,4 @@ namespace nd4j {
     }
 }
 
+#endif

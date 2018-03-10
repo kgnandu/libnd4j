@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 06.12.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__diag_part)
+
 #include <ops/declarable/CustomOperations.h>
 
 
@@ -60,3 +62,4 @@ namespace nd4j {
 	}
 }
 
+#endif

@@ -2,6 +2,8 @@
 // Created by raver119 on 29/10/17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__fused_batch_norm)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -118,3 +120,5 @@ DECLARE_SHAPE_FN(fused_batch_norm) {
 
 }
 }
+
+#endif

@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 12.12.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__zeta)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/zeta.h>
 
@@ -33,3 +35,4 @@ namespace nd4j {
     }
 }
 
+#endif

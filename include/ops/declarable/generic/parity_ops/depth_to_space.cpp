@@ -2,6 +2,8 @@
 // @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__depth_to_space)
+
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/d_t_s.h>
 #include <array>
@@ -61,3 +63,5 @@ namespace ops {
     }
 }
 }
+
+#endif

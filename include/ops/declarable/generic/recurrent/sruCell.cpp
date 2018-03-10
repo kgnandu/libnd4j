@@ -4,6 +4,8 @@
 //  created by Yurii Shyrma on 05.12.2017
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sruCell)
+
 #include <ops/declarable/CustomOperations.h>
 
 
@@ -91,3 +93,5 @@ DECLARE_SHAPE_FN(sruCell) {
 
 }
 }
+
+#endif

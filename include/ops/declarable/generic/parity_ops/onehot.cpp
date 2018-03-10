@@ -2,6 +2,8 @@
 // Created by raver119 on 01/11/17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__onehot)
+
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>
 
@@ -78,3 +80,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

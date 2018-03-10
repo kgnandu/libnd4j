@@ -2,6 +2,8 @@
 // @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__range)
+
 #include <NDArray.h>
 #include <graph/VariableSpace.h>
 #include <ops/declarable/CustomOperations.h>
@@ -149,3 +151,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

@@ -4,6 +4,8 @@
 // Modified by GS <sgazeos@gmail.com> 2/16/18
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lrn)
+
 #include <ops/declarable/helpers/lrn.h>
 #include <ops/declarable/CustomOperations.h>
 
@@ -85,3 +87,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

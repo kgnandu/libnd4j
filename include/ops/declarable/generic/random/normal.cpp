@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_normal)
+
 #include <ops/declarable/headers/random.h>
 
 namespace nd4j {
@@ -33,3 +35,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

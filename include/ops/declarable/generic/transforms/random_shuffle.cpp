@@ -2,6 +2,8 @@
 // Created by Yurii Syrma on 26.01.2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_shuffle)
+
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>
 
@@ -104,3 +106,5 @@ OP_IMPL(random_shuffle, 1, 1, true) {
 
 }
 }
+
+#endif

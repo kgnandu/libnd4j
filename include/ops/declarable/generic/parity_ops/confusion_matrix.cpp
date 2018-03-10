@@ -2,6 +2,8 @@
 // @author @cpuheater
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__confusion_matrix)
+
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>
 #include <NDArray.h>
@@ -70,3 +72,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

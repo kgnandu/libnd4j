@@ -2,6 +2,7 @@
 // Created by GS <sgazeos@gmail.com>
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dropout)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/dropout.h>
@@ -39,3 +40,5 @@ CONFIGURABLE_OP_IMPL(dropout, 1, 1, true, 1, 1) {
 
 }
 }
+
+#endif

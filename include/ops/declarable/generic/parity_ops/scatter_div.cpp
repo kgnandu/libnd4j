@@ -2,6 +2,8 @@
 // Created by raver119 on 24.11.17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__scatter_div)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/ScatterHelper.h>
 
@@ -24,3 +26,5 @@ namespace nd4j {
         DECLARE_SYN(ScatterDiv, scatter_div);
     }
 }
+
+#endif

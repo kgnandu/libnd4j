@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__split)
+
 #include <ops/declarable/headers/parity_ops.h>
 #include <array>
 
@@ -118,3 +120,5 @@ namespace ops {
     }
 }
 }
+
+#endif

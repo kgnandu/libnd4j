@@ -2,6 +2,8 @@
 // Created by yurii@skymind.io on 01.11.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__parallel_stack)
+
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/stack.h>
 
@@ -50,3 +52,5 @@ DECLARE_SHAPE_FN(parallel_stack) {
 
 }
 }
+
+#endif

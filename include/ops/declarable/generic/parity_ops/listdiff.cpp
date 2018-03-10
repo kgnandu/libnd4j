@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__listdiff)
+
 #include <ops/declarable/CustomOperations.h>
 
 // this op will probably never become GPU-compatible
@@ -41,3 +43,5 @@ namespace nd4j {
         };
     }
 }
+
+#endif

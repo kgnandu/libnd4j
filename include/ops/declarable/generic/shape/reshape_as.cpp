@@ -2,6 +2,8 @@
 // Created by raver119 on 29/10/17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reshapeas)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -41,14 +43,7 @@ namespace nd4j {
     return SHAPELIST(outputShapeInfo);
 }
 
-
-
-
-
-
-
-
-
+}
 }
 
-}
+#endif

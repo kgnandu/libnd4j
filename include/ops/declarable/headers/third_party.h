@@ -9,8 +9,13 @@
 
 namespace nd4j {
     namespace ops {
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__firas_sparse)
         DECLARE_CUSTOM_OP(firas_sparse, 1, 1, false, 0, -1);
+        #endif
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__test_scalar)
         DECLARE_CUSTOM_OP(test_scalar, 1, 1, false, 0, 0);
+        #endif
     }
 }
 

@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__tile_to_shape)
+
 #include <ops/declarable/headers/shape.h>
 
 namespace nd4j {
@@ -65,3 +67,5 @@ namespace ops {
     }
 }
 }
+
+#endif

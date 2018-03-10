@@ -2,6 +2,8 @@
 // created by Yurii Shyrma on 15.02.2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gru)
+
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/gruCell.h>
 
@@ -80,3 +82,5 @@ DECLARE_SHAPE_FN(gru) {
 }
 }
 
+
+#endif

@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 13.12.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__polygamma)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/polyGamma.h>
 
@@ -35,3 +37,4 @@ namespace nd4j {
     }
 }
 
+#endif

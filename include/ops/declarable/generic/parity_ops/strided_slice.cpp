@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__strided_slice)
+
 #include <array>
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>
@@ -556,3 +558,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

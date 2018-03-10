@@ -2,6 +2,8 @@
 // Created by raver119 on 12.10.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__tear)
+
 #include <ops/declarable/CustomOperations.h>
 #include <TAD.h>
 
@@ -54,3 +56,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

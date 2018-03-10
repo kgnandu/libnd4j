@@ -2,6 +2,8 @@
 // Created by george@skymind.io on 26.01.2018.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__moments)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -64,3 +66,5 @@ namespace nd4j {
     }
 
 }
+
+#endif

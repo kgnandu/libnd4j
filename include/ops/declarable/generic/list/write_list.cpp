@@ -2,6 +2,8 @@
 // @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__write_list)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -38,3 +40,5 @@ namespace nd4j {
         DECLARE_SYN(tensorarraywritev3, write_list);
     }
 }
+
+#endif

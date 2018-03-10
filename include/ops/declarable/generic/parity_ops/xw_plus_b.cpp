@@ -2,6 +2,9 @@
 //  xw_plus_b op. Created by GS <george@skymind.io> 31.01.2018
 //
 //
+
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__xw_plus_b)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matmul.h>
 
@@ -35,3 +38,5 @@ namespace nd4j {
 
     }
 }
+
+#endif

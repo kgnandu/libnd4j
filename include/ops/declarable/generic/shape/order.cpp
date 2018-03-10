@@ -2,6 +2,8 @@
 // Created by raver119 on 12.02.18.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__order)
+
 #include <ops/declarable/headers/shape.h>
 
 namespace nd4j {
@@ -32,3 +34,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

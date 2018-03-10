@@ -2,6 +2,8 @@
 // created by Yurii Shyrma on 30.11.2017
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lstmCell)
+
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/lstmCell.h>
 
@@ -78,13 +80,7 @@ DECLARE_SHAPE_FN(lstmCell) {
     return SHAPELIST(outShapeInfo1, outShapeInfo2);
 }   
 
-
-
-
-
-
-
-
 }
 }
 
+#endif

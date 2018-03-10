@@ -2,6 +2,8 @@
 // Created by GS <sgazeos@gmail.com> at 2/27/2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__matrix_inverse)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/lup.h>
 namespace nd4j {
@@ -17,3 +19,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

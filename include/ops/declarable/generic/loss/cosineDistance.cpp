@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 22.11.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__cosine_distance_loss)
+
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>
 
@@ -139,14 +141,7 @@ DECLARE_SHAPE_FN(cosine_distance_loss) {
 // INT_ARG(0) - reduction mode
 // INT_ARG(1) - axis, dimension should be reduced to unity along this axis
 
-
-
-
-
-
-
-
-
-
 }
 }
+
+#endif

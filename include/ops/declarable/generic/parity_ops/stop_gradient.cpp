@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__stop_gradient)
+
 #include <ops/declarable/headers/parity_ops.h>
 
 namespace nd4j {
@@ -17,3 +19,5 @@ namespace nd4j {
         DECLARE_SYN(StopGradient, stop_gradient);
     }
 }
+
+#endif

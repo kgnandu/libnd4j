@@ -2,6 +2,8 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__clipbyavgnorm)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -53,3 +55,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

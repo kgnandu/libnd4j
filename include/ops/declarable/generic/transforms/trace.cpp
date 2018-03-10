@@ -2,6 +2,8 @@
 // Created by Yurii Shyrma on 24.01.2018.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__trace)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -47,3 +49,5 @@ DECLARE_SHAPE_FN(trace) {
 
 }
 }
+
+#endif

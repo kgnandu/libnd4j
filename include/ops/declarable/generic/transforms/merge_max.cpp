@@ -2,6 +2,8 @@
 // Created by raver119 on 24.11.17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mergemax)
+
 #include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
@@ -33,3 +35,5 @@ namespace nd4j {
         DECLARE_SYN(MergeMax, mergemax);
     }
 }
+
+#endif
