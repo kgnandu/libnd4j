@@ -222,7 +222,7 @@ else()
             ${MEMORY_SOURCES} ${GRAPH_SOURCES} ${CUSTOMOPS_SOURCES} ${INDEXING_SOURCES} ${HELPERS_SOURCES}  ${CUSTOMOPS_HELPERS_SOURCES}
             ${OPS_SOURCES} )
 
-    if ("${_ALL_OPS}")
+    #if ("${_ALL_OPS}")
         add_library(nd4jstatic STATIC cpu/NativeOps.cpp cpu/GraphExecutioner.cpp
             cpu/NativeOpExcutioner.cpp cpu/NDArray.cpp cpu/NDArrayFactory.cpp
             ../include/cnpy/cnpy.cpp  ../include/nd4jmemset.h ../include/nd4jmalloc.h
@@ -232,7 +232,7 @@ else()
 
         add_executable(minifier ../minifier/minifier.cpp ../minifier/graphopt.cpp)
         target_link_libraries(minifier nd4jstatic)
-    endif()
+    #endif()
 endif()
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS 4.9)

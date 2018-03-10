@@ -6,6 +6,8 @@
 #include <ops/declarable/generic/helpers/convolutions.h>
 #include <ops/declarable/helpers/max_pooling.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_with_argmax)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(max_pool_with_argmax, 1, 2, false, 0, 9) {
@@ -22,9 +24,8 @@ namespace nd4j {
 
             return ND4J_STATUS_OK;
         }
-    }
-    DECLARE_SHAPE_FN(max_pool_with_argmax) {
-
+        
+        DECLARE_SHAPE_FN(max_pool_with_argmax) {
             int* in = inputShape->at(0);
             int* valuesShape = nullptr;
             int* indicesShape = nullptr;
@@ -33,6 +34,9 @@ namespace nd4j {
             auto shapes = SHAPELIST(valuesShape, indicesShape);
 
             return shapes;
+        }
     }
-
 }
+
+#endif
+

@@ -11,7 +11,7 @@
 #include <ops/declarable/OpRegistrator.h>
 #include <declarable/generic/helpers/convolutions.h>
 
-
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
 
 namespace nd4j {
     namespace ops {
@@ -346,5 +346,7 @@ namespace nd4j {
         }
     }
 }
+
+#endif
 
 #endif //LIBND4J_CONVO_OPS_H

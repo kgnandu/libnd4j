@@ -16,7 +16,9 @@ namespace nd4j {
          * 
          * @tparam T
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__toggle_bits)
         DECLARE_OP(toggle_bits, -1, -1, true);
+        #endif
     }
 }
 

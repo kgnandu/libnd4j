@@ -22,8 +22,10 @@ namespace nd4j {
          * 1: stride
          * 2: padding
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv1d)
         DECLARE_CUSTOM_OP(conv1d, 2, 1, false, 0, 3);
         DECLARE_CUSTOM_OP(conv1d_bp, 3, 2, false, 0, 3);
+        #endif
 
         /**
          * 2D convolution implementation
@@ -43,8 +45,10 @@ namespace nd4j {
          * 7: dilation width
          * 8: same mode: 0 false, 1 true
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
         DECLARE_CUSTOM_OP(conv2d, 2, 1, false, 0, 3);
         DECLARE_CUSTOM_OP(conv2d_bp, 3, 2, false, 0, 9);
+        #endif
 
         /**
          * Depthwise convolution2d op:
@@ -54,8 +58,10 @@ namespace nd4j {
          * weightsPointwise: optional, 4D array
          * bias: optional, vector
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sconv2d)
         DECLARE_CUSTOM_OP(sconv2d, 2, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(sconv2d_bp, 4, 2, false, 0, 9);
+        #endif
 
         /**
          * 2D deconvolution implementation
@@ -71,8 +77,10 @@ namespace nd4j {
          * 7: dilation width
          * 8: same mode: 0 false, 1 true
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__deconv2d)
         DECLARE_CUSTOM_OP(deconv2d, 2, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(deconv2d_bp, 4, 2, false, 0, 9);
+        #endif
 
         /**
          * This op implements max pooling for convolution networks.
@@ -89,8 +97,10 @@ namespace nd4j {
          * 7: dilation width
          * 8: same mode: 0 false, 1 true
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maxpool2d)
         DECLARE_CUSTOM_OP(maxpool2d, 1, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(maxpool2d_bp, 2, 1, false, 0, 9);
+        #endif
 
         /**
          * This op implements average pooling for convolution networks.
@@ -107,8 +117,10 @@ namespace nd4j {
          * 7: dilation width
          * 8: same mode: 0 false, 1 true
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool2d)
         DECLARE_CUSTOM_OP(avgpool2d, 1, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(avgpool2d_bp, 2, 1, false, 0, 9);
+        #endif
 
         /**
          * This op implements pnorm pooling for convolution networks.
@@ -126,27 +138,34 @@ namespace nd4j {
          * 8: same mode: 0 false, 1 true
          * 9: p for p-norm
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pnormpool2d)
         DECLARE_CUSTOM_OP(pnormpool2d, 1, 1, false, 0, 10);
         DECLARE_CUSTOM_OP(pnormpool2d_bp, 2, 1, false, 1, 10);
+        #endif
 
-
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maxpool3d)
         DECLARE_CUSTOM_OP(maxpool3d, 1, 2, true, 0, 13); 
         DECLARE_CUSTOM_OP(maxpool3d_bp, 3, 1, true, 0, 13);
+        #endif
         
-        
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool3d)
         DECLARE_CUSTOM_OP(avgpool3d, 1, 1, true, 0, 11);
         DECLARE_CUSTOM_OP(avgpool3d_bp, 2, 1, true, 0, 11);
+        #endif
         
-        
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__fullconv3d)
         DECLARE_CUSTOM_OP(fullconv3d, 5, 1, false, 0, 13);
         DECLARE_CUSTOM_OP(fullconv3d_bp, 5, 1, false, 0, 13);
         DECLARE_CUSTOM_OP(fullconv3d_grad, 4, 2, false, 1, 13);
+        #endif
         
         /**
          *  Universal pooling op, combines max/avg/pnorm pooling.
          *  Shouldn't be used directly, consider using corresponding operations instead.
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pooling2d)
         DECLARE_CUSTOM_OP(pooling2d, 1, 1, false, 0, 11);
+        #endif
         
         /**
          * This op implements im2col algorithm, widely used in convolution neural networks
@@ -163,7 +182,9 @@ namespace nd4j {
          * 7: dilation width
          * 8: isSameMode
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__im2col)
         DECLARE_CUSTOM_OP(im2col, 1, 1, false, 0, 9);
+        #endif
 
         /**
          * This op implements col2im algorithm, widely used in convolution neural networks
@@ -179,7 +200,9 @@ namespace nd4j {
          * 6: dilation height
          * 7: dilation width
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__col2im)
         DECLARE_CUSTOM_OP(col2im, 1, 1, false, 0, 9);
+        #endif
         
         /**
          * Upsampling implementation, based on pytorch
@@ -187,8 +210,10 @@ namespace nd4j {
          * IArgs map:
          * IArgs[0] - scale factor
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__upsampling2d)
         DECLARE_CUSTOM_OP(upsampling2d, 1, 1, false, 0, 1);
         DECLARE_CUSTOM_OP(upsampling2d_bp, 2, 1, false, 0, 1);
+        #endif
 
         /**
          * 3D convolution implementation
@@ -201,8 +226,10 @@ namespace nd4j {
          * 5: padding W
          * 6: padding H
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv3d)
         DECLARE_CUSTOM_OP(conv3d, 2, 1, false, 0, 7); 
         DECLARE_CONFIGURABLE_OP(conv3d_bp, 3, 1, false, 0, 7); // TODO: to be implemented        
+        #endif
 
         /**
          * This op produces binary matrix wrt to target dimension.
@@ -211,7 +238,9 @@ namespace nd4j {
          * Int args:
          * 0: axis
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__ismax)
         DECLARE_CONFIGURABLE_OP(ismax, 1, 1, true, 0, -1);
+        #endif
 
         /**
          * Dilation2D op
@@ -219,16 +248,24 @@ namespace nd4j {
          * Int args:
          * 0: isSameMode
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dilation2d)
         DECLARE_CUSTOM_OP(dilation2d, 2, 1, false, 0, 1);
+        #endif
 
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv3dnew)
         DECLARE_CUSTOM_OP(conv3dnew, 2, 1, false, 0, 13);
         DECLARE_CUSTOM_OP(conv3dnew_bp, 3, 2, false, 0, 13);
+        #endif
 
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool3dnew)
         DECLARE_CUSTOM_OP(avgpool3dnew, 1, 1, false, 0, 10);
         DECLARE_CUSTOM_OP(avgpool3dnew_bp, 2, 1, false, 0, 10);
+        #endif
 
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maxpool3dnew)
         DECLARE_CUSTOM_OP(maxpool3dnew, 1, 1, false, 0, 10);
         DECLARE_CUSTOM_OP(maxpool3dnew_bp, 2, 1, false, 0, 10);
+        #endif
 
         /**
          * This op same as maxpool2d with a variant to return a matrix of indexes for max values
@@ -241,7 +278,9 @@ namespace nd4j {
          * Int params:
          *   9 int with 2x4 vectors and 1 bool value
          */
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_woth_argmax)
         DECLARE_CUSTOM_OP(max_pool_with_argmax, 1, 2, false, 0, 9);
+        #endif
     }
 }
 

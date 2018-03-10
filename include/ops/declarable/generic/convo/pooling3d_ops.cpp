@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool3d)
+
 namespace nd4j {
     namespace ops {
         DECLARE_SHAPE_FN(avgpool3d) {
@@ -565,3 +567,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__broadcastgradientargs)
+
 namespace nd4j {
     namespace ops {
         /**
@@ -19,3 +21,4 @@ namespace nd4j {
     }
 }
 
+#endif

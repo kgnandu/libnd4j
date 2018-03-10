@@ -286,7 +286,9 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(rank, 1, 1, false, 0, 0); // ^
 
 
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__broadcastgradientargs)
         DECLARE_OP(broadcastgradientargs, 2, 2, true);
+        #endif
 
         /**
          * This operation takes input's shape, and returns new NDArray filled with zeros

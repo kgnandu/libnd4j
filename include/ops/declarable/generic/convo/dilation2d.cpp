@@ -5,6 +5,8 @@
 #include <ops/declarable/headers/convo.h>
 #include <ops/declarable/helpers/dilation2d.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dilation2d)
+
 namespace nd4j {
 namespace ops {
     CUSTOM_OP_IMPL(dilation2d, 2, 1, false, 0, 1) {
@@ -112,3 +114,5 @@ namespace ops {
     }
 }
 }
+
+#endif

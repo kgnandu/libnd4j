@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__upsampling2d)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(upsampling2d, 1, 1, false, 0, 1) {
@@ -178,3 +180,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

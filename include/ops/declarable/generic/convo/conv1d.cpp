@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <declarable/generic/helpers/convolutions.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv1d)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(conv1d, 2, 1, false, 0, 3) {
@@ -179,3 +181,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

@@ -6,6 +6,8 @@
 #include <ops/declarable/generic/helpers/convolutions.h>
 #include <ops/declarable/helpers/im2col.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__im2col)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(im2col, 1, 1, false, 0, 9) {
@@ -84,3 +86,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

@@ -6,6 +6,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maxpool3dnew)
+
 namespace nd4j {
 namespace ops  {
 
@@ -220,3 +222,5 @@ DECLARE_SHAPE_FN(maxpool3dnew_bp) {
 
 }
 }
+
+#endif

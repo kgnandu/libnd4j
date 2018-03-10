@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/col2im.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__col2im)
+
 
 namespace nd4j {
     namespace ops {
@@ -66,3 +68,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

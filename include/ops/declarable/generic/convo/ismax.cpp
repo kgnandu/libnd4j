@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__ismax)
+
 namespace nd4j {
     namespace ops {
         CONFIGURABLE_OP_IMPL(ismax, 1, 1, true, 0, -1) {
@@ -229,3 +231,5 @@ namespace nd4j {
         DECLARE_SYN(IsMax, ismax);
     }
 }
+
+#endif

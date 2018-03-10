@@ -5,6 +5,8 @@
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__squaredsubtract)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(squaredsubtract, 2, 1, true, 0, 0) {
@@ -186,3 +188,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

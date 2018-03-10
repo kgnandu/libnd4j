@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__meshgrid)
+
 namespace nd4j {
 namespace ops  {
 
@@ -73,8 +75,7 @@ DECLARE_SHAPE_FN(meshgrid) {
     return shapes;
 }
 
-
-
-
 }
 }
+
+#endif
