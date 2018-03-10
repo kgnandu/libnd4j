@@ -1401,8 +1401,10 @@ TEST_F(GraphTests, OpListTest_2) {
 
     GraphUtils::filterOperations(ops);
 
+    std::string exp = "./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15};-D_strided_slice;-D_ACCUMULATION{1}\"";
+
     ASSERT_TRUE(ops.size() == 9);
-    ASSERT_TRUE(0 == GraphUtils::makeCommandLine(ops).compare("./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15};-D_strided_slice;-D_ACCUMULATION{1}\""));
+    ASSERT_EQ(exp, GraphUtils::makeCommandLine(ops));
 
     delete graph0;
     delete graph1;

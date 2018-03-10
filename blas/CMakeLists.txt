@@ -24,6 +24,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,$ORIGIN/")
 
 if ("${_ALL_OPS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__ALL_OPS=true")
+else()
+    message("_OPS: ${_OPS_LIST}")
+    foreach(OP "${_OPS_LIST}")
+        message(STATUS "${OP}")
+    endforeach()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_OPS_LIST}")
 endif()
 
 IF(${ARCH} MATCHES "arm*")
