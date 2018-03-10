@@ -2,9 +2,9 @@
 // Created by raver119 on 13.10.2017.
 //
 
-#include <ops/declarable/CustomOperations.h>
-
 #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__eq_scalar)
+
+#include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
     namespace ops {

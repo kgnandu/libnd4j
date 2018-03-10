@@ -2,9 +2,9 @@
 // Created by raver119 on 29/10/17.
 //
 
-#include <ops/declarable/CustomOperations.h>
-
 #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__ismax)
+
+#include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
     namespace ops {

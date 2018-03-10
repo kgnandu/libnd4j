@@ -2,11 +2,11 @@
 // Created by GS <sgazeos@gmail.com> at 2/20/18
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_with_argmax)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
 #include <ops/declarable/helpers/max_pooling.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_with_argmax)
 
 namespace nd4j {
     namespace ops {

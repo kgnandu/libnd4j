@@ -2,10 +2,10 @@
 // Created by raver119 on 29/10/17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pnormpool2d)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pnormpool2d)
 
 namespace nd4j {
     namespace ops {

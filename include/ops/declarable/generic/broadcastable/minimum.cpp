@@ -2,10 +2,10 @@
 // Created by raver119 on 12.10.2017.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__minimum)
+
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__minimum)
 
 namespace nd4j {
     namespace ops {

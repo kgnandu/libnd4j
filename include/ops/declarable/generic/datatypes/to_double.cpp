@@ -2,9 +2,9 @@
 //  @author raver119@gmail.com
 //
 
-#include <ops/declarable/CustomOperations.h>
-
 #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__to_double)
+
+#include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
     namespace ops {

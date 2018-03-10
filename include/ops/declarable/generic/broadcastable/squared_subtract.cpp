@@ -2,10 +2,10 @@
 // Created by raver119 on 23.11.17.
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__squaredsubtract)
+
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__squaredsubtract)
 
 namespace nd4j {
     namespace ops {

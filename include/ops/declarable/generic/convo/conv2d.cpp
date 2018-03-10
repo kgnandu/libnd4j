@@ -5,13 +5,13 @@
 #ifndef LIBND4J_CONVO_OPS_H
 #define LIBND4J_CONVO_OPS_H
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
+
 #include <op_boilerplate.h>
 #include <memory>
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/OpRegistrator.h>
 #include <declarable/generic/helpers/convolutions.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
 
 namespace nd4j {
     namespace ops {

@@ -2,10 +2,10 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__where)
+
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__where)
 
 namespace nd4j {
     namespace ops {

@@ -2,10 +2,10 @@
 // Created by Yurii Shyrma on 05.02.2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__meshgrid)
+
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__meshgrid)
 
 namespace nd4j {
 namespace ops  {

@@ -2,9 +2,9 @@
 // created by Yurii Shyrma on 16.02.2018
 //
 
-#include <ops/declarable/CustomOperations.h>
-
 #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__relu6)
+
+#include <ops/declarable/CustomOperations.h>
 
 namespace nd4j {
 namespace ops  {

@@ -2,10 +2,10 @@
 //  @author Adam Gibson
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__where_np)
+
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__where_np)
 
 namespace nd4j {
     namespace ops {

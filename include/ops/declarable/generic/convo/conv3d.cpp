@@ -2,11 +2,10 @@
 // created by Yurii Shyrma on 05.02.2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv3dnew)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv3dnew)
 
 namespace nd4j {
 namespace ops  {

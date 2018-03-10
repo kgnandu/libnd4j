@@ -2,10 +2,10 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dilation2d)
+
 #include <ops/declarable/headers/convo.h>
 #include <ops/declarable/helpers/dilation2d.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dilation2d)
 
 namespace nd4j {
 namespace ops {

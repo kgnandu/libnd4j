@@ -2,10 +2,10 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__subtract)
+
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__subtract)
 
 namespace nd4j {
     namespace ops {

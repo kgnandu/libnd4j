@@ -2,14 +2,14 @@
 //  @author raver119@gmail.com
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__choose)
+
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>
 #include <ops/ops.h>
 #include <vector>
 #include <NDArray.h>
 #include <NDArrayFactory.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__choose)
 
 template<typename T>
 nd4j::NDArray<T>  * processCondition(int mode,nd4j::NDArray<T> *arg, nd4j::NDArray<T> *comp, T compScalar);

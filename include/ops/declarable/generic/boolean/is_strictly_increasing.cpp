@@ -1,9 +1,11 @@
+//
+//  @author @cpuheater
+//
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__is_strictly_increasing)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/compare_elem.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__is_strictly_increasing)
 
 namespace nd4j {
     namespace ops {
