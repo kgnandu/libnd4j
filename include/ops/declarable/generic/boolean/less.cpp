@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__less)
+
 namespace nd4j {
     namespace ops {
         OP_IMPL(less, 2, 1, true) {
@@ -25,3 +27,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

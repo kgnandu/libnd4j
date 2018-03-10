@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__not_equals)
+
 namespace nd4j {
     namespace ops {
         OP_IMPL(not_equals, 2, 1, true) {
@@ -24,3 +26,5 @@ namespace nd4j {
         DECLARE_SYN(not_equal, not_equals);
     }
 }
+
+#endif

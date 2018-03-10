@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__axpy)
+
 namespace nd4j {
     namespace ops {
         CONFIGURABLE_OP_IMPL(axpy, 2, 1, false, -2, 0) {
@@ -32,3 +34,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

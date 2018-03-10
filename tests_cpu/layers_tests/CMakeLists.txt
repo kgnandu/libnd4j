@@ -44,6 +44,7 @@ if (APPLE)
     endif()
 endif()
 
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D__ALL_OPS=true")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang

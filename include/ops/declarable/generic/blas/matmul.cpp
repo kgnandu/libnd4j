@@ -1,10 +1,12 @@
 //
 //
-// Modified by GS <sgazeos@gmail.com> 01.02.2018
+// @author raver119@gmail.com
 //
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matmul.h>
+
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__matmul)
 
 namespace nd4j {
     namespace ops {
@@ -161,3 +163,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

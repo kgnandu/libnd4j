@@ -5,6 +5,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/BitwiseUtils.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__toggle_bits)
+
 namespace nd4j {
     namespace ops {
         OP_IMPL(toggle_bits, -1, -1, true) {
@@ -23,3 +25,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

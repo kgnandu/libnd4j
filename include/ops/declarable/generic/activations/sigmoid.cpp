@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sigmoid)
+
 namespace nd4j {
     namespace ops {
         CONFIGURABLE_OP_IMPL(sigmoid, 1, 1, true, 0, 0) {
@@ -32,6 +34,7 @@ namespace nd4j {
 
             return ND4J_STATUS_OK;
         }
-        DECLARE_SYN(SigmoidGrad, sigmoid_bp);
     }
 }
+
+#endif

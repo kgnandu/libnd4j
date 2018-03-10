@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__tanh)
+
 namespace nd4j {
         namespace ops {
         CONFIGURABLE_OP_IMPL(tanh, 1, 1, true, 0, 0) {
@@ -35,3 +37,5 @@ namespace nd4j {
         DECLARE_SYN(TanhGrad, tanh_bp);
     }
 }
+
+#endif

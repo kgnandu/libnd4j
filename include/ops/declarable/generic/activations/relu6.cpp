@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__relu6)
+
 namespace nd4j {
 namespace ops  {
 
@@ -44,3 +46,5 @@ CONFIGURABLE_OP_IMPL(relu6_bp, 2, 1, true, 0, 0) {
 
 }
 }
+
+#endif

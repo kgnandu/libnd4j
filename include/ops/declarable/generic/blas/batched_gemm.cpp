@@ -5,6 +5,8 @@
 #include <ops/declarable/headers/blas.h>
 #include <ops/declarable/helpers/batched_gemm.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__batched_gemm)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(batched_gemm, -1, -1, false, 0, 9) {
@@ -112,3 +114,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

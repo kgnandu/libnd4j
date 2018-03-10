@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lt_scalar)
+
 namespace nd4j {
     namespace ops {
         BOOLEAN_OP_IMPL(lt_scalar, 2, true) {
@@ -20,3 +22,5 @@ namespace nd4j {
         //DECLARE_SYN(less, lt_scalar);
     }
 }
+
+#endif

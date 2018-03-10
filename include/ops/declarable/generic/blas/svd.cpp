@@ -4,6 +4,8 @@
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/svd.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__svd)
+
 namespace nd4j {
 namespace ops {
 
@@ -111,3 +113,5 @@ DECLARE_SHAPE_FN(svd) {
 
 }
 }
+
+#endif

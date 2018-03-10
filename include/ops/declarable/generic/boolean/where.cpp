@@ -5,6 +5,8 @@
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__where)
+
 namespace nd4j {
     namespace ops {
         CUSTOM_OP_IMPL(Where, 1, 1, false, 0, 0) {
@@ -110,3 +112,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

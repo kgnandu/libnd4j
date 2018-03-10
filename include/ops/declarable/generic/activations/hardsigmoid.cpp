@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__hardsigmoid)
+
 namespace nd4j {
     namespace ops {
         CONFIGURABLE_OP_IMPL(hardsigmoid, 1, 1, true, 0, 0) {
@@ -32,3 +34,5 @@ namespace nd4j {
         }
     }
 }
+
+#endif

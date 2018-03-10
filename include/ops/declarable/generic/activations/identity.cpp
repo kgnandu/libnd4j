@@ -4,6 +4,8 @@
 
 #include <ops/declarable/CustomOperations.h>
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__identity)
+
 namespace nd4j {
     namespace ops {
         OP_IMPL(identity, 1, 1, true) {
@@ -32,3 +34,5 @@ namespace nd4j {
         DECLARE_SYN(LinearGrad, identity_bp);
     }
 }
+
+#endif
