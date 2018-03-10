@@ -33,6 +33,7 @@ CHIP_VERSION=
 EXPERIMENTAL=
 OPERATIONS=
 CLEAN="false"
+MINIFIER="false"
 while [[ $# > 0 ]]
 do
 key="$1"
@@ -85,6 +86,9 @@ case $key in
     ;;
     clean)
     CLEAN="true"
+    ;;
+    -m|--minifier)
+    MINIFIER="true"
     ;;
     --default)
     DEFAULT=YES
@@ -365,9 +369,14 @@ if [ "$PACKAGING" == "msi" ]; then
 fi
 
 EXPERIMENTAL_ARG="no";
+MINIFIER_ARG=
 
 if [ "$EXPERIMENTAL" == "yes" ]; then
     EXPERIMENTAL_ARG="-DEXPERIMENTAL=yes"
+fi
+
+if [ "$MINIFIER" == "true" ]; then
+    MINIFIER_ARG="-D__BUILD_MINIFIER=true"
 fi
 
 ARCH_ARG="-DARCH=$ARCH -DEXTENSION=$CHIP_EXTENSION"
@@ -427,9 +436,10 @@ echo GPU_COMPUTE_CAPABILITY    = "${COMPUTE}"
 echo EXPERIMENTAL = ${EXPERIMENTAL}
 echo LIBRARY TYPE    = "${LIBTYPE}"
 echo OPERATIONS = "${OPERATIONS_ARG}"
+echo MINIFIER = "${MINIFIER}"
 mkbuilddir
 pwd
-eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG" "$OPERATIONS_ARG" "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
+eval $CMAKE_COMMAND  "$BLAS_ARG" "$ARCH_ARG" "$SHARED_LIBS_ARG" "$MINIFIER_ARG" "$OPERATIONS_ARG" "$BUILD_TYPE" "$PACKAGING_ARG" "$EXPERIMENTAL_ARG" "$CUDA_COMPUTE" -DDEV=FALSE -DMKL_MULTI_THREADED=TRUE ../..
 if [ "$PARALLEL" == "true" ]; then
         eval $MAKE_COMMAND -j$MAKEJ && cd ../../..
     else

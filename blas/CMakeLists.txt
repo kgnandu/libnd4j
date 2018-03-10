@@ -222,7 +222,9 @@ else()
             ${MEMORY_SOURCES} ${GRAPH_SOURCES} ${CUSTOMOPS_SOURCES} ${INDEXING_SOURCES} ${HELPERS_SOURCES}  ${CUSTOMOPS_HELPERS_SOURCES}
             ${OPS_SOURCES} )
 
-    if ("${_ALL_OPS}")
+
+    if ("${_ALL_OPS}" AND "${__BUILD_MINIFIER}")
+        message(STATUS "Building minifier...")
         add_library(nd4jstatic STATIC cpu/NativeOps.cpp cpu/GraphExecutioner.cpp
             cpu/NativeOpExcutioner.cpp cpu/NDArray.cpp cpu/NDArrayFactory.cpp
             ../include/cnpy/cnpy.cpp  ../include/nd4jmemset.h ../include/nd4jmalloc.h
