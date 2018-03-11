@@ -1376,11 +1376,11 @@ TEST_F(GraphTests, OpListTest_1) {
     GraphUtils::filterOperations(ops);
     ASSERT_TRUE(ops.size() == 7);
 
-    std::string exp("./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15}\"");
+    std::string exp(" -g \"-D_OPS_LIST='-D__rank=true -D__range=true -D__subtract=true -D__transpose=true -D__matmul=true -D__biasadd=true -D__TRANSFORM{15}=true '\"");
     std::string out = GraphUtils::makeCommandLine(ops);
 //    nd4j_printf("EXP: >%s<\n", exp.c_str());
 //    nd4j_printf("OUT: >%s<\n", out.c_str());
-    ASSERT_TRUE(0 == out.compare(exp));
+    ASSERT_EQ(exp, out);
 
     delete graph;
 }
@@ -1401,7 +1401,7 @@ TEST_F(GraphTests, OpListTest_2) {
 
     GraphUtils::filterOperations(ops);
 
-    std::string exp = "./buildnativeoperations.sh -g \"-D_rank;-D_range;-D_subtract;-D_transpose;-D_matmul;-D_biasadd;-D_TRANSFORM{15};-D_strided_slice;-D_ACCUMULATION{1}\"";
+    std::string exp = " -g \"-D_OPS_LIST='-D__rank=true -D__range=true -D__subtract=true -D__transpose=true -D__matmul=true -D__biasadd=true -D__TRANSFORM{15}=true -D__strided_slice=true -D__ACCUMULATION{1}=true '\"";
 
     ASSERT_TRUE(ops.size() == 9);
     ASSERT_EQ(exp, GraphUtils::makeCommandLine(ops));
