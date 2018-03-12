@@ -312,7 +312,7 @@ TEST_F(PlaygroundTests, Test_Profile_3) {
     //graph->printOut();
     //GraphExecutioner<float>::execute(graph);
 
-    auto profile = GraphProfilingHelper<float>::profile(graph, 1000);
+    auto profile = GraphProfilingHelper<float>::profile(graph, 10);
     profile->printOut();
 
     delete graph;

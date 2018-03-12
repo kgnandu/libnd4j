@@ -16,8 +16,11 @@ namespace nd4j {
             // printing out graph structure
             graph->printOut();
 
+            int warmUps = nd4j::math::nd4j_min<int>(1000, iterations);
+
+            nd4j_printf("Warming up...\n","");
             // warm up
-            for (int e = 0; e < 1000; e++) {
+            for (int e = 0; e < warmUps; e++) {
                 FlowPath fp;
 
                 auto _vs = varSpace->clone();
@@ -28,6 +31,7 @@ namespace nd4j {
                 delete _vs;
             }
 
+            nd4j_printf("Profiling graph...\n","");
 
             auto profile = new GraphProfile();
             for (int e = 0; e < iterations; e++) {
