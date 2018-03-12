@@ -1555,6 +1555,18 @@ bool NDArray<T>::reshapei(const std::vector<int>& shape) {
 template <typename T>
     bool NDArray<T>::reshapei(const char order, const std::vector<int>& cshape) {
 
+    // check firstly whether cshape is identical to shape of array
+    if(order == ordering() && rankOf() == cshape.size()) {
+        bool isShapesSame = true;
+        for(int i = 0; i < cshape.size(); ++i)
+            if(cshape[0] != sizeAt(i)) {
+                isShapesSame = false;
+                break;
+            }
+        if(isShapesSame)
+            return isShapesSame;        
+    }
+
     std::vector<int> shape(cshape);
     int rank = shape.size();
 
@@ -1603,7 +1615,7 @@ template <typename T>
         this->printShapeInfo("Mismatched shape");
         nd4j::Logger::printv("Shape requested: ", shape);
         nd4j_debug("Requested length in reshape: %i; Existing length: %i;\n", arrLength, this->lengthOf());
-        throw "Bad shape!";
+        throw "NDArray<T>::reshapei: bad input shape!";
     }
 
     int shapeLength = shape::shapeInfoLength(rank);
