@@ -366,6 +366,13 @@ __host__ __device__
 
     ND4J_EXPORT void doPermuteSwap(int length, int **shape, int *rearrange);
 
+
+#ifdef __CUDACC__
+    __host__ __device__
+#endif
+
+    ND4J_EXPORT void doPermuteStrides(int length, int **shape, int *rearrange);
+
 #ifdef __CUDACC__
     __host__ __device__
 #endif
@@ -2614,6 +2621,49 @@ __host__ __device__
         delete[] temp;
     }
 
+#ifdef __CUDACC__
+    __host__ __device__
+#endif
+
+    INLINEDEF void doPermuteStrides(int length, int **shape, int *rearrange) {
+        if(length == 1) {
+            return;
+        }
+
+        bool inOrder = true;
+        for(int i = 0; i < length - 1; i++) {
+            inOrder = inOrder && rearrange[i] + 1 == rearrange[i + 1];
+
+        }
+
+        //all in order, nothing to do
+        if(inOrder)
+            return;
+
+
+        int *shapeDeref = *shape;
+        //we know they are just reversed, dimension length of 2
+        if(length == 2) {
+            int shapeFirst = shapeDeref[0];
+            int shapeSecond = shapeDeref[1];
+            shapeDeref[0] = shapeSecond;
+            shapeDeref[1] = shapeFirst;
+            return;
+        }
+        else if(length == 1) {
+            //no permute
+            return;
+        }
+
+        int *temp = new int[length];
+        memcpy(temp,shapeDeref,sizeof(int) * length);
+        for (int i = 0; i < length; i++) {
+            shapeDeref[i] = temp[rearrange[i]];
+        }
+
+        delete[] temp;
+    }
+
 
 #ifdef __CUDACC__
     __host__ __device__
@@ -2691,7 +2741,7 @@ __host__ __device__
         shape::doPermuteSwap(rearrageRank,&shape,rearrangeCopy1);
         delete[] rearrangeCopy1;
         int *rearrangeCopy2 = shape::copyOf(rearrageRank,rearrange);
-        shape::doPermuteSwap(rearrageRank,&stride,rearrangeCopy2);
+        shape::doPermuteStrides(rearrageRank,&stride,rearrangeCopy2);
         shapeBuffer[shape::shapeInfoLength(rank) - 1] = shape::getOrder(rank,shape,stride,1);
         shapeBuffer[shape::shapeInfoLength(rank) - 2] = -1;
         delete[] rearrangeCopy2;

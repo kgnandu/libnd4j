@@ -713,10 +713,6 @@ void NDArray<T>::replacePointers(T *buffer, int *shapeInfo, const bool releaseEx
             this->assign(other->_buffer[0]);
             return;;
         }
-        else if(other->isScalar()) {
-            this->assign(other->_buffer[0]);
-            return;
-        }
 
         if (other->lengthOf() != lengthOf()) {
             auto shapeThis = ShapeUtils<T>::shapeAsString(*this);
@@ -1636,9 +1632,6 @@ template <typename T>
 
         T *newBuffer;
         ALLOCATE(newBuffer, _workspace, this->lengthOf(), T);
-
-        shape::printShapeInfoLinear("original", _shapeInfo);
-        shape::printShapeInfoLinear("new one", shapeInfoNew);
 
         functions::pairwise_transforms::PairWiseTransform<T>::template exec<simdOps::Copy<T>>(newBuffer, shapeInfoNew, this->_buffer, this->_shapeInfo, newBuffer, shapeInfoNew, nullptr);
 

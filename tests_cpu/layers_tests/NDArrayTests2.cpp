@@ -609,3 +609,31 @@ TEST_F(NDArrayTest2, Test_Reshape_To_Vector_1) {
     ASSERT_TRUE(exp.isSameShape(x));
     ASSERT_TRUE(exp.equalsTo(x));
 }
+
+TEST_F(NDArrayTest2, TestAsymmetric_Reshape_1) {
+    NDArray<float> x('c', {50176, 75});
+    NDArray<float> y('c', {1, 224, 224, 3, 5, 5});
+    y.assign(1.0);
+
+    NDArray<float> e('c', {50176, 75});
+    e.assign(1.0);
+
+    x.assign(y);
+
+    ASSERT_TRUE(x.equalsTo(e));
+}
+
+TEST_F(NDArrayTest2, TestAsymmetric_Reshape_2) {
+    NDArray<float> x('c', {50176, 75});
+    NDArray<float> y('c', {1, 3, 5, 5, 224, 224});
+    y.assign(1.0);
+
+    y.permutei({0, 4, 5, 1, 2, 3});
+
+    NDArray<float> e('c', {50176, 75});
+    e.assign(1.0);
+
+    x.assign(y);
+
+    ASSERT_TRUE(x.equalsTo(e));
+}
