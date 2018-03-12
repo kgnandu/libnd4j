@@ -324,12 +324,12 @@ TEST_F(PlaygroundTests, Test_Profile_4) {
     Environment::getInstance()->setProfiling(true);
     auto graph = GraphExecutioner<float>::importFromFlatBuffers("./resources/profiling_conv_nchw.fb");
 
-    graph->printOut();
-    GraphExecutioner<float>::execute(graph);
+    //graph->printOut();
+    //GraphExecutioner<float>::execute(graph);
 
-    //auto profile = GraphProfilingHelper<float>::profile(graph, 10);
-    //profile->printOut();
+    auto profile = GraphProfilingHelper<float>::profile(graph, 10);
+    profile->printOut();
 
     delete graph;
-    //delete profile;
+    delete profile;
 }
