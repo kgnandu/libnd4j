@@ -1637,6 +1637,9 @@ template <typename T>
         T *newBuffer;
         ALLOCATE(newBuffer, _workspace, this->lengthOf(), T);
 
+        shape::printShapeInfoLinear("original", _shapeInfo);
+        shape::printShapeInfoLinear("new one", shapeInfoNew);
+
         functions::pairwise_transforms::PairWiseTransform<T>::template exec<simdOps::Copy<T>>(newBuffer, shapeInfoNew, this->_buffer, this->_shapeInfo, newBuffer, shapeInfoNew, nullptr);
 
         if (_isBuffAlloc)
