@@ -112,7 +112,7 @@ DECLARE_SHAPE_FN(conv2d) {
 
     int indIH = isNCHW == 1 ? 2 : 1;
     int indIC = isNCHW == 1 ? 1 : 3;
-    int indOC = isNCHW == 1 ? 0 : 3;
+    int indOC = 0;
 
     int* inputShapeInfo   = inputShape->at(0);
     int* weightsShapeInfo = inputShape->at(1);
