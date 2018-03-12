@@ -37,7 +37,6 @@ namespace ops {
     }
 
     DECLARE_SHAPE_FN(multinomial) {
-        auto shapeList = SHAPELIST(); 
         auto in = inputShape->at(0);
         int shapeRank = shape::rank(in);
         int lastDim = INT_ARG(0);

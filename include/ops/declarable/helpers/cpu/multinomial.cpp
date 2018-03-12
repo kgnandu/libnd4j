@@ -23,7 +23,29 @@ namespace helpers {
         //if (newRng )
         if (rng == nullptr)
             return ND4J_STATUS_BAD_RNG;
+        T probability = (*input)(0); //(T)input0.0;
+        for (int e = 1; e < input->lengthOf(); e++) {
+            probability += (*input)(0);
+        }
+        probability /= (probability * input->lengthOf());
+        //RandomLauncher<T>::fillBinomial(rng, output, lastDim, probability);
+        T args[] = {(T) lastDim, probability};
 
+        output->template applyRandom<randomOps::BinomialDistributionEx<T>>(rng, output, output, args);
+
+        int rowCount = output->rows();
+        int colCount = output->columns();
+        for (int r = 0; r < rowCount; r++) {
+            float maxV = (*output)(r, 0);
+            for (int c = 1; c < colCount; c++) {
+                if ((*output)(r, c) > maxV) {
+                    maxV = (*output)(r, c);
+                }
+            }
+            for (int c = 0; c < colCount; c++) {
+                (*output)(r, c) = nd4j::math::nd4j_floor(nd4j::math::nd4j_exp((*output)(r, c) - maxV));
+            }
+        }
   
         return ND4J_STATUS_OK;
     }

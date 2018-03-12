@@ -271,5 +271,22 @@ TEST_F(DeclarableOpsTests7, TEST_WHERE_SCALAR) {
     //ASSERT_EQ(4,z->lengthOf());
     //ASSERT_TRUE(exp.isSameShape(z));
 
+}
 
+////////////////////////////////////////////////////////////////////////////////
+TEST_F(DeclarableOpsTests7, MultinomialTest_1) {
+
+    NDArray<double> x('c',{2,2}, {10.0, 10.0, 20.0, 20.0});
+
+    nd4j::ops::multinomial<double> op;
+    auto result = op.execute({&x}, {}, {5});
+
+    ASSERT_EQ(Status::OK(), result->status());
+    
+    auto z = result->at(0);
+    ASSERT_EQ(10, z->lengthOf());
+    //ASSERT_TRUE(exp.isSameShape(z));
+    z->printIndexedBuffer("Output");
+
+    delete result;
 }
