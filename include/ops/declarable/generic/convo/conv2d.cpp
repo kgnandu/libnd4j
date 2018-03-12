@@ -18,12 +18,17 @@ namespace nd4j {
 
 
 CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
+
+    auto prof = block.getVariableSpace()->flowPath()->profile();
+
     
     NDArray<T> *input   = INPUT_VARIABLE(0);                                    // [bS, iH, iW, iC] (NHWC) or [bS, iC, iH, iW] (NCHW)
     NDArray<T> *weights = INPUT_VARIABLE(1);                                    // [kH, kW, iC, oC] (NHWC) or [oC, iC, kH, kW] (NCHW)
     NDArray<T> *bias    = block.width() > 2 ? INPUT_VARIABLE(2) : nullptr;      // [oC]
     NDArray<T> *output  = OUTPUT_VARIABLE(0);                                   // [bS, oH, oW, oC] (NHWC) or [bS, oC, oH, oW] (NCHW)
-    
+
+    prof->startEvent("conv2d: init");
+
     REQUIRE_TRUE(input->rankOf()   == 4, 0, "CUSTOM CONV2D OP: rank of input array must be equal to 4 !");
     REQUIRE_TRUE(weights->rankOf() == 4, 0, "CUSTOM CONV2D OP: rank of weights array must be equal to 4 !");
                                      
@@ -37,6 +42,7 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     int dW = INT_ARG(7);                                                        // dilations width
     int isSameMode = INT_ARG(8);                                                // 0-VALID, 1-SAME
     int isNCHW     = block.getIArguments()->size() > 9 ? !INT_ARG(9) : 1;       // 0-NCHW,  1-NHWC
+
 
     if(!isNCHW) {
         input   = input->permute({0, 3, 1, 2});                                 // [bS, iH, iW, iC] -> [bS, iC, iH, iW]                        
@@ -59,7 +65,12 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     if (bias) {
         REQUIRE_TRUE(bias->rankOf() <= 2 ,   0, "CUSTOM CONV2D OP: rank of biases array must be equal to 1 or 2!");
         REQUIRE_TRUE(oC == bias->lengthOf(), 0, "CUSTOM CONV2D OP: length of bias array must be equal to outChannels, but got %i instead", bias->lengthOf());        
-    }            
+    }
+
+    prof->recordEvent("conv2d: init");
+
+
+    prof->startEvent("conv2d: im2col");
     
     if(isSameMode)                       // SAME        
         ConvolutionUtils<T>::_calcPadding2D(pH, pW, oH, oW, iH, iW, kH, kW, sH, sW, dH, dW);
@@ -67,15 +78,28 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     NDArray<T> columns(input->ordering(), {bS, iC, kH, kW, oH, oW}, block.getWorkspace());        
     std::vector<T> extrasIm2Col({(T) kH, (T) kW, (T) sH, (T) sW, (T) pH, (T) pW, (T) dH, (T) dW});
     input->template applyTransform<simdOps::Im2col<T>>(&columns, extrasIm2Col.data());                        // [bS, iC, iH, iW] is convoluted to [bS, iC, kH, kW, oH, oW]
-    
+
+    prof->recordEvent("conv2d: im2col");
+
+    prof->startEvent("conv2d: permutes");
     columns.permutei({0, 4, 5, 1, 2, 3});                                                                     // [bS, iC, kH, kW, oH, oW] -> [bS, oH, oW, iC, kH, kW]
     columns.reshapei({bS*oH*oW, iC*kH*kW});
+    prof->recordEvent("conv2d: permutes");
+
+
+    prof->startEvent("conv2d: create");
     NDArray<T>* outputReshaped  = output->reshape(output->ordering(), {bS*oH*oW, oC});
     NDArray<T>* weightsReshaped  = weights->reshape(weights->ordering(), {iC*kH*kW, oC});
+    prof->recordEvent("conv2d: create");
+
+    prof->startEvent("conv2d: matmul");
     NDArrayFactory<T>::mmulHelper(&columns, weightsReshaped, outputReshaped, 1.0, 0.0);                        // [bS*oH*oW, iC*kW*kH] x [iC*kH*kW, oC] = [bS*oH*oW, oC]    
     // nd4j::NDArrayFactory<T>::tensorDot(&columns, weights, output, {1,2,3}, {0,1,2});                            // [bS, iC, kH, kW, oH, oW] x [iC, kH, kW, oC] = [bS, oH, oW, oC] 
-    
+    prof->recordEvent("conv2d: matmul");
 
+
+
+    prof->startEvent("conv2d: assign");
 
     if(bias)
         outputReshaped->template applyBroadcast<simdOps::Add<T>>({1}, bias);
@@ -91,6 +115,8 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     delete outputReshaped;
     delete weightsReshaped;
     delete weights;
+
+    prof->recordEvent("conv2d: assign");
     
     return Status::OK();
 }

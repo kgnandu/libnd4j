@@ -121,6 +121,13 @@ namespace nd4j {
 
                 v.second->merge(other->nodeById(v.first));
             }
+
+            for (auto v:_timings) {
+                if (other->_timings.count(v.first) == 0)
+                    continue;
+
+                _timings[v.first] += other->_timings[v.first];
+            }
         }
 
         void GraphProfile::assign(GraphProfile *other) {
@@ -136,6 +143,10 @@ namespace nd4j {
 
             for (auto v: other->_profilesById) {
                 nodeById(v.first, v.second->name().c_str())->assign(v.second);
+            }
+
+            for (auto &v: other->_timings) {
+                _timings[v.first] = other->_timings[v.first];
             }
         }
 
@@ -176,7 +187,7 @@ namespace nd4j {
                 nd4j_printf("No special timers were set\n","");
 
             for (auto v: _timings)
-                nd4j_printf("%s: %lld ns;\n", v.first.c_str(), v.second);
+                nd4j_printf("%s: %lld ns;\n", v.first.c_str(), v.second / _merges);
         }
     }
 }
