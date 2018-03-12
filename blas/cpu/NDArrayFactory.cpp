@@ -127,7 +127,7 @@ namespace nd4j {
 
     //////////////////////////////////////////////////////////////////////////
     template<typename T>
-    nd4j::NDArray<T>* nd4j::NDArrayFactory<T>::tensorDot(const nd4j::NDArray<T>* a, const nd4j::NDArray<T>* b, std::vector<int>& axes_0, std::vector<int>& axes_1) {
+    nd4j::NDArray<T>* nd4j::NDArrayFactory<T>::tensorDot(const nd4j::NDArray<T>* a, const nd4j::NDArray<T>* b, const std::vector<int>& axes_0, const std::vector<int>& axes_1) {
 
         std::vector<int> permutAt, permutBt, shapeAt, shapeBt;
         std::vector<int> outShape = ShapeUtils<T>::evalShapeForTensorDot(a, b, axes_0, axes_1, permutAt, permutBt, shapeAt, shapeBt);
@@ -152,27 +152,31 @@ namespace nd4j {
 
     //////////////////////////////////////////////////////////////////////////
     template<typename T>
-    void nd4j::NDArrayFactory<T>::tensorDot(const nd4j::NDArray<T>* a, const nd4j::NDArray<T>* b, nd4j::NDArray<T>* c, std::vector<int>& axes_0, std::vector<int>& axes_1) {
-
-        if(c->rankOf() != 2 || c->shapeOf()[0] != a->shapeOf()[0] || c->shapeOf()[1] != b->shapeOf()[1])
-            throw "NDArrayFactory::tensorDot static function: wrong shape of C array !";
+    void nd4j::NDArrayFactory<T>::tensorDot(const nd4j::NDArray<T>* a, const nd4j::NDArray<T>* b, nd4j::NDArray<T>* c, const std::vector<int>& axes_0, const std::vector<int>& axes_1) {
 
         std::vector<int> permutAt, permutBt, shapeAt, shapeBt;
         std::vector<int> outShape = ShapeUtils<T>::evalShapeForTensorDot(a, b, axes_0, axes_1, permutAt, permutBt, shapeAt, shapeBt);
-
+        
         NDArray<T>* aT = a->permute(permutAt);
         NDArray<T>* bT = b->permute(permutBt);
         aT->reshapei('c', shapeAt);
         bT->reshapei('c', shapeBt);        
 
-        nd4j::NDArrayFactory<T>::mmulHelper(aT, bT, c, 1.0, 0.0);
-        c->reshapei('c', outShape);
+        NDArray<T>* cT = c->reshape(c->ordering(), {aT->sizeAt(0), bT->sizeAt(1)});
 
+        if(cT->getBuffer() != c->getBuffer())
+            throw "NDArrayFactory<T>::tensorDot static function: can't perform reshaping of result array, was it permuted before ?";
+        
+        nd4j::NDArrayFactory<T>::mmulHelper(aT, bT, cT, 1.0, 0.0);
+
+        
         if (aT != a)
             delete aT;
 
         if (bT != b)
             delete bT;
+
+        delete cT;
         
     }
 

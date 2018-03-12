@@ -73,6 +73,9 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     NDArray<T>* outputReshaped  = output->reshape(output->ordering(), {bS*oH*oW, oC});
     NDArray<T>* weightsReshaped  = weights->reshape(weights->ordering(), {iC*kH*kW, oC});
     NDArrayFactory<T>::mmulHelper(&columns, weightsReshaped, outputReshaped, 1.0, 0.0);                        // [bS*oH*oW, iC*kW*kH] x [iC*kH*kW, oC] = [bS*oH*oW, oC]    
+    // nd4j::NDArrayFactory<T>::tensorDot(&columns, weights, output, {1,2,3}, {0,1,2});                            // [bS, iC, kH, kW, oH, oW] x [iC, kH, kW, oC] = [bS, oH, oW, oC] 
+    
+
 
     if(bias)
         outputReshaped->template applyBroadcast<simdOps::Add<T>>({1}, bias);
