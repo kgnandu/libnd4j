@@ -35,7 +35,7 @@ CUSTOM_OP_IMPL(depthwise_conv2d, 2, 1, false, 0, 9) {
 
     if(!isNCHW) {
         input   = input->permute({0, 3, 1, 2});                                 // [bS, iH, iW, iC] -> [bS, iC, iH, iW]                        
-        weights = weights->permute({2, 0, 1, 3});                               // [kH, kW, iC, mC] -> [iC, kH, kW, mC]                 
+        weights = weights->permute({1, 2, 3, 0});                               // [kH, kW, iC, mC] -> [iC, kH, kW, mC]
     }
     else {        
         output  = output->permute({0, 2, 3, 1});                                // [bS, iC*mC, oH, oW] -> [bS, oH, oW, iC*mC]
@@ -51,7 +51,7 @@ CUSTOM_OP_IMPL(depthwise_conv2d, 2, 1, false, 0, 9) {
     int oW = output->sizeAt(2);          // output width    
     int oC = output->sizeAt(3);          // output channels
     
-    REQUIRE_TRUE(weights->sizeAt(0) == iC && weights->sizeAt(1) == kH && weights->sizeAt(2) == kW, 0, "CUSTOM CONV2D OP: wrong shape of weights array !");    
+    REQUIRE_TRUE(weights->sizeAt(0) == iC && weights->sizeAt(1) == kH && weights->sizeAt(2) == kW, 0, "CUSTOM DEPTHWISECONV2D OP: wrong shape of weights array !");
     if (bias) {
         REQUIRE_TRUE(bias->rankOf() <= 2 ,   0, "CUSTOM DEPTHWISECONV2D OP: rank of biases array must be equal to 1 or 2!");
         REQUIRE_TRUE(oC == bias->lengthOf(), 0, "CUSTOM DEPTHWISECONV2D OP: length of bias array must be equal to outChannels, but got %i instead", bias->lengthOf());        

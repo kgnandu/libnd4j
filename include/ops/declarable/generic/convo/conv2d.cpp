@@ -40,7 +40,7 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
 
     if(!isNCHW) {
         input   = input->permute({0, 3, 1, 2});                                 // [bS, iH, iW, iC] -> [bS, iC, iH, iW]                        
-        weights = weights->permute({2, 0, 1, 3});                               // [kH, kW, iC, oC] -> [iC, kH, kW, oC]                 
+        weights = weights->permute({1, 2, 3, 0});                               // [kH, kW, iC, oC] -> [iC, kH, kW, oC]
     }
     else {        
         output  = output->permute({0, 2, 3, 1});                                // [bS, oC, oH, oW] -> [bS, oH, oW, oC]
@@ -53,7 +53,9 @@ CUSTOM_OP_IMPL(conv2d, 2, 1, false, 0, 9) {
     int iW = input->sizeAt(3);           // input width
     int oC = weights->sizeAt(3);         // output channels        
     int oH = output->sizeAt(1);          // output height
-    int oW = output->sizeAt(2);          // output width    
+    int oW = output->sizeAt(2);          // output width
+
+    weights->printShapeInfo("weights");
     
     REQUIRE_TRUE(weights->sizeAt(0) == iC && weights->sizeAt(1) == kH && weights->sizeAt(2) == kW, 0, "CUSTOM CONV2D OP: wrong shape of weights array !");    
     if (bias) {
