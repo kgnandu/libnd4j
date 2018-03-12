@@ -38,6 +38,9 @@ namespace nd4j {
             // vol [volC, volD, volH, volW], col [volC*kD*kW*kH, colD*colH*colW]
             static void vol2col(NDArray<T>& vol, NDArray<T>& col, const int colD, const int colH, const int colW, const int kD, const int kH, const int kW, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW);
 
+            // volume [bS, volC, volD, volH, volW], columns [bS, volC, kD, kH, kW, colD, colH, colW]
+            static void vol2col2(NDArray<T>& vol, NDArray<T>& col, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW);
+
             // col [bS, volC, kD, kH, kW, colD, colH, colW], vol [bS, volC, volD, volH, volW]
             static void col2vol2(NDArray<T>& col, NDArray<T>& vol, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW);
 
@@ -50,7 +53,7 @@ namespace nd4j {
 
             static void calcOutSizePool2D(int& oH, int& oW, const int kH, const int kW, const int sH, const int sW, const int pH, const int pW, const int dH, const int dW, const int iH, const int iW, const int isSameMode);
 
-            static void calcOutSizePool3D(int& oD, int& oH, int& oW, const int kD, const int kH, const int kW, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW, const int iD, const int iH, const int iW, const int paddingMode);
+            static void calcOutSizePool3D(int& oD, int& oH, int& oW, const int kD, const int kH, const int kW, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW, const int iD, const int iH, const int iW, const int isSameMode);
 
             static void _calcPadding2D(int& pH, int& pW, int oH, int oW, int inH, int inW, int kH, int kW, int sH, int sW, int dH, int dW);
 
@@ -66,6 +69,9 @@ namespace nd4j {
 
             // input [bS, iC, iD, iH, iW], indices [bS, iC, iD, iH, iW], output [bS, iC, oD, oH, oW]
             static void maxPool3dFrameBp(NDArray<T>& input, const int* indices, NDArray<T>& output, const int iStride, const int oStride, const int kD, const int kH, const int kW, const int sD, const int sH, const int sW, const int pD, const int pH, const int pW, const int dD, const int dH, const int dW);
+
+            // calculation of output height and width in 2D deconvolution procedure
+            static void calcOutSizeDeconv2D(int& oH, int& oW, const int kH, const int kW, const int sH, const int sW, const int pH, const int pW, const int dH, const int dW, const int iH, const int iW, const int isSameMode);
 
         
         };
