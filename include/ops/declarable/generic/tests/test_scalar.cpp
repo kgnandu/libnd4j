@@ -4,7 +4,7 @@
 
 #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__test_scalar)
 
-#include <ops/declarable/headers/third_party.h>
+#include <ops/declarable/headers/tests.h>
 
 namespace nd4j {
     namespace ops {
