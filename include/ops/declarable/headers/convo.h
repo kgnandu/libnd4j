@@ -43,10 +43,11 @@ namespace nd4j {
          * 5: padding width
          * 6: dilation height
          * 7: dilation width
-         * 8: same mode: 0 false, 1 true
+         * 8: same mode:   1 true, 0 false
+         * 9: data format: 1 NHWC, 0 NCHW
          */
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
-        DECLARE_CUSTOM_OP(conv2d, 2, 1, false, 0, 3);
+        DECLARE_CUSTOM_OP(conv2d, 2, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(conv2d_bp, 3, 2, false, 0, 9);
         #endif
 
@@ -147,18 +148,18 @@ namespace nd4j {
         DECLARE_CUSTOM_OP(maxpool3d, 1, 2, true, 0, 13); 
         DECLARE_CUSTOM_OP(maxpool3d_bp, 3, 1, true, 0, 13);
         #endif
-        
+
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool3d)
         DECLARE_CUSTOM_OP(avgpool3d, 1, 1, true, 0, 11);
         DECLARE_CUSTOM_OP(avgpool3d_bp, 2, 1, true, 0, 11);
         #endif
-        
+
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__fullconv3d)
         DECLARE_CUSTOM_OP(fullconv3d, 5, 1, false, 0, 13);
         DECLARE_CUSTOM_OP(fullconv3d_bp, 5, 1, false, 0, 13);
         DECLARE_CUSTOM_OP(fullconv3d_grad, 4, 2, false, 1, 13);
         #endif
-        
+
         /**
          *  Universal pooling op, combines max/avg/pnorm pooling.
          *  Shouldn't be used directly, consider using corresponding operations instead.
@@ -166,7 +167,7 @@ namespace nd4j {
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pooling2d)
         DECLARE_CUSTOM_OP(pooling2d, 1, 1, false, 0, 11);
         #endif
-        
+
         /**
          * This op implements im2col algorithm, widely used in convolution neural networks
          * Input: 4D input expected
@@ -203,7 +204,7 @@ namespace nd4j {
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__col2im)
         DECLARE_CUSTOM_OP(col2im, 1, 1, false, 0, 9);
         #endif
-        
+
         /**
          * Upsampling implementation, based on pytorch
          *
@@ -227,7 +228,7 @@ namespace nd4j {
          * 6: padding H
          */
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv3d)
-        DECLARE_CUSTOM_OP(conv3d, 2, 1, false, 0, 7); 
+        DECLARE_CUSTOM_OP(conv3d, 2, 1, false, 0, 7);
         DECLARE_CONFIGURABLE_OP(conv3d_bp, 3, 1, false, 0, 7); // TODO: to be implemented        
         #endif
 
@@ -280,8 +281,12 @@ namespace nd4j {
          */
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_woth_argmax)
         DECLARE_CUSTOM_OP(max_pool_with_argmax, 1, 2, false, 0, 9);
+
+        DECLARE_CUSTOM_OP(depthwise_conv2d, 2, 1, false, 0, 9);
+        DECLARE_CUSTOM_OP(depthwise_conv2d_bp, 3, 2, false, 0, 9);
         #endif
     }
 }
+
 
 #endif

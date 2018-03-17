@@ -115,7 +115,7 @@ namespace nd4j {
                 delete z_;
             }
 
-            STORE_RESULT(*z);
+            STORE_RESULT(*z);            
 
             delete c_;
             delete w_;

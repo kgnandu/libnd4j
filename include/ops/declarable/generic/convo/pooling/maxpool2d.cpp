@@ -44,7 +44,7 @@ namespace nd4j {
             bool cOrderStrides = false;
             bool isEpsilonDup = false;
             if (epsilon->ordering() != 'c') {
-                epsilon = epsilon->dup('c');
+                epsilon->streamline('c');
                 cOrderStrides = true;
                 isEpsilonDup = true;
             }
@@ -91,8 +91,8 @@ namespace nd4j {
 
             STORE_RESULT(*outEpsilon);		// ???
 
-            if(isEpsilonDup)
-                delete epsilon;
+            //if(isEpsilonDup)
+                //delete epsilon;
             delete col6d;
             delete col6dPermuted;
             delete epsilon1d;
@@ -131,10 +131,8 @@ namespace nd4j {
                 //x = x->dup('c');
 
                 // FIXME: eventually we want NWHC impl
-                auto tz = z->permute({0, 3, 1, 2});
-                z = tz->dup('c');
-
-                delete tz;
+                z->permutei({0, 3, 1, 2});
+                z->streamline('c');
             }
         
 
@@ -147,7 +145,9 @@ namespace nd4j {
             
             if (!isNCHW) {
                 delete x;
+
                 z->permutei({0, 2, 3, 1});
+                z->streamline('c');
 
                 //z->printShapeInfo("max pool shape");
                 //z->printIndexedBuffer("maxpool final");
