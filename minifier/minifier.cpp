@@ -13,6 +13,15 @@
 
 int
 main(int argc, char *argv[]) {
+    // this string will contain list of operations
+    std::string opts_arg;
+
+    // this string will contain optional name for output binary file
+    std::string name_arg;
+
+    // this string will contain binary compilation mode: shared/static/executable
+    std::string build_arg;
+
     GraphOpt opt;
     int err = GraphOpt::optionsWithArgs(argc, argv, opt);
     
@@ -41,7 +50,7 @@ main(int argc, char *argv[]) {
             std::cout << "Link the Graph to executable as Resource" << std::endl;
             break;
         case 'o':
-            std::cout << "Output result with name " << opt.outputName() << std::endl;
+            std::cout << "Output name is" << opt.outputName() << std::endl;
             break;
         default:
             std::cerr << "Wrong parameter " << (char)option << std::endl;
@@ -51,6 +60,8 @@ main(int argc, char *argv[]) {
     if (!opt.hasParam('o')) {
         std::cout << "Ouput name is " << opt.outputName() << std::endl;
     }
+
+    name_arg = " --name \'" + opt.outputName() + "\' ";
 
     std::vector<OpDescriptor> descriptors;
     nd4j_printf("Total available operations: %i\n", OpRegistrator::getInstance()->numberOfOperations());
@@ -88,14 +99,21 @@ main(int argc, char *argv[]) {
         }
     }
 
-    GraphUtils::filterOperations(descriptors);
+    if (!descriptors.empty()) {
+        GraphUtils::filterOperations(descriptors);
 
-    for(auto &v:descriptors) {
-        nd4j_printf("Op: %s\n", v.getOpName()->c_str());
+        for(auto &v:descriptors) {
+            nd4j_printf("Op: %s\n", v.getOpName()->c_str());
+        }
+
+        // building list of operations
+        opts_arg = GraphUtils::makeCommandLine(descriptors);
     }
 
-    // building list of operations
-    auto opts_str = GraphUtils::makeCommandLine(descriptors);
+
+    std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + opts_arg;
+
+    nd4j_printf("Command line: %s\n", cmdline.c_str());
 
     return EXIT_SUCCESS;
 }
