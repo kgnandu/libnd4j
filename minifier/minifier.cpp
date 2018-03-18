@@ -22,6 +22,9 @@ main(int argc, char *argv[]) {
     // this string will contain binary compilation mode: shared/static/executable
     std::string build_arg;
 
+    // this string will contain target arch/optimization mode
+    std::string arch_arg;
+
     GraphOpt opt;
     int err = GraphOpt::optionsWithArgs(argc, argv, opt);
     
@@ -52,6 +55,9 @@ main(int argc, char *argv[]) {
         case 'o':
             std::cout << "Output name is" << opt.outputName() << std::endl;
             break;
+        case 'a':
+            std::cout << "Target arch: " << opt.arch() << std::endl;
+            break;
         default:
             std::cerr << "Wrong parameter " << (char)option << std::endl;
         }
@@ -62,6 +68,9 @@ main(int argc, char *argv[]) {
     }
 
     name_arg = " --name \'" + opt.outputName() + "\' ";
+
+    if (opt.hasParam('a'))
+        arch_arg = opt.arch();
 
     std::vector<OpDescriptor> descriptors;
     nd4j_printf("Total available operations: %i\n", OpRegistrator::getInstance()->numberOfOperations());
@@ -101,19 +110,17 @@ main(int argc, char *argv[]) {
 
     if (!descriptors.empty()) {
         GraphUtils::filterOperations(descriptors);
-
-        for(auto &v:descriptors) {
-            nd4j_printf("Op: %s\n", v.getOpName()->c_str());
-        }
-
+        
         // building list of operations
         opts_arg = GraphUtils::makeCommandLine(descriptors);
     }
 
-
-    std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + opts_arg;
+    // just stacking everything together
+    std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + arch_arg + opts_arg;
 
     nd4j_printf("Command line: %s\n", cmdline.c_str());
+    // FIXME: do this in cross-platform way
+    //system(cmdline.c_str());
 
     return EXIT_SUCCESS;
 }

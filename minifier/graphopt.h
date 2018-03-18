@@ -32,6 +32,13 @@ public:
     FileList const& files() const { return _files; } 
     OptionList const& options() const { return _opts; } 
     std::string outputName() const { return _args.at('o'); }
+    std::string arch() const {
+        if (_args.count('a') < 1) {
+            printf("No Arg!!!\n");
+            fflush(stdout);
+        }
+        return _args.at('a'); 
+    };
     std::ostream& help(std::string app, std::ostream& out);
     bool hasParam(int param) const { return std::find(_opts.begin(), _opts.end(), param) != _opts.end(); }
     

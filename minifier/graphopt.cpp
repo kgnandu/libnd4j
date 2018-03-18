@@ -42,7 +42,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
     char* optArg = nullptr;
     int optIndex = 1;
     
-    char const* optionStr = "lxo:e";
+    char const* optionStr = "lxao:e";
     std::string const defaultOutputName("nd4jlib_mini");
 
     for (optIndex = 1; (optIndex < argc) && (argv[optIndex][0] == '-') && 
@@ -108,8 +108,8 @@ GraphOpt::help(std::string app, std::ostream& out) {
     out << "\t-l\t Generate library" << std::endl;
     out << "\t-x\t Generate executable" << std::endl;
     out << "\t-e\t Embed the Graph(s) into executable as resource" << std::endl;
-    out << "\t-o <name> Set up output name (for library, executable or both)" 
-        << std::endl;
+    out << "\t-o <name> Set up output name (for library, executable or both)" << std::endl;
+    out << "\t-a <arch> target CPU architecture" << std::endl; 
     out << "\t-h\t This help" << std::endl;
 
     return out;
