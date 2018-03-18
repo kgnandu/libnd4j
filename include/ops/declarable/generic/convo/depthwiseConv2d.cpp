@@ -2,6 +2,7 @@
 // created by Yurii Shyrma on 08.03.2018
 //
 
+#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__depthwise_conv2d)
 
 #include <op_boilerplate.h>
 #include <ops/declarable/CustomOperations.h>
@@ -282,3 +283,4 @@ DECLARE_SHAPE_FN(depthwise_conv2d_bp) {
 
 }
 }
+#endif

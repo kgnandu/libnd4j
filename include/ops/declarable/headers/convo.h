@@ -281,7 +281,10 @@ namespace nd4j {
          */
         #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__max_pool_woth_argmax)
         DECLARE_CUSTOM_OP(max_pool_with_argmax, 1, 2, false, 0, 9);
+        #endif
 
+
+        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__depthwise_conv2d)
         DECLARE_CUSTOM_OP(depthwise_conv2d, 2, 1, false, 0, 9);
         DECLARE_CUSTOM_OP(depthwise_conv2d_bp, 3, 2, false, 0, 9);
         #endif
