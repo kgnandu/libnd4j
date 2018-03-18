@@ -84,6 +84,10 @@ case $key in
     OPERATIONS="$value"
     shift # past argument
     ;;
+    -j)
+    MAKEJ="$value"
+    shift # past argument
+    ;;
     clean)
     CLEAN="true"
     ;;

@@ -94,7 +94,8 @@ main(int argc, char *argv[]) {
         nd4j_printf("Op: %s\n", v.getOpName()->c_str());
     }
 
-    auto str = GraphUtils::makeCommandLine(descriptors);
+    // building list of operations
+    auto opts_str = GraphUtils::makeCommandLine(descriptors);
 
     return EXIT_SUCCESS;
 }
