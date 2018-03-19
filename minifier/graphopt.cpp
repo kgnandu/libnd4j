@@ -42,7 +42,7 @@ GraphOpt::optionsWithArgs(int argc, char* argv[], GraphOpt& res) {
     char* optArg = nullptr;
     int optIndex = 1;
     
-    char const* optionStr = "lxao:e";
+    char const* optionStr = "lxa:o:e";
     std::string const defaultOutputName("nd4jlib_mini");
 
     for (optIndex = 1; (optIndex < argc) && (argv[optIndex][0] == '-') && 
