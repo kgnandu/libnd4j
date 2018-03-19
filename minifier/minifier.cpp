@@ -53,7 +53,7 @@ main(int argc, char *argv[]) {
             std::cout << "Link the Graph to executable as Resource" << std::endl;
             break;
         case 'o':
-            std::cout << "Output name is" << opt.outputName() << std::endl;
+            std::cout << "Output file name is " << opt.outputName() << std::endl;
             break;
         case 'a':
             std::cout << "Target arch: " << opt.arch() << std::endl;
@@ -64,7 +64,7 @@ main(int argc, char *argv[]) {
     }
     
     if (!opt.hasParam('o')) {
-        std::cout << "Ouput name is " << opt.outputName() << std::endl;
+        std::cout << "Ouput file name is " << opt.outputName() << std::endl;
     }
 
     name_arg = " --name \'" + opt.outputName() + "\' ";
@@ -118,9 +118,9 @@ main(int argc, char *argv[]) {
     // just stacking everything together
     std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + arch_arg + opts_arg;
 
-    nd4j_printf("Command line: %s\n", cmdline.c_str());
+    //nd4j_printf("Command line: %s\n", cmdline.c_str());
     // FIXME: do this in cross-platform way
-    //system(cmdline.c_str());
+    system(cmdline.c_str());
 
     return EXIT_SUCCESS;
 }

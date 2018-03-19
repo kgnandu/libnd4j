@@ -43,10 +43,10 @@ There's an option to build minified binaries suited for execution of ***specific
 ./buildnativeoperations.sh -a native -m 
 
 # building libnd4j for 2 specific graphs
-./minifier -l -a native -o libnd4j_special ../some_path/some_graph1 ../some_path/some_graph2
+./minifier -l -a native -o libnd4j_special ../some_path/some_graph1.fb ../some_path/some_graph2.fb
 ``` 
 
-Once `minifier` finishes building - you'll have libnd4j_special.so file ready, and it'll contain only those operations used in 2 graphs provided at compilation time. 
+Once `minifier` finishes building - you'll have `libnd4j_special.so` file ready, and it'll contain only those operations used in 2 graphs provided at compilation time. 
 
 ### Documentation 
 Documentation for individual operations, and basic classes (like NDArray, Graph etc) is available as part of Nd4j javadoc: https://nd4j.org/doc/
