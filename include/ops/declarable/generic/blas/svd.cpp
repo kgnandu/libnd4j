@@ -2,7 +2,8 @@
 //  Created by Yurii Shyrma on 20.01.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__svd)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__svd)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/svd.h>

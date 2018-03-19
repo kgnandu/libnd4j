@@ -2,7 +2,8 @@
 //  @author sgazeos@gmail.com
 //  
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__top_k)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__top_k)
 
 //#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/top_k.h>

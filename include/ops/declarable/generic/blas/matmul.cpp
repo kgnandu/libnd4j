@@ -3,7 +3,8 @@
 // Modified by GS <sgazeos@gmail.com> 01.02.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__matmul)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__matmul)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matmul.h>

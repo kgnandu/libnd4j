@@ -2,7 +2,8 @@
 // Created by raver119 on 12.10.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maximum)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__maximum)
 
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>

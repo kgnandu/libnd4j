@@ -2,7 +2,8 @@
 // created by Yurii Shyrma on 16.02.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__relu6)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__relu6)
 
 #include <ops/declarable/CustomOperations.h>
 

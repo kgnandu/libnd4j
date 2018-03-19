@@ -2,7 +2,8 @@
 // @author @cpuheater
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__confusion_matrix)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__confusion_matrix)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

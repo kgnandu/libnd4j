@@ -4,7 +4,8 @@
 // @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__firas_sparse)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__firas_sparse)
 
 #ifndef LIBND4J_THIRD_PARTY_H
 #define LIBND4J_THIRD_PARTY_H

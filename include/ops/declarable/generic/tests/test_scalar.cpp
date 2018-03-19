@@ -2,7 +2,8 @@
 // Created by raver119 on 24.02.18.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__test_scalar)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__test_scalar)
 
 #include <ops/declarable/headers/tests.h>
 

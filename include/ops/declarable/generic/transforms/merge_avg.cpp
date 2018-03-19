@@ -2,7 +2,8 @@
 // Created by raver119 on 24.11.17.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mergeavg)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__mergeavg)
 
 #include <ops/declarable/CustomOperations.h>
 

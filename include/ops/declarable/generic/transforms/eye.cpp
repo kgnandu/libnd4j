@@ -2,7 +2,8 @@
 //  Created by Yurii Shyrma on 22.01.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__eye)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__eye)
 
 #include <ops/declarable/CustomOperations.h>
 

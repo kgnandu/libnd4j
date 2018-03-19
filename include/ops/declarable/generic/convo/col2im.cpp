@@ -2,7 +2,8 @@
 // Created by raver119 on 17.10.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__col2im)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__col2im)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/col2im.h>

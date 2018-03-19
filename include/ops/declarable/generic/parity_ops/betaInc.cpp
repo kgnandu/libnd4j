@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 12.12.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__betainc)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__betainc)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/betaInc.h>

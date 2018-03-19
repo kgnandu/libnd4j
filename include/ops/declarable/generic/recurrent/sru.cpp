@@ -5,10 +5,10 @@
 //
 
 #include <op_boilerplate.h>
+#if NOT_EXCLUDED(__sru)
+
 #include <ops/declarable/CustomOperations.h>
 #include <NDArray.h>
-
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru)
 
 namespace nd4j {
     namespace ops {

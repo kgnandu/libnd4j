@@ -25,7 +25,7 @@ namespace nd4j {
        *    0: 3d tensor of cell output [bS x K x N]
        *    1: 3d tensor of cell state [bS x K x N]
        */             
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru)     
+        #if NOT_EXCLUDED(__sru)
         DECLARE_CUSTOM_OP(sru,         5, 2, false, 0, 0);
         #endif
 
@@ -44,7 +44,7 @@ namespace nd4j {
        *    0: 3d tensor of cell output [bS x K x N]
        *    1: 3d tensor of cell state [bS x K x N]
        */              
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru_logic)    
+        #if NOT_EXCLUDED(__sru_logic)
         DECLARE_CUSTOM_OP(sru_logic,   5, 2, false, 0, 0);
         #endif
 
@@ -64,7 +64,7 @@ namespace nd4j {
        *    0: 3d tensor of cell output [N x bS x 2K]
        *    1: 3d tensor of cell state [N x bS x 2K]
        */             
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru_bi)     
+        #if NOT_EXCLUDED(__sru_bi)
         DECLARE_CUSTOM_OP(sru_bi,      5, 2, true,  0, 0);
         #endif
 
@@ -89,7 +89,7 @@ namespace nd4j {
        *    2: 2d, row of biases gradients [1 x 2K]
        *    3: 2d, tensor of state gradients [bS x K]
        */         
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru)         
+        #if NOT_EXCLUDED(__sru)
         DECLARE_CUSTOM_OP(sru_bp,      8, 4, true,  0, 0);
         #endif
 
@@ -114,7 +114,7 @@ namespace nd4j {
        *    2: 2d, row of biases gradients [1 x 2K]
        *    3: 2d, tensor of state gradients [bS x K]
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru_logic)
+        #if NOT_EXCLUDED(__sru_logic)
         DECLARE_CUSTOM_OP(sru_bp_logic,8, 4, true,  0, 0);
         #endif
 
@@ -139,7 +139,7 @@ namespace nd4j {
        *    2: 2d, row of biases gradients [1 x 4K]
        *    3: 2d, tensor of state gradients [bS x 2K]
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sru_bi)
+        #if NOT_EXCLUDED(__sru_bi)
         DECLARE_CUSTOM_OP(sru_bi_bp,   8, 4, true,  0, 0);
         #endif
 
@@ -175,7 +175,7 @@ namespace nd4j {
        *    0: current cell output [batchSize x numProj], that is at current time step t
        *    1: current cell state  [batchSize x numUnits], that is at current time step t
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lstmCell)
+        #if NOT_EXCLUDED(__lstmCell)
         DECLARE_CUSTOM_OP(lstmCell, 8, 2, false, 3, 2);
         #endif
 
@@ -194,7 +194,7 @@ namespace nd4j {
        *    0: current cell output [batchSize x inSize], that is at current time step t
        *    1: current cell state  [batchSize x inSize], that is at current time step t
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sruCell)
+        #if NOT_EXCLUDED(__sruCell)
         DECLARE_CUSTOM_OP(sruCell, 4, 2, false, 0, 0);
         #endif
 
@@ -215,7 +215,7 @@ namespace nd4j {
        * Output arrays: 
        *    0: current cell output [batchSize x numUnits], that is at current time step t       
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gruCell)
+        #if NOT_EXCLUDED(__gruCell)
         DECLARE_CUSTOM_OP(gruCell, 5, 1, false, 0, 0);
         #endif
 
@@ -247,7 +247,7 @@ namespace nd4j {
        *    0: cell outputs [time x batchSize x numProj], that is per each time step
        *    1: cell states  [time x batchSize x numUnits], that is per each time step
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lstm)
+        #if NOT_EXCLUDED(__lstm)
         DECLARE_CUSTOM_OP(lstm, 8, 2, false, 3, 2);
         #endif
 
@@ -265,7 +265,7 @@ namespace nd4j {
        * Output arrays: 
        *    0: cell outputs [time x batchSize x numUnits], that is per each time step    
        */                  
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gru)
+        #if NOT_EXCLUDED(__gru)
         DECLARE_CUSTOM_OP(gru, 5, 1, false, 0, 0);
         #endif
     }

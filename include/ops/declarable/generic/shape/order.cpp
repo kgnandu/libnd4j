@@ -2,7 +2,8 @@
 // Created by raver119 on 12.02.18.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__order)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__order)
 
 #include <ops/declarable/headers/shape.h>
 

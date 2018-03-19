@@ -2,7 +2,8 @@
 // Created by george@skymind.io on 26.01.2018.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__normalize_moments)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__normalize_moments)
 
 #include <ops/declarable/CustomOperations.h>
 

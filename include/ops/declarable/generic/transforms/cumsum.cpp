@@ -2,7 +2,8 @@
 //  @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__cumsum)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__cumsum)
 
 #include <ops/declarable/helpers/prefix.h>
 #include <ops/declarable/CustomOperations.h>

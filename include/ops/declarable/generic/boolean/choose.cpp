@@ -1,8 +1,9 @@
 //
-//  @author raver119@gmail.com
+//  @author Adam Gibson
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__choose)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__choose)
 
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>

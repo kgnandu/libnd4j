@@ -2,7 +2,8 @@
 // Created by yurii@skymind.io on 06.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__pad)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__pad)
 
 #include <ops/declarable/CustomOperations.h>
 #include <vector>

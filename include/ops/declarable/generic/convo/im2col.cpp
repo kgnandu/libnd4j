@@ -2,7 +2,8 @@
 // Created by raver119 on 17.10.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__im2col)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__im2col)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>

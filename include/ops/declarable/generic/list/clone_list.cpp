@@ -2,7 +2,8 @@
 // @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__clone_list)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__clone_list)
 
 #include <ops/declarable/CustomOperations.h>
 

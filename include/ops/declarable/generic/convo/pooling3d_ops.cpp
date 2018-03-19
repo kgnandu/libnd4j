@@ -2,7 +2,8 @@
 // Created by raver119 on 08.10.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__avgpool3d)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__avgpool3d)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>

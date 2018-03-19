@@ -2,7 +2,8 @@
 //  @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__stop_gradient)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__stop_gradient)
 
 #include <ops/declarable/headers/parity_ops.h>
 

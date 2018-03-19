@@ -2,7 +2,8 @@
 //  @author @cpuheater
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__is_non_decreasing)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__is_non_decreasing)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/compare_elem.h>

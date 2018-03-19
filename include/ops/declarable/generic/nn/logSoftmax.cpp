@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 01.02.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__log_softmax)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__log_softmax)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/softMaxForVector.h>

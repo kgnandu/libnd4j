@@ -2,7 +2,8 @@
 //  @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__unique)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__unique)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/unique.h>

@@ -2,7 +2,8 @@
 //  Created by Yurii Shyrma on 25.01.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reverse_sequence)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__reverse_sequence)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/reverseArray.h>

@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 07.12.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__matrix_set_diag)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__matrix_set_diag)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matrixSetDiag.h>

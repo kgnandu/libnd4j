@@ -2,7 +2,8 @@
 // Created by raver119 on 06.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__create_list)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__create_list)
 
 #include <ops/declarable/CustomOperations.h>
 

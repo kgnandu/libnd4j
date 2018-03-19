@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 25.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mean_sqerr_loss)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__mean_sqerr_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -2,7 +2,8 @@
 // created by Yurii Shyrma on 30.11.2017
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lstmCell)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__lstmCell)
 
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/lstmCell.h>

@@ -9,35 +9,35 @@
 
 namespace nd4j {
     namespace ops {
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__permute)
+        #if NOT_EXCLUDED(__permute)
         DECLARE_CUSTOM_OP(permute, 1, 1, true, 0, -2);   
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reshapeas)
+        #if NOT_EXCLUDED(__reshapeas)
         DECLARE_CUSTOM_OP(reshapeas, 2, 1, true, 0, 0);      
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__transpose)
+        #if NOT_EXCLUDED(__transpose)
         DECLARE_CUSTOM_OP(transpose, 1, 1, true, 0, 0);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__shape_of)
+        #if NOT_EXCLUDED(__shape_of)
         DECLARE_CUSTOM_OP(shape_of, 1, 1, false, 0, 0);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__shapes_of)
+        #if NOT_EXCLUDED(__shapes_of)
         DECLARE_CUSTOM_OP(shapes_of, -1, -1, false, 0, 0);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__squeeze)
+        #if NOT_EXCLUDED(__squeeze)
         DECLARE_CUSTOM_OP(squeeze, 1, 1, true, 0, -2);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__expand_dims)
+        #if NOT_EXCLUDED(__expand_dims)
         DECLARE_CUSTOM_OP(expand_dims, 1, 1, false, 0, 1);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reshape)
+        #if NOT_EXCLUDED(__reshape)
         DECLARE_CUSTOM_OP(reshape, 1, 1, true, 0, -2);
         #endif
 
@@ -50,7 +50,7 @@ namespace nd4j {
          *
          * @tparam T
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__order)
+        #if NOT_EXCLUDED(__order)
         DECLARE_CUSTOM_OP(order, 1, 1, false, 0, 1);
         #endif
 
@@ -59,7 +59,7 @@ namespace nd4j {
          *
          * @tparam T
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__tile_to_shape)
+        #if NOT_EXCLUDED(__tile_to_shape)
         DECLARE_CUSTOM_OP(tile_to_shape, 1, 1, true, 0, -1);
         DECLARE_CUSTOM_OP(tile_to_shape_bp, 2, 1, true, 0, -1);
         #endif

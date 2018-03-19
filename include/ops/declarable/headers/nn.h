@@ -10,7 +10,7 @@
 namespace nd4j {
     namespace ops {
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__softmax)
+        #if NOT_EXCLUDED(__softmax)
         DECLARE_CONFIGURABLE_OP(softmax, 1, 1, true, 0, 0);
         DECLARE_CONFIGURABLE_OP(softmax_bp, 2, 1, true, 0, 0);
         #endif
@@ -27,7 +27,7 @@ namespace nd4j {
          * 2: bias
          * 3: depth
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lrn_old)
+        #if NOT_EXCLUDED(__lrn_old)
         DECLARE_CUSTOM_OP(lrn_old, 1, 3, true, 4, 0);
         #endif
 
@@ -45,7 +45,7 @@ namespace nd4j {
          * 
          * output - 4D array 
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lrn)
+        #if NOT_EXCLUDED(__lrn)
         DECLARE_CONFIGURABLE_OP(lrn, 1, 1, true, 3, 0);
         #endif
 
@@ -65,7 +65,7 @@ namespace nd4j {
          *
          * output - next approximation as 4D array
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__lrn)
+        #if NOT_EXCLUDED(__lrn)
         DECLARE_CONFIGURABLE_OP(lrn_bp, 2, 1, true, 3, 0);
         #endif
 
@@ -88,7 +88,7 @@ namespace nd4j {
         * T args:
         * 0: epsilon
         */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__batchnorm)
+        #if NOT_EXCLUDED(__batchnorm)
         DECLARE_CUSTOM_OP(batchnorm, 5, 1, false, 1, 2);
         #endif
 
@@ -102,7 +102,7 @@ namespace nd4j {
          * T args:
          * 0: optional, learning rate
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__apply_sgd)
+        #if NOT_EXCLUDED(__apply_sgd)
         DECLARE_CONFIGURABLE_OP(apply_sgd, 2, 1, true, -2, 0);   
         #endif
 
@@ -126,11 +126,11 @@ namespace nd4j {
          * 0: dataFormat, may have two values: zero -> NHWC, unity -> NCHW
          * 1: isTraining, may have two values: zero -> inference, unity -> training
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__fused_batch_norm)
+        #if NOT_EXCLUDED(__fused_batch_norm)
         DECLARE_CUSTOM_OP(fused_batch_norm, 3, 1, false, 0, 2);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__log_softmax)
+        #if NOT_EXCLUDED(__log_softmax)
         DECLARE_CONFIGURABLE_OP(log_softmax, 1, 1, true, 0, 0);
         DECLARE_CONFIGURABLE_OP(log_softmax_bp, 2, 1, true, 0, 0);
         #endif

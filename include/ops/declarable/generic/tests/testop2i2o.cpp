@@ -1,8 +1,9 @@
 //
-//
+// @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__testop2i2o)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__testop2i2o)
 
 #include <ops/declarable/headers/tests.h>
 

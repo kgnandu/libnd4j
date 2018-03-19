@@ -2,7 +2,8 @@
 // Created by raver119 on 13.10.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gte_scalar)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__gte_scalar)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -2,7 +2,8 @@
 //  @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__dynamic_stitch)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__dynamic_stitch)
 
 #include <ops/declarable/CustomOperations.h>
 //#include <array>

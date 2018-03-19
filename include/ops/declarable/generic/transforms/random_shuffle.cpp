@@ -2,7 +2,8 @@
 // Created by Yurii Syrma on 26.01.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__random_shuffle)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__random_shuffle)
 
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>

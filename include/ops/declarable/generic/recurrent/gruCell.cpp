@@ -2,7 +2,8 @@
 // created by Yurii Shyrma on 05.12.2017
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gruCell)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__gruCell)
 
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/gruCell.h>

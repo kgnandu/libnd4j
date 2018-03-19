@@ -2,7 +2,8 @@
 // Created by raver119 on 29/10/17.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maxpool2d)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__maxpool2d)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>

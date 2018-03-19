@@ -2,7 +2,8 @@
 // Created by raver119 on 24.11.17.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mergemax)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__mergemax)
 
 #include <ops/declarable/CustomOperations.h>
 

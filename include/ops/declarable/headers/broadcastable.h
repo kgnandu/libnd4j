@@ -20,7 +20,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Max(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__maximum)
+        #if NOT_EXCLUDED(__maximum)
         DECLARE_CUSTOM_OP(maximum, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(maximum_bp, 3, 2, false, 0, 0);
         #endif
@@ -34,7 +34,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Min(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__minimum)
+        #if NOT_EXCLUDED(__minimum)
         DECLARE_CUSTOM_OP(minimum, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(minimum_bp, 3, 2, false, 0, 0);
         #endif
@@ -48,7 +48,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Add(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__add)
+        #if NOT_EXCLUDED(__add)
         DECLARE_CUSTOM_OP(add, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(add_bp, 3, 2, false, 0, 0);
         #endif
@@ -62,7 +62,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Subtract(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__subtract)
+        #if NOT_EXCLUDED(__subtract)
         DECLARE_CUSTOM_OP(subtract, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(subtract_bp, 3, 2, false, 0, 0);
         #endif
@@ -76,7 +76,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Subtract(Y, X)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reversesubtract)
+        #if NOT_EXCLUDED(__reversesubtract)
         DECLARE_CUSTOM_OP(reversesubtract, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(reversesubtract_bp, 3, 2, false, 0, 0);
         #endif
@@ -90,7 +90,7 @@ namespace nd4j {
          * 
          * This operation returns Z = ReverseMod(X, Y) == Mod(Y, X)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reversemod)
+        #if NOT_EXCLUDED(__reversemod)
         DECLARE_CUSTOM_OP(reversemod, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(reversemod_bp, 3, 2, true, 0, 0);
         #endif
@@ -105,7 +105,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Subtract(X, Y) * Subtract(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__squaredsubtract)
+        #if NOT_EXCLUDED(__squaredsubtract)
         DECLARE_CUSTOM_OP(squaredsubtract, 2, 1, true, 0, 0)
         DECLARE_CUSTOM_OP(squaredsubtract_bp, 3, 2, false, 0, 0);
         #endif
@@ -119,7 +119,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Multiply(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__multiply)
+        #if NOT_EXCLUDED(__multiply)
         DECLARE_CUSTOM_OP(multiply, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(multiply_bp, 3, 2, false, 0, 0);
         #endif
@@ -133,7 +133,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Divide(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__divide)
+        #if NOT_EXCLUDED(__divide)
         DECLARE_CUSTOM_OP(divide, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(divide_bp, 3, 2, false, 0, 0);
         #endif
@@ -147,7 +147,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Divide(Y, x)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reversedivide)
+        #if NOT_EXCLUDED(__reversedivide)
         DECLARE_CUSTOM_OP(reversedivide, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(reversedivide_bp, 3, 2, false, 0, 0);
         #endif
@@ -161,12 +161,12 @@ namespace nd4j {
          * 
          * This operation returns Z = FloorMod(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__floormod)
+        #if NOT_EXCLUDED(__floormod)
         DECLARE_CUSTOM_OP(floormod, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(floormod_bp, 3, 2, true, 0, 0);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mod)
+        #if NOT_EXCLUDED(__mod)
         DECLARE_CUSTOM_OP(mod, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(mod_bp, 3, 2, true, 0, 0);
         #endif
@@ -180,7 +180,7 @@ namespace nd4j {
          * 
          * This operation returns Z = FloorDiv(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__floordiv)
+        #if NOT_EXCLUDED(__floordiv)
         DECLARE_CUSTOM_OP(floordiv, 2, 1, true, 0, 0)
         DECLARE_CUSTOM_OP(floordiv_bp, 2, 1, true, 0, 0)
         #endif
@@ -194,7 +194,7 @@ namespace nd4j {
          * 
          * This operation returns Z = Divide(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__realdiv)
+        #if NOT_EXCLUDED(__realdiv)
         DECLARE_CUSTOM_OP(realdiv, 2, 1, true, 0, 0);
         DECLARE_CUSTOM_OP(realdiv_bp, 3, 2, false, 0, 0);
         #endif
@@ -208,12 +208,12 @@ namespace nd4j {
          * 
          * This operation returns Z = Assign(X, Y)
          */
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__assign)
+        #if NOT_EXCLUDED(__assign)
         DECLARE_CUSTOM_OP(assign, 2, 1, false, 0, 0);
         DECLARE_CUSTOM_OP(assign_bp, 3, 2, false, 0, 0);
         #endif
 
-        #if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__meshgrid)
+        #if NOT_EXCLUDED(__meshgrid)
         DECLARE_CUSTOM_OP(meshgrid, -1, -1, false, 0, 0);
         #endif
     }

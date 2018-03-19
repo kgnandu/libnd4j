@@ -2,7 +2,8 @@
 // Created by GS <sgazeos@gmail.com> 31.01.2018
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__zero_fraction)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__zero_fraction)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -5,7 +5,8 @@
 #ifndef LIBND4J_CONVO_OPS_H
 #define LIBND4J_CONVO_OPS_H
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__conv2d)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__conv2d)
 
 #include <op_boilerplate.h>
 #include <memory>

@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 24.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__mean_pairwssqerr_loss)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__mean_pairwssqerr_loss)
 
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>

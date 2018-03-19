@@ -2,7 +2,8 @@
 //  @author sgazeos@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__clip_by_global_norm)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__clip_by_global_norm)
 
 #include <ops/declarable/CustomOperations.h>
 

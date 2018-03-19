@@ -2,7 +2,8 @@
 // Created by yurii@skymind.io on 02.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__reverse)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__reverse)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/reverseArray.h>

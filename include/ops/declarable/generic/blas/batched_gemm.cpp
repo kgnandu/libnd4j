@@ -2,7 +2,8 @@
 //  @author raver119@gmail.com
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__batched_gemm)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__batched_gemm)
 
 #include <ops/declarable/headers/blas.h>
 #include <ops/declarable/helpers/batched_gemm.h>

@@ -2,7 +2,8 @@
 // Created by george@skymind.io on 2/21/2018.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__sufficient_statistics)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__sufficient_statistics)
 
 #include <ops/declarable/CustomOperations.h>
 

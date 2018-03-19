@@ -3,7 +3,8 @@
 //
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__xw_plus_b)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__xw_plus_b)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matmul.h>

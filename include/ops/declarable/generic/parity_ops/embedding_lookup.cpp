@@ -2,7 +2,8 @@
 // Created by GS <sgazeos@gmail.com>
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__embedding_lookup)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__embedding_lookup)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

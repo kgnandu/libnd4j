@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 23.11.2017.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__hinge_loss)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__hinge_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

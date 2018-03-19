@@ -2,7 +2,8 @@
 // Created by Yurii Shyrma on 23.01.2018.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__gather_nd)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__gather_nd)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

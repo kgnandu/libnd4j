@@ -2,7 +2,8 @@
 // Created by raver119 on 29/10/17.
 //
 
-#if defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(__fused_batch_norm)
+#include <op_boilerplate.h>
+#if NOT_EXCLUDED(__fused_batch_norm)
 
 #include <ops/declarable/CustomOperations.h>
 
