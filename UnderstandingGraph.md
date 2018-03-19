@@ -46,7 +46,9 @@ There's an option to build minified binaries suited for execution of ***specific
 ./minifier -l -a native -o libnd4j_special ../some_path/some_graph1.fb ../some_path/some_graph2.fb
 ``` 
 
-Once `minifier` finishes building - you'll have `libnd4j_special.so` file ready, and it'll contain only those operations used in 2 graphs provided at compilation time. 
+Once `minifier` finishes - you'll have `libnd4j_special.so` and `libnd4j_special.h` files ready, and they'll contain only those operations used in 2 graphs provided at compilation time + basic primitives used to work with Graph. Things like NDArray, GraphExecutioner etc will be included as well.
+
+This library can be used in your application as any other shared libray out there: you'll include headers file and you'll be able to call for things you need. 
 
 ### Documentation 
 Documentation for individual operations, and basic classes (like NDArray, Graph etc) is available as part of Nd4j javadoc: https://nd4j.org/doc/

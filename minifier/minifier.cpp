@@ -110,17 +110,24 @@ main(int argc, char *argv[]) {
 
     if (!descriptors.empty()) {
         GraphUtils::filterOperations(descriptors);
-        
+
+        nd4j_printf("Operations found so far:\n","");
+        for (auto &v: descriptors) {
+            nd4j_printf("%s\n", v.getOpName()->c_str());
+        }
+
         // building list of operations
         opts_arg = GraphUtils::makeCommandLine(descriptors);
     }
+    nd4j_printf("\n","");
 
     // just stacking everything together
     std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + arch_arg + opts_arg;
 
     //nd4j_printf("Command line: %s\n", cmdline.c_str());
     // FIXME: do this in cross-platform way
-    system(cmdline.c_str());
+    nd4j_printf("Building minified library...\n", "");
+    //system(cmdline.c_str());
 
     return EXIT_SUCCESS;
 }
