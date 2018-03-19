@@ -46,7 +46,7 @@ There's an option to build minified binaries suited for execution of ***specific
 ./minifier -l -a native -o libnd4j_special ../some_path/some_graph1.fb ../some_path/some_graph2.fb
 Option 'l': Build library
 Option 'a': Target arch: native
-Option 'o': Output file name is libnd4j_minified
+Option 'o': Output file name is libnd4j_special
 Total available operations: 423
 
 Retrieving ops from the Graph and collect them...
