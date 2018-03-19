@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__diag)
+#if NOT_EXCLUDED(OP_diag)
 
 #include <ops/declarable/CustomOperations.h>
 

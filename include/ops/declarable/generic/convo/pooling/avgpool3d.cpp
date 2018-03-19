@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__avgpool3dnew)
+#if NOT_EXCLUDED(OP_avgpool3dnew)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/convolutions.h>

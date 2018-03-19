@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__onehot)
+#if NOT_EXCLUDED(OP_onehot)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

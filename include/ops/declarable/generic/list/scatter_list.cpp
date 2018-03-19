@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__scatter_list)
+#if NOT_EXCLUDED(OP_scatter_list)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

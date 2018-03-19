@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__unstack_list)
+#if NOT_EXCLUDED(OP_unstack_list)
 
 #include <ops/declarable/headers/list.h>
 

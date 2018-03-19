@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__gather_nd)
+#if NOT_EXCLUDED(OP_gather_nd)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

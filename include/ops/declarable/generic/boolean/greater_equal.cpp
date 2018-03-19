@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__greater_equal)
+#if NOT_EXCLUDED(OP_greater_equal)
 
 #include <ops/declarable/CustomOperations.h>
 

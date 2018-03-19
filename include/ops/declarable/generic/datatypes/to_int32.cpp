@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__to_int32)
+#if NOT_EXCLUDED(OP_to_int32)
 
 #include <ops/declarable/CustomOperations.h>
 

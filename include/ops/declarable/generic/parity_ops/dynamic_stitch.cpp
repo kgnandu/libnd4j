@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__dynamic_stitch)
+#if NOT_EXCLUDED(OP_dynamic_stitch)
 
 #include <ops/declarable/CustomOperations.h>
 //#include <array>

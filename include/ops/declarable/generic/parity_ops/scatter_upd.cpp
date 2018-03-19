@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__scatter_upd)
+#if NOT_EXCLUDED(OP_scatter_upd)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/ScatterHelper.h>

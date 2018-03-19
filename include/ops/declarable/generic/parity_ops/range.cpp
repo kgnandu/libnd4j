@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__range)
+#if NOT_EXCLUDED(OP_range)
 
 #include <NDArray.h>
 #include <graph/VariableSpace.h>

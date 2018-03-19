@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__biasadd)
+#if NOT_EXCLUDED(OP_biasadd)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__argmin)
+#if NOT_EXCLUDED(OP_argmin)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__reshapeas)
+#if NOT_EXCLUDED(OP_reshapeas)
 
 #include <ops/declarable/CustomOperations.h>
 

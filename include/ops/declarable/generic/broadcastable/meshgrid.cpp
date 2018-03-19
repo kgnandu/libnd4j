@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__meshgrid)
+#if NOT_EXCLUDED(OP_meshgrid)
 
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>

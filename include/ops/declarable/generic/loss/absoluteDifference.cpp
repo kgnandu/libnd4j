@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__absolute_difference_loss)
+#if NOT_EXCLUDED(OP_absolute_difference_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

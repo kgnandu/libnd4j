@@ -3,7 +3,7 @@
 //  
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__top_k)
+#if NOT_EXCLUDED(OP_top_k)
 
 //#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/top_k.h>

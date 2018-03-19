@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__tensormmul)
+#if NOT_EXCLUDED(OP_tensormmul)
 
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>

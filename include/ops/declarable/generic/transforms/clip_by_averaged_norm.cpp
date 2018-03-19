@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__clipbyavgnorm)
+#if NOT_EXCLUDED(OP_clipbyavgnorm)
 
 #include <ops/declarable/CustomOperations.h>
 

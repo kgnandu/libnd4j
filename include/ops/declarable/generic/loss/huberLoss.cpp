@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__huber_loss)
+#if NOT_EXCLUDED(OP_huber_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__neq_scalar)
+#if NOT_EXCLUDED(OP_neq_scalar)
 
 #include <ops/declarable/CustomOperations.h>
 

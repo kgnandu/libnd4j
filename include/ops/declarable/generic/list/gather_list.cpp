@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__gather_list)
+#if NOT_EXCLUDED(OP_gather_list)
 
 #include <ops/declarable/CustomOperations.h>
 

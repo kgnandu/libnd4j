@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__normalize_moments)
+#if NOT_EXCLUDED(OP_normalize_moments)
 
 #include <ops/declarable/CustomOperations.h>
 

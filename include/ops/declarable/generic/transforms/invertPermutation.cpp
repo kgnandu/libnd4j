@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__invert_permutation)
+#if NOT_EXCLUDED(OP_invert_permutation)
 
 #include <ops/declarable/CustomOperations.h>
 

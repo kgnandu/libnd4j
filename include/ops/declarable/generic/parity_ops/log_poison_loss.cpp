@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__log_poison_loss)
+#if NOT_EXCLUDED(OP_log_poison_loss)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/cross.h>

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__split_list)
+#if NOT_EXCLUDED(OP_split_list)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

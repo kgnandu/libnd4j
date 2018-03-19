@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__random_shuffle)
+#if NOT_EXCLUDED(OP_random_shuffle)
 
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>

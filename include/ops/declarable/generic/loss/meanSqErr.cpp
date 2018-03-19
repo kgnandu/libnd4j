@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__mean_sqerr_loss)
+#if NOT_EXCLUDED(OP_mean_sqerr_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

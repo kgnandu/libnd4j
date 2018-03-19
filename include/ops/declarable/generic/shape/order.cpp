@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__order)
+#if NOT_EXCLUDED(OP_order)
 
 #include <ops/declarable/headers/shape.h>
 

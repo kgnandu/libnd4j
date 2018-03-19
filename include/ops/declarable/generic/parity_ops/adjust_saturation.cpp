@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__adjust_saturation)
+#if NOT_EXCLUDED(OP_adjust_saturation)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/adjust_saturation.h>

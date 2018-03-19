@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__get_seed)
+#if NOT_EXCLUDED(OP_get_seed)
 
 #include <ops/declarable/CustomOperations.h>
 

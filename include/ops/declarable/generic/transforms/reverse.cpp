@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__reverse)
+#if NOT_EXCLUDED(OP_reverse)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/reverseArray.h>

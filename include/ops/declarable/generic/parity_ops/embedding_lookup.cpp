@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__embedding_lookup)
+#if NOT_EXCLUDED(OP_embedding_lookup)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

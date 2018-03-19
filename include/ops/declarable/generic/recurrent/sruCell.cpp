@@ -5,7 +5,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__sruCell)
+#if NOT_EXCLUDED(OP_sruCell)
 
 #include <ops/declarable/CustomOperations.h>
 

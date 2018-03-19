@@ -5,7 +5,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__sru)
+#if NOT_EXCLUDED(OP_sru)
 
 #include <ops/declarable/CustomOperations.h>
 #include <NDArray.h>

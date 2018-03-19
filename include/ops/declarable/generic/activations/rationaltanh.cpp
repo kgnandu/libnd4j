@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__rationaltanh)
+#if NOT_EXCLUDED(OP_rationaltanh)
 
 #include <ops/declarable/CustomOperations.h>
 

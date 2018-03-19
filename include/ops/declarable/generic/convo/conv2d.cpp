@@ -6,7 +6,7 @@
 #define LIBND4J_CONVO_OPS_H
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__conv2d)
+#if NOT_EXCLUDED(OP_conv2d)
 
 #include <op_boilerplate.h>
 #include <memory>

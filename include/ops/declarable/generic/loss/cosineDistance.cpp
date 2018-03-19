@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__cosine_distance_loss)
+#if NOT_EXCLUDED(OP_cosine_distance_loss)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

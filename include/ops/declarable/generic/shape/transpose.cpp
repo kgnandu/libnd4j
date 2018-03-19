@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__transpose)
+#if NOT_EXCLUDED(OP_transpose)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

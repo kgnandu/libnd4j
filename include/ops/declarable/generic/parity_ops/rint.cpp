@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__rint)
+#if NOT_EXCLUDED(OP_rint)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__stop_gradient)
+#if NOT_EXCLUDED(OP_stop_gradient)
 
 #include <ops/declarable/headers/parity_ops.h>
 

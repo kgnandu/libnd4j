@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__space_to_depth)
+#if NOT_EXCLUDED(OP_space_to_depth)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <array>

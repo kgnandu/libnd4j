@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__lstm)
+#if NOT_EXCLUDED(OP_lstm)
 
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/lstmCell.h>

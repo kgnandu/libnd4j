@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__expand_dims)
+#if NOT_EXCLUDED(OP_expand_dims)
 
 #include <ops/declarable/CustomOperations.h>
 

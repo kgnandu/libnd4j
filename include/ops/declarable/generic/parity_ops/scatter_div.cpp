@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__scatter_div)
+#if NOT_EXCLUDED(OP_scatter_div)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/generic/helpers/ScatterHelper.h>

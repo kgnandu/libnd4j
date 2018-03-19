@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__broadcastgradientargs)
+#if NOT_EXCLUDED(OP_broadcastgradientargs)
 
 #include <ops/declarable/CustomOperations.h>
 

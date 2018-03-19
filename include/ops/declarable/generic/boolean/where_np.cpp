@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__where_np)
+#if NOT_EXCLUDED(OP_where_np)
 
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>

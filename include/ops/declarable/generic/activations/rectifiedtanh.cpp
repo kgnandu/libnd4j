@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__rectifiedtanh)
+#if NOT_EXCLUDED(OP_rectifiedtanh)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__testop2i2o)
+#if NOT_EXCLUDED(OP_testop2i2o)
 
 #include <ops/declarable/headers/tests.h>
 

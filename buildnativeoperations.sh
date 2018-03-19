@@ -333,7 +333,7 @@ fi
 OPERATIONS_ARG=
 
 if [ -z "$OPERATIONS" ]; then
- OPERATIONS_ARG="-D_ALL_OPS=true"
+ OPERATIONS_ARG="-DLIBND4J_ALL_OPS=true"
 else
  OPERATIONS_ARG=$OPERATIONS
 fi
@@ -348,7 +348,7 @@ else
     BLAS_ARG="-DCUDA_BLAS=true -DBLAS=TRUE"
 fi
 
-if [ -z "$NAME"]; then
+if [ -z "$NAME" ]; then
     if [ "$CHIP" == "cpu" ]; then
         NAME="nd4jcpu"
     else
@@ -387,14 +387,14 @@ fi
 
 EXPERIMENTAL_ARG="no";
 MINIFIER_ARG=
-NAME_ARG="-D__NAME=$NAME"
+NAME_ARG="-DLIBND4J_NAME=$NAME"
 
 if [ "$EXPERIMENTAL" == "yes" ]; then
     EXPERIMENTAL_ARG="-DEXPERIMENTAL=yes"
 fi
 
 if [ "$MINIFIER" == "true" ]; then
-    MINIFIER_ARG="-D__BUILD_MINIFIER=true"
+    MINIFIER_ARG="-DLIBND4J_BUILD_MINIFIER=true"
 fi
 
 ARCH_ARG="-DARCH=$ARCH -DEXTENSION=$CHIP_EXTENSION"

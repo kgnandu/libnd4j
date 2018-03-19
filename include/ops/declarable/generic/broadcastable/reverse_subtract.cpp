@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__reversesubtract)
+#if NOT_EXCLUDED(OP_reversesubtract)
 
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__listdiff)
+#if NOT_EXCLUDED(OP_listdiff)
 
 #include <ops/declarable/CustomOperations.h>
 

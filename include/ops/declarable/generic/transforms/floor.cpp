@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__Floor)
+#if NOT_EXCLUDED(OP_Floor)
 
 #include <ops/declarable/CustomOperations.h>
 

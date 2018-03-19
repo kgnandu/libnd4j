@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__mergemax)
+#if NOT_EXCLUDED(OP_mergemax)
 
 #include <ops/declarable/CustomOperations.h>
 

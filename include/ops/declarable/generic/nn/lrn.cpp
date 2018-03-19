@@ -5,7 +5,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__lrn)
+#if NOT_EXCLUDED(OP_lrn)
 
 #include <ops/declarable/helpers/lrn.h>
 #include <ops/declarable/CustomOperations.h>

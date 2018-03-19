@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__gruCell)
+#if NOT_EXCLUDED(OP_gruCell)
 
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/gruCell.h>

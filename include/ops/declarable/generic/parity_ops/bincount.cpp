@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__bincount)
+#if NOT_EXCLUDED(OP_bincount)
 
 //#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/CustomOperations.h>

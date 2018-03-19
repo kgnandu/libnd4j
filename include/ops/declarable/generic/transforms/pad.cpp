@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__pad)
+#if NOT_EXCLUDED(OP_pad)
 
 #include <ops/declarable/CustomOperations.h>
 #include <vector>

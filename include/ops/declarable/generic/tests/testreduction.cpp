@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__testreduction)
+#if NOT_EXCLUDED(OP_testreduction)
 
 #include <ops/declarable/headers/tests.h>
 

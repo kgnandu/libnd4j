@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__squeeze)
+#if NOT_EXCLUDED(OP_squeeze)
 
 #include <ops/declarable/CustomOperations.h>
 

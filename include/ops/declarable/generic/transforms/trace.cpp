@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__trace)
+#if NOT_EXCLUDED(OP_trace)
 
 #include <ops/declarable/CustomOperations.h>
 

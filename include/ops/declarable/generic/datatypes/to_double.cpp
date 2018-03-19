@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__to_double)
+#if NOT_EXCLUDED(OP_to_double)
 
 #include <ops/declarable/CustomOperations.h>
 

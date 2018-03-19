@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__parallel_stack)
+#if NOT_EXCLUDED(OP_parallel_stack)
 
 #include <ops/declarable/CustomOperations.h>
 #include<ops/declarable/helpers/stack.h>

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__matrix_determinant)
+#if NOT_EXCLUDED(OP_matrix_determinant)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/lup.h>

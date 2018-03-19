@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__toggle_bits)
+#if NOT_EXCLUDED(OP_toggle_bits)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/BitwiseUtils.h>

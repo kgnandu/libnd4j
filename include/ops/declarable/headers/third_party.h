@@ -9,7 +9,7 @@
 
 namespace nd4j {
     namespace ops {
-        #if NOT_EXCLUDED(__firas_sparse)
+        #if NOT_EXCLUDED(OP_firas_sparse)
         DECLARE_CUSTOM_OP(firas_sparse, 1, 1, false, 0, -1);
         #endif
     }

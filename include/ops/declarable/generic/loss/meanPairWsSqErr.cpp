@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__mean_pairwssqerr_loss)
+#if NOT_EXCLUDED(OP_mean_pairwssqerr_loss)
 
 #include <ops/declarable/CustomOperations.h>
 #include <numeric>

@@ -40,10 +40,10 @@ GraphUtils::makeCommandLine(GraphUtils::OpList& ops) {
     std::string res;
 
     if (!ops.empty()) {
-        res += std::string(" -g \"-D_OPS_LIST='"); 
+        res += std::string(" -g \"-DLIBND4J_OPS_LIST='");
         //res += *(ops[0].getOpName());
         for (int i = 0; i < ops.size(); i++) {
-            res += std::string("-D__");
+            res += std::string("-DOP_");
             res += *(ops[i].getOpName());
             res += "=true ";
         }

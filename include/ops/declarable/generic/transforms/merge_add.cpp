@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__mergeadd)
+#if NOT_EXCLUDED(OP_mergeadd)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -5,7 +5,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__firas_sparse)
+#if NOT_EXCLUDED(OP_firas_sparse)
 
 #ifndef LIBND4J_THIRD_PARTY_H
 #define LIBND4J_THIRD_PARTY_H

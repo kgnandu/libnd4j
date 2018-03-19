@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__clip_by_global_norm)
+#if NOT_EXCLUDED(OP_clip_by_global_norm)
 
 #include <ops/declarable/CustomOperations.h>
 

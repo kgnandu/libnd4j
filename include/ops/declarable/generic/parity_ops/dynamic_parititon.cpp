@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__dynamic_partition)
+#if NOT_EXCLUDED(OP_dynamic_partition)
 
 #include <ops/declarable/CustomOperations.h>
 #include <array>

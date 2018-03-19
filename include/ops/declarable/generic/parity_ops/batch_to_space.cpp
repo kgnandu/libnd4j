@@ -17,7 +17,7 @@ limitations under the License.
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__batch_to_space)
+#if NOT_EXCLUDED(OP_batch_to_space)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/s_t_b.h>

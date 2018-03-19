@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__svd)
+#if NOT_EXCLUDED(OP_svd)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/svd.h>

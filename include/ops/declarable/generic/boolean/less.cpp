@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__less)
+#if NOT_EXCLUDED(OP_less)
 
 #include <ops/declarable/CustomOperations.h>
 

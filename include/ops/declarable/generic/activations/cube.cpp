@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__cube)
+#if NOT_EXCLUDED(OP_cube)
 
 #include <ops/declarable/CustomOperations.h>
 

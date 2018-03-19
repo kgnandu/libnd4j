@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__zeta)
+#if NOT_EXCLUDED(OP_zeta)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/zeta.h>

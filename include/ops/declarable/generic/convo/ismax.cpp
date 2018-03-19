@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__ismax)
+#if NOT_EXCLUDED(OP_ismax)
 
 #include <ops/declarable/CustomOperations.h>
 

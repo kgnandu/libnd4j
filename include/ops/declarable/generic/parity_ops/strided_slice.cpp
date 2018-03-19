@@ -14,7 +14,7 @@ limitations under the License.
 ==============================================================================*/
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__strided_slice)
+#if NOT_EXCLUDED(OP_strided_slice)
 
 #include <array>
 #include <ops/declarable/CustomOperations.h>

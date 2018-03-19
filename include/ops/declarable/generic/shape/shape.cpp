@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__shape)
+#if NOT_EXCLUDED(OP_shape)
 
 #include <ops/declarable/CustomOperations.h>
 

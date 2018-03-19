@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__softplus)
+#if NOT_EXCLUDED(OP_softplus)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__reversemod)
+#if NOT_EXCLUDED(OP_reversemod)
 
 #include <ops/declarable/generic/helpers/BroadcastHelper.h>
 #include <ops/declarable/CustomOperations.h>

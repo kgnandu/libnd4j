@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__fill)
+#if NOT_EXCLUDED(OP_fill)
 
 #include <ops/declarable/headers/parity_ops.h>
 

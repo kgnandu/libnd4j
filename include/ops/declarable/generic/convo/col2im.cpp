@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__col2im)
+#if NOT_EXCLUDED(OP_col2im)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/col2im.h>

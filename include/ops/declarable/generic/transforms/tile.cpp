@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__tile)
+#if NOT_EXCLUDED(OP_tile)
 
 #include <ops/declarable/CustomOperations.h>
 

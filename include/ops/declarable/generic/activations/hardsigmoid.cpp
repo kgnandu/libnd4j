@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__hardsigmoid)
+#if NOT_EXCLUDED(OP_hardsigmoid)
 
 #include <ops/declarable/CustomOperations.h>
 

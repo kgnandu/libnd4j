@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__l2_loss)
+#if NOT_EXCLUDED(OP_l2_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

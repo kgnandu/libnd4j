@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__testcustom)
+#if NOT_EXCLUDED(OP_testcustom)
 
 #include <ops/declarable/headers/tests.h>
 

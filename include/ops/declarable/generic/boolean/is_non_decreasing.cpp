@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__is_non_decreasing)
+#if NOT_EXCLUDED(OP_is_non_decreasing)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/compare_elem.h>

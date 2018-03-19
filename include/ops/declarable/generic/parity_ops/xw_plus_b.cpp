@@ -4,7 +4,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__xw_plus_b)
+#if NOT_EXCLUDED(OP_xw_plus_b)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matmul.h>

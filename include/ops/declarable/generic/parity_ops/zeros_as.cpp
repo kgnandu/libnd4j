@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__zeros_as)
+#if NOT_EXCLUDED(OP_zeros_as)
 
 #include <ops/declarable/CustomOperations.h>
 

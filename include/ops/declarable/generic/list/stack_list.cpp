@@ -4,7 +4,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__stack_list)
+#if NOT_EXCLUDED(OP_stack_list)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__zero_fraction)
+#if NOT_EXCLUDED(OP_zero_fraction)
 
 #include <ops/declarable/CustomOperations.h>
 

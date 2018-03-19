@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__weighted_cross_entropy_with_logits)
+#if NOT_EXCLUDED(OP_weighted_cross_entropy_with_logits)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/cross.h>

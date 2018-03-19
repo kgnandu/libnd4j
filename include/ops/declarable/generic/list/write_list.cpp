@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__write_list)
+#if NOT_EXCLUDED(OP_write_list)
 
 #include <ops/declarable/CustomOperations.h>
 

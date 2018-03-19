@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__rank)
+#if NOT_EXCLUDED(OP_rank)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__matrix_set_diag)
+#if NOT_EXCLUDED(OP_matrix_set_diag)
 
 #include <ops/declarable/CustomOperations.h>
 #include <ops/declarable/helpers/matrixSetDiag.h>

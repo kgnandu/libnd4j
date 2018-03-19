@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__broadcast_dynamic_shape)
+#if NOT_EXCLUDED(OP_broadcast_dynamic_shape)
 
 //#include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/CustomOperations.h>

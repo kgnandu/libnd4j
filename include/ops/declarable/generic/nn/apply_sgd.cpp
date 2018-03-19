@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__apply_sgd)
+#if NOT_EXCLUDED(OP_apply_sgd)
 
 #include <ops/declarable/CustomOperations.h>
 

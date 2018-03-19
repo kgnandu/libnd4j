@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__randomuniform)
+#if NOT_EXCLUDED(OP_randomuniform)
 
 #include <ops/declarable/CustomOperations.h>
 

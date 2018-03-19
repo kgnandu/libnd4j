@@ -16,7 +16,7 @@ namespace nd4j {
          * 
          * @tparam T
          */
-        #if NOT_EXCLUDED(__toggle_bits)
+        #if NOT_EXCLUDED(OP_toggle_bits)
         DECLARE_OP(toggle_bits, -1, -1, true);
         #endif
     }

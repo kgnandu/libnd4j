@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__sufficient_statistics)
+#if NOT_EXCLUDED(OP_sufficient_statistics)
 
 #include <ops/declarable/CustomOperations.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__select)
+#if NOT_EXCLUDED(OP_select)
 
 #include <helpers/ShapeUtils.h>
 #include <ops/declarable/CustomOperations.h>

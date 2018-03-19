@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__fused_batch_norm)
+#if NOT_EXCLUDED(OP_fused_batch_norm)
 
 #include <ops/declarable/CustomOperations.h>
 

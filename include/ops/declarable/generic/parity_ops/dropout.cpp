@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__dropout)
+#if NOT_EXCLUDED(OP_dropout)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <ops/declarable/helpers/dropout.h>

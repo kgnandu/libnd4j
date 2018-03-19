@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__split_v)
+#if NOT_EXCLUDED(OP_split_v)
 
 #include <ops/declarable/headers/parity_ops.h>
 

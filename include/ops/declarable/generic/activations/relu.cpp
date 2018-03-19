@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__relu)
+#if NOT_EXCLUDED(OP_relu)
 
 #include <ops/declarable/CustomOperations.h>
 

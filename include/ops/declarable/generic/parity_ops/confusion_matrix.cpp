@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__confusion_matrix)
+#if NOT_EXCLUDED(OP_confusion_matrix)
 
 #include <ops/declarable/CustomOperations.h>
 #include <helpers/ShapeUtils.h>

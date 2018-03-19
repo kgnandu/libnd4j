@@ -13,7 +13,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_double)
+        #if NOT_EXCLUDED(OP_to_double)
         DECLARE_OP(to_double, 1, 1, true);
         #endif
 
@@ -22,7 +22,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_float16)
+        #if NOT_EXCLUDED(OP_to_float16)
         DECLARE_OP(to_float16, 1, 1, true);
         #endif
 
@@ -31,7 +31,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_float32)
+        #if NOT_EXCLUDED(OP_to_float32)
         DECLARE_OP(to_float32, 1, 1, true);
         #endif
 
@@ -40,7 +40,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_int32)
+        #if NOT_EXCLUDED(OP_to_int32)
         DECLARE_OP(to_int32, 1, 1, true);
         #endif
 
@@ -49,7 +49,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_int64)
+        #if NOT_EXCLUDED(OP_to_int64)
         DECLARE_OP(to_int64, 1, 1, true);
         #endif
 
@@ -58,7 +58,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_uint32)
+        #if NOT_EXCLUDED(OP_to_uint32)
         DECLARE_OP(to_uint32, 1, 1, true);
         #endif
 
@@ -67,7 +67,7 @@ namespace nd4j {
          * 
          * PLEASE NOTE: This op is disabled atm, and reserved for future releases.
          */
-        #if NOT_EXCLUDED(__to_uint64)
+        #if NOT_EXCLUDED(OP_to_uint64)
         DECLARE_OP(to_uint64, 1, 1, true);
         #endif
 
@@ -80,7 +80,7 @@ namespace nd4j {
          * Int args:
          * 0: target DataType
          */
-        #if NOT_EXCLUDED(__cast)
+        #if NOT_EXCLUDED(OP_cast)
         DECLARE_CUSTOM_OP(cast, 1, 1, false, 0, 1);
         #endif
     }

@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__sigm_cross_entropy_loss)
+#if NOT_EXCLUDED(OP_sigm_cross_entropy_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

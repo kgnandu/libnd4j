@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__depthwise_conv2d)
+#if NOT_EXCLUDED(OP_depthwise_conv2d)
 
 #include <op_boilerplate.h>
 #include <ops/declarable/CustomOperations.h>

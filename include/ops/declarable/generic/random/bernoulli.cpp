@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__random_bernoulli)
+#if NOT_EXCLUDED(OP_random_bernoulli)
 
 #include <ops/declarable/headers/random.h>
 

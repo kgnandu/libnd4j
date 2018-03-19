@@ -9,78 +9,78 @@
 
 namespace nd4j {
     namespace ops {
-        #if NOT_EXCLUDED(__clipbyvalue)
+        #if NOT_EXCLUDED(OP_clipbyvalue)
         DECLARE_CONFIGURABLE_OP(clipbyvalue, 1, 1, true, 2, 0);
         #endif
 
-        #if NOT_EXCLUDED(__clipbynorm)
+        #if NOT_EXCLUDED(OP_clipbynorm)
         DECLARE_CONFIGURABLE_OP(clipbynorm, 1, 1, true, 1, 0);
         #endif
 
-        #if NOT_EXCLUDED(__clipbyavgnorm)
+        #if NOT_EXCLUDED(OP_clipbyavgnorm)
         DECLARE_CONFIGURABLE_OP(clipbyavgnorm, 1, 1, true, 1, 0);
         #endif
 
-        #if NOT_EXCLUDED(__cumsum)
+        #if NOT_EXCLUDED(OP_cumsum)
         DECLARE_CONFIGURABLE_OP(cumsum, 1, 1, true, 0, -2);
         #endif
 
-        #if NOT_EXCLUDED(__cumprod)
+        #if NOT_EXCLUDED(OP_cumprod)
         DECLARE_CONFIGURABLE_OP(cumprod, 1, 1, true, 0, -2);
         #endif
 
-        #if NOT_EXCLUDED(__tile)
+        #if NOT_EXCLUDED(OP_tile)
         DECLARE_CUSTOM_OP(tile, 1, 1, false, 0, -2);
         #endif
 
-        #if NOT_EXCLUDED(__repeat)
+        #if NOT_EXCLUDED(OP_repeat)
         DECLARE_CUSTOM_OP(repeat, 1, 1, true, 0, -1); 
         #endif
 
-        #if NOT_EXCLUDED(__invert_permutation)
+        #if NOT_EXCLUDED(OP_invert_permutation)
         DECLARE_CONFIGURABLE_OP(invert_permutation, 1, 1, false, 0, 0);  
         #endif
 
         DECLARE_CUSTOM_OP(concat, -1, 1, false, 0, -2);
         DECLARE_CUSTOM_OP(concat_bp, -1, -1, false, 0, 1);
 
-        #if NOT_EXCLUDED(__mergemax)
+        #if NOT_EXCLUDED(OP_mergemax)
         DECLARE_OP(mergemax, -1, 1, false);
         #endif
 
-        #if NOT_EXCLUDED(__mergemaxindex)
+        #if NOT_EXCLUDED(OP_mergemaxindex)
         DECLARE_OP(mergemaxindex, -1, 1, false);
         #endif
 
-        #if NOT_EXCLUDED(__mergeadd)
+        #if NOT_EXCLUDED(OP_mergeadd)
         DECLARE_OP(mergeadd, -1, 1, false);
         #endif
 
-        #if NOT_EXCLUDED(__mergeavg)
+        #if NOT_EXCLUDED(OP_mergeavg)
         DECLARE_OP(mergeavg, -1, 1, false);   
         #endif
 
-        #if NOT_EXCLUDED(__scatter_update)
+        #if NOT_EXCLUDED(OP_scatter_update)
         DECLARE_CONFIGURABLE_OP(scatter_update, 2, 1, true, 0, -1); 
         #endif
 
-        #if NOT_EXCLUDED(__Floor)
+        #if NOT_EXCLUDED(OP_Floor)
         DECLARE_OP(Floor, 1, 1, true);
         #endif
 
-        #if NOT_EXCLUDED(__Log1p)
+        #if NOT_EXCLUDED(OP_Log1p)
         DECLARE_OP(Log1p, 2, 1, true);
         #endif
 
-        #if NOT_EXCLUDED(__reverse)
+        #if NOT_EXCLUDED(OP_reverse)
         DECLARE_CONFIGURABLE_OP(reverse, 1, 1, true, 0, -2);
         #endif
 
-        #if NOT_EXCLUDED(__gather)
+        #if NOT_EXCLUDED(OP_gather)
         DECLARE_CUSTOM_OP(gather, 1, 1, false, 0, 1);
         #endif
 
-        #if NOT_EXCLUDED(__pad)
+        #if NOT_EXCLUDED(OP_pad)
         DECLARE_CUSTOM_OP(pad, 2, 1, false, 0, 1);
         #endif
 
@@ -96,23 +96,23 @@ namespace nd4j {
          * IArgs[2]       - optional, the number of columns in output inner-most 2D identity matrix, if this argument is not provided then it is taken to be equal to number of rows
          * IArgs[3,4,...] - optional, shape of batch, output matrix will have leading batch dimensions of this shape         
          */
-        #if NOT_EXCLUDED(__eye)
+        #if NOT_EXCLUDED(OP_eye)
         DECLARE_CUSTOM_OP(eye, 1, 1, false, 0, 2);
         #endif
 
-        #if NOT_EXCLUDED(__gather_nd)
+        #if NOT_EXCLUDED(OP_gather_nd)
         DECLARE_CUSTOM_OP(gather_nd, 2, 1, false, 0, 0);
         #endif
 
-        #if NOT_EXCLUDED(__reverse_sequence)
+        #if NOT_EXCLUDED(OP_reverse_sequence)
         DECLARE_CUSTOM_OP(reverse_sequence, 2, 1, false, 0, 2);
         #endif
 
-        #if NOT_EXCLUDED(__trace)
+        #if NOT_EXCLUDED(OP_trace)
         DECLARE_CUSTOM_OP(trace, 1, 1, false, 0, 0);
         #endif
 
-        #if NOT_EXCLUDED(__random_shuffle)
+        #if NOT_EXCLUDED(OP_random_shuffle)
         DECLARE_OP(random_shuffle, 1, 1, true);
         #endif
 
@@ -128,7 +128,7 @@ namespace nd4j {
          * return a list of clipped tensors
          *  and global_norm as scalar tensor at the end
          */
-        #if NOT_EXCLUDED(__clip_by_global_norm)
+        #if NOT_EXCLUDED(OP_clip_by_global_norm)
         DECLARE_CUSTOM_OP(clip_by_global_norm, 1, 2, true, 1, 0);
         #endif
     }

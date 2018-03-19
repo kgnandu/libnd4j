@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__softmax_cross_entropy_loss)
+#if NOT_EXCLUDED(OP_softmax_cross_entropy_loss)
 
 #include <ops/declarable/CustomOperations.h>
 

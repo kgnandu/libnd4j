@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__split)
+#if NOT_EXCLUDED(OP_split)
 
 #include <ops/declarable/headers/parity_ops.h>
 #include <array>

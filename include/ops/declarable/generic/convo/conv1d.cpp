@@ -3,7 +3,7 @@
 //
 
 #include <op_boilerplate.h>
-#if NOT_EXCLUDED(__conv1d)
+#if NOT_EXCLUDED(OP_conv1d)
 
 #include <ops/declarable/CustomOperations.h>
 #include <declarable/generic/helpers/convolutions.h>
