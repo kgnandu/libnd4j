@@ -41,9 +41,27 @@ There's an option to build minified binaries suited for execution of ***specific
 ```bash
 # building full libnd4j copy AND minfier app
 ./buildnativeoperations.sh -a native -m 
-
+...
 # building libnd4j for 2 specific graphs
 ./minifier -l -a native -o libnd4j_special ../some_path/some_graph1.fb ../some_path/some_graph2.fb
+Option 'l': Build library
+Option 'a': Target arch: native
+Option 'o': Output file name is libnd4j_minified
+Total available operations: 423
+
+Retrieving ops from the Graph and collect them...
+
+Collecting out Scopes...
+Operations found so far:
+rank
+range
+subtract
+transpose
+matmul
+biasadd
+TRANSFORM{15}
+
+Building minified library...
 ``` 
 
 Once `minifier` finishes - you'll have `libnd4j_special.so` and `libnd4j_special.h` files ready, and they'll contain only those operations used in 2 graphs provided at compilation time + basic primitives used to work with Graph. Things like NDArray, GraphExecutioner etc will be included as well.
