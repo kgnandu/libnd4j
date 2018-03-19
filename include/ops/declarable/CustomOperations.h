@@ -34,7 +34,6 @@ namespace nd4j {
     namespace ops {
 
         // logic ops 
-        #ifndef __JAVACPP_HACK__
         DECLARE_DIVERGENT_OP(Switch, 2, 2, true);
         DECLARE_LOGIC_OP(While);
         DECLARE_LOGIC_OP(Scope);
@@ -49,7 +48,6 @@ namespace nd4j {
          * PLEASE NOTE: This operation is internal graph operation, and shouldn't be used directly usually.
          */
         DECLARE_CUSTOM_OP(expose, -1, -1, true, 0, 0);
-        #endif
     }
 }
 
