@@ -1088,15 +1088,15 @@
 #define REGISTER(NAME)  
 #endif
 
-#define DECLARE_OP(NAME, NIN, NOUT, INPLACEABLE)   DECLARE_OP_UNIQ(__COUNTER__, NAME, NIN, NOUT, INPLACEABLE)
-#define DECLARE_OP_UNIQ(CTR, NAME, NIN, NOUT, INPLACEABLE)   template <typename T> \
+#define DECLARE_OP(NAME, NIN, NOUT, INPLACEABLE)   template <typename T> \
                                                 class NAME: public nd4j::ops::DeclarableOp<T> { \
                                                 public:\
                                                     NAME(); \
                                                     nd4j::ShapeList* calculateOutputShape(nd4j::ShapeList* inputShape, nd4j::graph::Context<T>& block); \
                                                 protected: \
                                                     Nd4jStatus validateAndExecute(nd4j::graph::Context<T>& block); \
-                                                };
+                                                };\
+                                                REGISTER(NAME)
 
 #define DECLARE_BOOLEAN_OP(NAME, NIN, SCALAR)   template <typename T> \
                                                 class NAME: public nd4j::ops::BooleanOp<T> { \

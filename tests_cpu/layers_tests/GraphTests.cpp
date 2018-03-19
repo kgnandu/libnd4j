@@ -1376,7 +1376,7 @@ TEST_F(GraphTests, OpListTest_1) {
     GraphUtils::filterOperations(ops);
     ASSERT_TRUE(ops.size() == 7);
 
-    std::string exp(" -g \"-D_OPS_LIST='-D__rank=true -D__range=true -D__subtract=true -D__transpose=true -D__matmul=true -D__biasadd=true -D__TRANSFORM{15}=true '\"");
+    std::string exp(" -g \"-DLIBND4J_OPS_LIST='-DOP_rank=true -DOP_range=true -DOP_subtract=true -DOP_transpose=true -DOP_matmul=true -DOP_biasadd=true -DOP_TRANSFORM{15}=true '\"");
     std::string out = GraphUtils::makeCommandLine(ops);
 //    nd4j_printf("EXP: >%s<\n", exp.c_str());
 //    nd4j_printf("OUT: >%s<\n", out.c_str());
@@ -1401,7 +1401,7 @@ TEST_F(GraphTests, OpListTest_2) {
 
     GraphUtils::filterOperations(ops);
 
-    std::string exp = " -g \"-D_OPS_LIST='-D__rank=true -D__range=true -D__subtract=true -D__transpose=true -D__matmul=true -D__biasadd=true -D__TRANSFORM{15}=true -D__strided_slice=true -D__ACCUMULATION{1}=true '\"";
+    std::string exp = " -g \"-DLIBND4J_OPS_LIST='-DOP_rank=true -DOP_range=true -DOP_subtract=true -DOP_transpose=true -DOP_matmul=true -DOP_biasadd=true -DOP_TRANSFORM{15}=true -DOP_strided_slice=true -DOP_ACCUMULATION{1}=true '\"";
 
     ASSERT_TRUE(ops.size() == 9);
     ASSERT_EQ(exp, GraphUtils::makeCommandLine(ops));
