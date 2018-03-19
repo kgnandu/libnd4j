@@ -1056,7 +1056,7 @@
                                       template struct ND4J_EXPORT __registratorSynonymDouble<NAME<double>>; \
                                       template struct ND4J_EXPORT __registratorSynonymFloat<NAME<float>>;
 
-#define NOT_EXCLUDED(NAME) defined(__ALL_OPS) || defined(__CLION_IDE__) || defined(NAME)
+#define NOT_EXCLUDED(NAME) defined(LIBND4J_ALL_OPS) || defined(__CLION_IDE__) || defined(NAME)
 
 #ifndef __JAVACPP_HACK__
 #define REGISTER(NAME)  template <typename OpName>  \

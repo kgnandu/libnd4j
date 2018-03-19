@@ -44,7 +44,8 @@ if (APPLE)
     endif()
 endif()
 
-SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D__ALL_OPS=true")
+# tests are always compiled with all ops included
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DLIBND4J_ALL_OPS=true")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang
