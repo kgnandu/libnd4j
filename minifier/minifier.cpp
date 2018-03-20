@@ -124,6 +124,13 @@ main(int argc, char *argv[]) {
     // just stacking everything together
     std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + arch_arg + opts_arg;
 
+    std::string cppLine(" -I../include -I../blas -I../include/ops -I../include/ops/declarable ../include/ops/declarable/CustomOperations.h -o ");
+    cppLine += opt.outputName();
+    nd4j_printf("Run preprocessor as \ncpp %s\n", cppLine.c_str());
+//    int err;
+    if (0 > (err = execl("/usr/bin/cpp", cppLine.c_str()))) {
+        perror("\nCannot run CPP properly due \n");
+    }
     //nd4j_printf("Command line: %s\n", cmdline.c_str());
     // FIXME: do this in cross-platform way
     nd4j_printf("Building minified library...\n", "");
