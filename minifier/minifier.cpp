@@ -124,7 +124,7 @@ main(int argc, char *argv[]) {
     // just stacking everything together
     std::string cmdline = "./buildnativeoperations.sh " + name_arg + build_arg + arch_arg + opts_arg;
 
-    std::string cppLine(" -I../include -I../blas -I../include/ops -I../include/ops/declarable ../include/ops/declarable/CustomOperations.h -o ");
+    std::string cppLine(" -I../include -I../blas -I../include/ops -I../include/helpers -I../include/types -I../include/array -I../include/cnpy -I../include/ops/declarable ../include/ops/declarable/CustomOperations.h -o ");
     cppLine += opt.outputName();
     nd4j_printf("Run preprocessor as \ncpp %s\n", cppLine.c_str());
 //    int err;
