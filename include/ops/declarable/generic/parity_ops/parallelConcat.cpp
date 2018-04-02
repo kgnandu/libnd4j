@@ -1,5 +1,5 @@
 //
-// Created by yurii@skymind.io on 01.11.2017.
+// Created by farizrahman4u@gmail.com on 02.04.2018.
 //
 
 #include <ops/declarable/CustomOperations.h>
