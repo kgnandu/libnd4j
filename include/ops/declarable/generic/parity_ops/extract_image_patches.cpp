@@ -19,6 +19,9 @@ namespace nd4j {
 
             REQUIRE_TRUE(input->rankOf() == 4, 0, "extract_image_patches: The rank of input array should be 4, but %i is given", input->rankOf());
             //
+            if (output->isSameShape(input))
+                output->assign(input);
+            else
             for (int e = 0; e < output->lengthOf(); e++) {
                 (*output)(e) = (*input)(e);
             }
