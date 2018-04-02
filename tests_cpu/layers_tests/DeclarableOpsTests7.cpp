@@ -1634,7 +1634,6 @@ TEST_F(DeclarableOpsTests7, TestExtractImagePatches_1) {
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(DeclarableOpsTests7, TestExtractImagePatches_2) {
     NDArray<double> x('c', {3, 3, 4, 3}, {
-
                  11.,  12.,  13.,
                  12.,  13.,  14.,
                  15.,  16.,  17.,
