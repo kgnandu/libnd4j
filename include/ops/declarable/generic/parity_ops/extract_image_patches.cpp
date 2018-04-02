@@ -37,8 +37,8 @@ namespace nd4j {
             int inputColsDim = shape::sizeAt(in, 2);
             int outputDepthDim = shape::sizeAt(in, 3) * INT_ARG(0) * INT_ARG(1);
 
-            int inputRowSize = shape::sizeAt(in, inputRowsDim);
-            int inputColSize = shape::sizeAt(in, inputColsDim);
+            int inputRowSize = inputRowsDim; //shape::sizeAt(in, inputRowsDim);
+            int inputColSize = inputColsDim; //shape::sizeAt(in, inputColsDim);
             int outRowSize;
             int outColSize;
             if (INT_ARG(6) == 0) {
