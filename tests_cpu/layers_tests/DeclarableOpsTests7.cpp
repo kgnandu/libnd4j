@@ -1620,12 +1620,12 @@ TEST_F(DeclarableOpsTests7, TestExtractImagePatches_1) {
 
     auto result = op.execute({&x}, {}, {1,1,1,1,1,1,0});
     ASSERT_EQ(result->status(), Status::OK());
-    //result->at(0)->printIndexedBuffer("Output");
-    result->at(0)->printShapeInfo("Out Shape");
-    //exp.printIndexedBuffer("Expect");
+    result->at(0)->printIndexedBuffer("Output");
+    //result->at(0)->printShapeInfo("Out Shape");
+    exp.printIndexedBuffer("Expect");
     //exp.printShapeInfo("Exp Shape");
     ASSERT_TRUE(exp.isSameShape(result->at(0)));
-    //ASSERT_TRUE(exp.equalsTo(result->at(0)));
+    ASSERT_TRUE(exp.equalsTo(result->at(0)));
 
     delete result;
 }
@@ -1694,12 +1694,12 @@ NDArray<double> exp('c', {3, 1, 1, 12}, {
 
     auto result = op.execute({&x}, {}, {2,2, 3,3, 1,1,0});
     ASSERT_EQ(result->status(), Status::OK());
-    //result->at(0)->printIndexedBuffer("Output");
-    result->at(0)->printShapeInfo("Out Shape");
-    //exp.printIndexedBuffer("Expect");
-    exp.printShapeInfo("Exp Shape");
+    result->at(0)->printIndexedBuffer("Output");
+    //result->at(0)->printShapeInfo("Out Shape");
+    exp.printIndexedBuffer("Expect");
+    //exp.printShapeInfo("Exp Shape");
     ASSERT_TRUE(exp.isSameShape(result->at(0)));
-    //ASSERT_TRUE(exp.equalsTo(result->at(0)));
+    ASSERT_TRUE(exp.equalsTo(result->at(0)));
 
     delete result;
 }
@@ -1774,12 +1774,12 @@ NDArray<double> exp('c', {3, 1, 2, 6}, {
 
     auto result = op.execute({&x}, {}, {2,1,3,2,2,2,0});
     ASSERT_EQ(result->status(), Status::OK());
-    //result->at(0)->printIndexedBuffer("Output");
-    result->at(0)->printShapeInfo("Out Shape");
-    //exp.printIndexedBuffer("Expect");
+    result->at(0)->printIndexedBuffer("Output");
+    //result->at(0)->printShapeInfo("Out Shape");
+    exp.printIndexedBuffer("Expect");
     exp.printShapeInfo("Exp Shape");
     ASSERT_TRUE(exp.isSameShape(result->at(0)));
-    //ASSERT_TRUE(exp.equalsTo(result->at(0)));
+    ASSERT_TRUE(exp.equalsTo(result->at(0)));
 
     delete result;
 }
@@ -1840,67 +1840,67 @@ TEST_F(DeclarableOpsTests7, TestExtractImagePatches_4) {
 //[1, 1, 1, 1]
 //[1, 3, 2, 1]
 NDArray<double> exp('c', {3, 3, 4, 3}, {
- 11.,  12.,  13.,
- 12.,  13.,  14.,
- 15.,  16.,  17.,
- 18.,   19.,  10.,
-    
-  1.,   2.,   3.,
-  2.,   3.,   4.,
- 21.,  22.,  23.,
- 22.,  23.,  24.,
+                 11.,  12.,  13.,
+                 12.,  13.,  14.,
+                 15.,  16.,  17.,
+                 18.,   19.,  10.,
+                    
+                  1.,   2.,   3.,
+                  2.,   3.,   4.,
+                 21.,  22.,  23.,
+                 22.,  23.,  24.,
+                                
+                  5.,   6.,   7.,
+                  8.,   9.,   0.,
+                 35.,  36.,  37.,
+                 38.,  39.,  40.,
+                                 
+                  9.,   8.,   7.,
+                  6.,   5.,   4.,
+                 49.,  48.,  47.,
+                 46.,  45.,  44.,
+                                
+                  3.,   2.,   1.,
+                  0.,   1.,   2.,
+                 53.,  52.,  51.,
+                 50.,  51.,  52.,
+                                
+                 15.,  16.,  17.,
+                 18.,  19.,  10.,
+                135., 136., 137.,
+                138., 139., 140.,
+                                
+                211.,  12.,  13.,
+                 12., 213.,  14.,
+                 15., 216.,  17.,
+                128.,  19.,  10.,
+                                 
+                 21.,   2.,   3.,
+                  2.,   3.,  24.,
+                 21.,  22., 223.,
+                 22., 223.,  24.,
+                                
+                 25.,   6.,   7.,
+                  8.,   9.,  20.,
+                 35.,  36., 327.,
+                 38., 239.,  40.
                 
-  5.,   6.,   7.,
-  8.,   9.,   0.,
- 35.,  36.,  37.,
- 38.,  39.,  40.,
-                 
-  9.,   8.,   7.,
-  6.,   5.,   4.,
- 49.,  48.,  47.,
- 46.,  45.,  44.,
-                
-  3.,   2.,   1.,
-  0.,   1.,   2.,
- 53.,  52.,  51.,
- 50.,  51.,  52.,
-                
- 15.,  16.,  17.,
- 18.,  19.,  10.,
-135., 136., 137.,
-138., 139., 140.,
-                
-211.,  12.,  13.,
- 12., 213.,  14.,
- 15., 216.,  17.,
-128.,  19.,  10.,
-                 
- 21.,   2.,   3.,
-  2.,   3.,  24.,
- 21.,  22., 223.,
- 22., 223.,  24.,
-                
- 25.,   6.,   7.,
-  8.,   9.,  20.,
- 35.,  36., 327.,
- 38., 239.,  40.
-
- });
+                 });
 // ----------------------------------------------------------------
     nd4j::ops::extract_image_patches<double> op;
-
+                
     auto result = op.execute({&x}, {}, {1,1,1,1,1,1,0});
     ASSERT_EQ(result->status(), Status::OK());
-    //result->at(0)->printIndexedBuffer("Output");
-    result->at(0)->printShapeInfo("Out Shape");
-    //exp.printIndexedBuffer("Expect");
-    exp.printShapeInfo("Exp Shape");
+    result->at(0)->printIndexedBuffer("Output");
+    //result->at(0)->printShapeInfo("Out Shape");
+    exp.printIndexedBuffer("Expect");
+    //exp.printShapeInfo("Exp Shape");
     ASSERT_TRUE(exp.isSameShape(result->at(0)));
-    //ASSERT_TRUE(exp.equalsTo(result->at(0)));
-
+    ASSERT_TRUE(exp.equalsTo(result->at(0)));
+                
     delete result;
 }
-
+                
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(DeclarableOpsTests7, TestExtractImagePatches_5) {
     NDArray<double> x('c', {3, 3, 4, 3}, {
@@ -1968,12 +1968,12 @@ NDArray<double> exp('c', {3, 1, 1, 18}, {
 
     auto result = op.execute({&x}, {}, {3,2,3,2,1,2,0});
     ASSERT_EQ(result->status(), Status::OK());
-    //result->at(0)->printIndexedBuffer("Output");
-    result->at(0)->printShapeInfo("Out Shape");
-    //exp.printIndexedBuffer("Expect");
-    exp.printShapeInfo("Exp Shape");
+    result->at(0)->printIndexedBuffer("Output");
+    //result->at(0)->printShapeInfo("Out Shape");
+    exp.printIndexedBuffer("Expect");
+    //exp.printShapeInfo("Exp Shape");
     ASSERT_TRUE(exp.isSameShape(result->at(0)));
-    //ASSERT_TRUE(exp.equalsTo(result->at(0)));
+    ASSERT_TRUE(exp.equalsTo(result->at(0)));
 
     delete result;
 }
