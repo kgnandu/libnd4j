@@ -19,45 +19,45 @@ namespace helpers {
                 //REQUIRE_TRUE(res->status() == ND4J_STATUS_OK, 0, "Argmax for top_k failed");
                 int width = input->sizeAt(-1);
                 int pos = 0;
-                for (int e = 0; e < input->lengthOf(); e += width)
+
+//#pragma omp parallel for 
+                for (int e = 0; e < input->lengthOf(); e += width )
                 {
                     T topVal = 0;
                     int topIndex = 0;
+//#pragma omp parallel for 
                     for (int j = 0; j < width; j++) {
-                        if (topVal < input->getScalar(j + e))
+                        if (topVal < (*input)(j + e))
                         {
-                            topVal = input->getScalar(j + e);
+                            topVal = (*input)(j + e);
                             topIndex = j;
                         }
                     }
-                    values->putScalar(pos, topVal);
-                    indeces->putScalar(pos++, topIndex);
+                    (*values)(pos) = topVal;
+                    (*indeces)(pos) = topIndex;
+                    ++pos;
                 }
-                //int index = indeces->getScalar(0);
-                //T val = x->getScalar(index);
-                
-                //values->putScalar(0, val);
-
-                //return ND4J_STATUS_OK;
             }
             else { // if (k > 1) {
 
                 int width = input->sizeAt(-1);
                 int nextPos = 0;
+//#pragma omp parallel for 
                 for (int e = 0; e < input->lengthOf(); e += width)
                 {
                     std::vector<int> topIndeces(k);
                     std::vector<T>   topValues(k);
                     for (int pos = 0; pos < k; ++pos) {
                         topIndeces[pos] = pos;
-                        topValues[pos] = input->getScalar(pos + e);
+                        topValues[pos] = (*input)(pos + e);
                     }
                     std::vector<T> sortedVals(topValues);
                     std::sort(sortedVals.begin(), sortedVals.end()); // sorted in ascending order
-                    
+
+//#pragma omp parallel for 
                     for (int j = k; j < width; j++) {
-                        if (sortedVals[0] < input->getScalar(j + e)) { // value can be inserted to top k
-                            T val = input->getScalar(j + e);
+                        T val = (*input)(j + e);
+                        if (sortedVals[0] < val) { // value can be inserted to top k
                             if (sortedVals.end() == std::find(sortedVals.begin(), sortedVals.end(), val)) {    
                                 // exchangePos - a distance between begin and minimum to be suppressed by val
                                 auto exchangePos = std::distance(topValues.begin(), std::find(topValues.begin(), topValues.end(), sortedVals[0]));
@@ -77,15 +77,18 @@ namespace helpers {
                         });
                     }
 
+//#pragma omp parallel for 
                     for (int j = 0; j < width; j++)
+//#pragma omp parallel for 
                         for (int pos = 0; pos < k; ++pos)
-                            if (topValues[pos] == input->getScalar(j + e))
+                            if (topValues[pos] == (*input)(j + e))
                                 topIndeces[pos] = j;
 
-                    for (int pos = 0; pos < k; ++pos)
+//#pragma omp parallel for 
+                    for (int pos = 0; pos < k; ++pos, ++nextPos)
                     {
-                        values->putScalar(nextPos, topValues[pos]);
-                        indeces->putScalar(nextPos++, topIndeces[pos]);
+                        (*values)(nextPos)  =  topValues[pos];
+                        (*indeces)(nextPos) = topIndeces[pos];
                     }
                 }
         }
