@@ -33,7 +33,8 @@ namespace helpers {
                             topIndex = j;
                         }
                     }
-                    (*values)(pos) = topVal;
+                    if (values != nullptr)
+                        (*values)(pos) = topVal;
                     (*indeces)(pos) = topIndex;
                     ++pos;
                 }
@@ -87,7 +88,9 @@ namespace helpers {
 //#pragma omp parallel for 
                     for (int pos = 0; pos < k; ++pos, ++nextPos)
                     {
-                        (*values)(nextPos)  =  topValues[pos];
+                        if (values != nullptr)
+                            (*values)(nextPos)  =  topValues[pos];
+
                         (*indeces)(nextPos) = topIndeces[pos];
                     }
                 }
@@ -97,15 +100,22 @@ namespace helpers {
 
     template <typename T>
     int inTopKFunctor(NDArray<T>* input, NDArray<T>* target, NDArray<T>* result, int k) {
-            nd4j::ops::top_k<T> op;
-            auto topKResult = op.execute({input}, {}, {k, 1}); // with sorting
-            if (topKResult->status() != ND4J_STATUS_OK)
-                return topKResult->status();
-            auto topKIndeces = topKResult->at(1);
+            //nd4j::ops::top_k<T> op;
+            //auto topKResult = op.execute({input}, {}, {k, 1}); // with sorting
+            std::vector<int> shapeV(input->rankOf() + 1);
+            for (int i = 0; i < input->rankOf(); i++)
+                shapeV[i] = input->sizeAt(i);
+            shapeV[input->rankOf()] = k;
+            std::unique_ptr<NDArray<T>> indices( new NDArray<T>(input->ordering(), shapeV));
+            NDArray<T>* values = nullptr;
+            int status = topKFunctor(input, values, indices.get(), k, true);
+            if (status != ND4J_STATUS_OK)
+                return status; 
+//            auto topKIndeces = indices; //topKResult->at(1);
             for (int e = 0; e < target->lengthOf(); e++) {
                 bool found = false;
                 for (int j = 0; j < k; j++) {
-                    if ((*target)(e) == (*topKIndeces)(e * k + j)) {
+                    if ((*target)(e) == (*indices)(e * k + j)) {
                         found = true;
                         break;
                     }
@@ -115,7 +125,7 @@ namespace helpers {
                 else
                     (*result)(e) = (T)0.f;
             }
-            delete topKResult; // free memory from called operation
+//            delete topKIndices; // free memory from called operation
             return ND4J_STATUS_OK;
 
     }
