@@ -14,7 +14,10 @@ namespace helpers {
 template <typename T>
 static FORCEINLINE NDArray<T> activation(const NDArray<T>& arr) {    
     
-    return (const_cast<NDArray<T>&>(arr)).template transform<simdOps::Tanh<T>>();    
+    // return (const_cast<NDArray<T>&>(arr)).template transform<simdOps::Tanh<T>>();    
+    NDArray<T> result(&arr, false, arr.getWorkspace());
+    (const_cast<NDArray<T>&>(arr)).template applyTransform<simdOps::Tanh<T>>(&result);    
+    return result;
 }
 
 
@@ -54,9 +57,42 @@ void sruCell(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T
     // *ct = ft*(*ct_1 - z({},{0, inSize})) + z({{},{0, inSize}});
 
     // current cell output = rt(*)activation(ct) + (1 - rt)(*)xt
-    ht->assign( rt*activation<T>(*ct) + ((T)1. - rt) * (*xt) );
+    ht->assign( rt*activation<T>(*ct) + ((T)1. - rt) * (*xt) );    
     // *ht = rt * (activation<T>(ct) - *xt) + *xt;        
 }
+
+//////////////////////////////////////////////////////////////////////////
+template <typename T>
+void sruTimeLoop(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs) {
+    
+    NDArray<T>* x  = inArrs[0];                     // input [bS x inSize x time]
+    NDArray<T>* c0 = inArrs[1];                     // initial cell state  (at time step = 0) [bS x inSize],  
+    NDArray<T>* w  = inArrs[2];                     // weights, [3*inSize x inSize] 
+    NDArray<T>* b  = inArrs[3];                     // biases,  [2*inSize] 
+    
+    NDArray<T>* h  = outArrs[0];                    // cell outputs [bS x inSize x time]
+    NDArray<T>* c  = outArrs[1];                    // cell states  [bS x inSize x time]
+
+    w = w->transpose();                             // [3*inSize x inSize] -> [inSize x 3*inSize] 
+
+    const int time  = x->sizeAt(2);
+
+    NDArray<T> ct_1(c0);
+
+    // loop through time steps
+    for (int t = 0; t < time; ++t) {
+
+        NDArray<T> xt = (*x)({{}, {}, {t,t+1}});
+        NDArray<T> ht = (*h)({{}, {}, {t,t+1}});
+        NDArray<T> ct = (*c)({{}, {}, {t,t+1}});
+
+        helpers::sruCell<T>({&xt, &ct_1, w, b},  {&ht, &ct});        
+        ct_1.assign(ct);
+    }    
+
+    delete w;
+}
+
 
 
 
@@ -64,6 +100,9 @@ template void sruCell<float>(const std::vector<NDArray<float>*>& inArrs, const s
 template void sruCell<float16>(const std::vector<NDArray<float16>*>& inArrs, const std::vector<NDArray<float16>*>& outArrs);
 template void sruCell<double>(const std::vector<NDArray<double>*>& inArrs, const std::vector<NDArray<double>*>& outArrs);
 
+template void sruTimeLoop<float>(const std::vector<NDArray<float>*>& inArrs, const std::vector<NDArray<float>*>& outArrs);
+template void sruTimeLoop<float16>(const std::vector<NDArray<float16>*>& inArrs, const std::vector<NDArray<float16>*>& outArrs);
+template void sruTimeLoop<double>(const std::vector<NDArray<double>*>& inArrs, const std::vector<NDArray<double>*>& outArrs);
 
 
 }

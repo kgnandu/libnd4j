@@ -15,8 +15,8 @@ namespace helpers {
 	template <typename T>
 	void sruCell(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs);
 
-	// template <typename T>
-	// void sruTimeLoop(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs);
+	template <typename T>
+	void sruTimeLoop(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs);
 	
     
 
