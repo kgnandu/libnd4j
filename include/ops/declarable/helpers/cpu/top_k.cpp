@@ -4,7 +4,7 @@
 
 #include <ops/declarable/helpers/top_k.h>
 #include <NDArrayFactory.h>
-
+#include <ops/declarable/headers/parity_ops.h>
 namespace nd4j {
 namespace ops {
 namespace helpers {
@@ -94,9 +94,37 @@ namespace helpers {
         }
         return ND4J_STATUS_OK;
     }
+
+    template <typename T>
+    int inTopKFunctor(NDArray<T>* input, NDArray<T>* target, NDArray<T>* result, int k) {
+            nd4j::ops::top_k<T> op;
+            auto topKResult = op.execute({input}, {}, {k, 1}); // with sorting
+            if (topKResult->status() != ND4J_STATUS_OK)
+                return topKResult->status();
+            auto topKIndeces = topKResult->at(1);
+            for (int e = 0; e < target->lengthOf(); e++) {
+                bool found = false;
+                for (int j = 0; j < k; j++) {
+                    if ((*target)(e) == (*topKIndeces)(e * k + j)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    (*result)(e) = (T)1.f;
+                else
+                    (*result)(e) = (T)0.f;
+            }
+            delete topKResult; // free memory from called operation
+            return ND4J_STATUS_OK;
+
+    }
     template int topKFunctor<float>(NDArray<float>* input, NDArray<float>* values, NDArray<float>* indeces, int k, bool needSort);
     template int topKFunctor<float16>(NDArray<float16>* input, NDArray<float16>* values, NDArray<float16>* indeces, int k, bool needSort);
     template int topKFunctor<double>(NDArray<double>* input, NDArray<double>* values, NDArray<double>* indeces, int k, bool needSort);
+    template int inTopKFunctor<float>(NDArray<float>* input, NDArray<float>* target, NDArray<float>* result, int k);
+    template int inTopKFunctor<float16>(NDArray<float16>* input, NDArray<float16>* target, NDArray<float16>* result, int k);
+    template int inTopKFunctor<double>(NDArray<double>* input, NDArray<double>* target, NDArray<double>* result, int k);
 
 }
 }
