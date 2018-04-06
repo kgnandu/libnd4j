@@ -7,8 +7,8 @@
 
 #include <ops/declarable/helpers/helpers.h>
 
-namespace nd4j {
-namespace ops {
+namespace nd4j    {
+namespace ops     {
 namespace helpers {
 
 

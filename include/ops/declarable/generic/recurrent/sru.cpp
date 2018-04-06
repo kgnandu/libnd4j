@@ -1,7 +1,7 @@
 //
 // implementation of operations for Simple Recurrent Unit: arXiv:1709.02755v2 [cs.CL] 12 Sep 2017
 //
-// @author yurii@gmail.com
+//@author Yurii Shyrma
 //
 
 #include <op_boilerplate.h>
