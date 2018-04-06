@@ -3,7 +3,6 @@
 //
 
 #include <ops/declarable/CustomOperations.h>
-#include<ops/declarable/helpers/lstmCell.h>
 
 namespace nd4j {
 namespace ops  {
