@@ -18,13 +18,6 @@ namespace nd4j {
 
             // axis might be dynamic (i.e. tf mode)
             helpers::adjustAxis(input, axisVector, axis);
-//            for (int e = 0; e < axisVector->lengthOf(); e++) {
-//                    int ca = (int) (*axisVector)(e);
-//                    if (ca < 0)
-//                        ca += input->rankOf();
-///
-//                    axis[e] = ca;
-//            }
 
             input->template reduceAlongDimension<simdOps::SquaredNorm<T>>(squares, axis);
             input->template reduceAlongDimension<simdOps::Sum<T>>(sum, axis);
