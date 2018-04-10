@@ -33,33 +33,104 @@ static FORCEINLINE NDArray<T> sigmoid(const NDArray<T>& arr) {
 template <typename T>
 void sruCell(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs) {
 
-    NDArray<T>* xt   = inArrs[0];               // input [bS x inSize], bS - batch size, inSize - number of features
-    NDArray<T>* ct_1 = inArrs[1];               // previous cell state ct  [bS x inSize], that is at previous time step t-1   
-    NDArray<T>* w    = inArrs[2];               // weights [inSize x 3*inSize]
-    NDArray<T>* b    = inArrs[3];               // biases [2*inSize]
+    NDArray<T>* x  = inArrs[0];               // input [bS x inSize], bS - batch size, inSize - number of features
+    NDArray<T>* c0 = inArrs[1];               // previous cell state c  [bS x inSize], that is at previous time step t-1   
+    NDArray<T>* w  = inArrs[2];               // weights [inSize x 3*inSize]
+    NDArray<T>* b  = inArrs[3];               // biases [2*inSize]
 
-    NDArray<T>* ht   = outArrs[0];              // current cell output [bS x inSize], that is at current time step t
-    NDArray<T>* ct   = outArrs[1];              // current cell state  [bS x inSize], that is at current time step t
+    NDArray<T>* h  = outArrs[0];              // current cell output [bS x inSize], that is at current time step t
+    NDArray<T>* c  = outArrs[1];              // current cell state  [bS x inSize], that is at current time step t
 
-    const int bS     = xt->sizeAt(0);    
-    const int inSize = xt->sizeAt(1);           // inSize - number of features
+    const int inSize = x->sizeAt(1);           // inSize - number of features
             
-    NDArray<T> z = mmul(*xt, *w);               //  [bS x 3*inSize]    
+    NDArray<T> z = mmul(*x, *w);               //  [bS x 3*inSize]    
 
-    // forget gate = sigmoid(xt*Wf + bf)
-    NDArray<T> ft = sigmoid<T>(z({{},{inSize,   2*inSize}}) + (*b)({{0, inSize}}));
+    // forget gate = sigmoid(x*Wf + bf)
+    NDArray<T> f = sigmoid<T>(z({{},{inSize,   2*inSize}}) + (*b)({{0, inSize}}));
     
-    // reset gate = sigmoid(xt*Wr + br)
-    NDArray<T> rt = sigmoid<T>(z({{},{2*inSize, 3*inSize}}) + (*b)({{inSize, 2*inSize}}));
+    // reset gate = sigmoid(x*Wr + br)
+    NDArray<T> r = sigmoid<T>(z({{},{2*inSize, 3*inSize}}) + (*b)({{inSize, 2*inSize}}));
 
-    // current sell state = ft(*)ct_1 + (1 - ft)(*)(*)(xt*Wc)
-    ct->assign( ft*(*ct_1) + ((T)1. - ft) * z({{},{0, inSize}}) );
-    // *ct = ft*(*ct_1 - z({},{0, inSize})) + z({{},{0, inSize}});
+    // current sell state = f(*)c0 + (1 - f)(*)(x*Wc)
+    c->assign( f*(*c0) + ((T)1. - f) * z({{},{0, inSize}}) );
+    // *c = f*(*c0 - z({},{0, inSize})) + z({{},{0, inSize}});
 
-    // current cell output = rt(*)activation(ct) + (1 - rt)(*)xt
-    ht->assign( rt*activation<T>(*ct) + ((T)1. - rt) * (*xt) );    
-    // *ht = rt * (activation<T>(ct) - *xt) + *xt;        
+    // current cell output = r(*)activation(c) + (1 - r)(*)x
+    h->assign( r*activation<T>(*c) + ((T)1. - r) * (*x) );    
+    // *h = r * (activation<T>(c) - *x) + *x;        
 }
+
+//////////////////////////////////////////////////////////////////////////
+// template <typename T>
+// void sruCellBP(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T>*>& outArrs) {
+
+//     NDArray<T>* x    = inArrs[0];               // input [bS x inSize], bS - batch size, inSize - number of features
+//     NDArray<T>* c0   = inArrs[1];               // previous cell state c  [bS x inSize], that is at previous time step t-1   
+//     NDArray<T>* w    = inArrs[2];               // weights [inSize x 3*inSize]
+//     NDArray<T>* b    = inArrs[3];               // biases [2*inSize]
+//     NDArray<T>* dLdC = inArrs[4];               // gradient of the loss func with respect to cell output [bS x inSize]
+//     NDArray<T>* dLdH = inArrs[5];               // gradient of the loss func with respect to cell state  [bS x inSize]
+
+//     NDArray<T>* dLdX  = outArrs[0];             // gradient of the loss func with respect to input [bS x inSize], so called epsilon
+//     NDArray<T>* dLdW  = outArrs[1];             // gradient of the loss func with respect to weights [inSize x 3*inSize]
+//     NDArray<T>* dLdB  = outArrs[2];             // gradient of the loss func with respect to biases [2*inSize]
+//     NDArray<T>* dLdC0 = outArrs[3];             // gradient of the loss func with respect to previous cell state [bS, inSize]
+
+//     const int inSize = x->sizeAt(1);           // inSize - number of features
+            
+//     //*********** feed forward ***********//
+//     NDArray<T> z = mmul(*x, *w);               //  [bS x 3*inSize]    
+
+//     // forget gate = sigmoid(x*Wf + bf)
+//     NDArray<T> f = sigmoid<T>(z({{},{inSize,   2*inSize}}) + (*b)({{0, inSize}}));             // [bS, inSize]    
+//     NDArray<T> oneMinusF = 1. - f;
+    
+//     // reset gate = sigmoid(x*Wr + br)
+//     NDArray<T> r = sigmoid<T>(z({{},{2*inSize, 3*inSize}}) + (*b)({{inSize, 2*inSize}}));      // [bS, inSize]    
+//     NDArray<T> oneMinusR = 1. - r;
+
+//     // current sell state = f(*)c0 + (1 - f)(*)(x*Wc)             --->  c->assign( f*(*c0) + ((T)1. - f) * z({{},{0, inSize}}) );
+//     // current cell output = r(*)activation(c) + (1 - r)(*)x      --->  h->assign( r*activation<T>(*c) + ((T)1. - r) * (*x) );    
+
+
+//     //*********** back propagation ***********//
+//     // dCdC0 = f;    
+//     // dFdX = Wf    
+//     // dRdX = Wr
+
+//     NDArray<T> tanh = activation<T>(*c);
+//     NDArray<T> dFdBf = f * oneMinusF;
+//     NDArray<T> dRdBr = r * oneMinusR;   
+//     NDArray<T> dHdR = tanh - *x;    
+//     // dCdF = c0 - x*Wc;    
+//     NDArray<T> dCdF = *c0 - z({{},{0, inSize}});    
+//     // dHdC = r * (1 - tanh*tanh)
+//     NDArray<T> dHdC = r * (1. - tanh * tanh);
+//     // dCdX = dCdX + dCdF*dFdX = (1-f)*Wc +  dCdF*Wf
+//     NDArray<T> dCdX = oneMinusF * (*w)({{},{0, inSize}}) + dCdF * (*w)({{},{inSize, 2*inSize}});
+
+
+//     // dLdC0 =  dLdC * dCdC0 = dLdC * f
+//     dLdC0->assign((*dLdC) * f);
+
+    
+//     // dLdBf = dLdH*dHdBf + dLdC*dCdBf = dLdH*dHdC*dCdBf + dLdC*dCdF*dFdBf =  dLdH*dHdC*dCdF*dFdBf + dLdC*dCdF*dFdBf = (dLdH*dHdC + dLdC)*dCdF*dFdBf
+//     (*dLdB)({{0, inSize}}).assign(((*dLdH) * dHdC + *dLdC) * dCdF * dFdBf);
+//     // dLdBr = dLdH * dHdR * dRdBr 
+//     (*dLdB)({{inSize, 2*inSize}}).assign((*dLdH) * dHdR * dRdBr)
+    
+    
+//     // dLdWc = dLdH*dHdWc + dLdC*dCdWc = dLdH*dHdC*dCdWc + dLdC*dCdWc = (dLdH*dHdC + dLdC) * dCdWc = (dLdH*dHdC + dLdC) * (1-f)*x
+//     (*dLdW)({{}, {0, inSize}}).assign(((*dLdH) * dHdC + *dLdC) * oneMinusF * (*x));
+//     // dLdWf = dLdBf * x
+//     (*dLdW)({{}, {inSize, 2*inSize}}).assign((*dLdB)({{0, inSize}}) * (*x));
+//     // dLdWr = dLdBr * x
+//     (*dLdW)({{}, {2*inSize, 3*inSize}}).assign((*dLdB)({{inSize, 2*inSize}}) * (*x));    
+    
+
+//     // dLdX = dLdH*dHdX + dLdC*dCdX = dLdH*(dHdX + dHdR*dRdX + dHdC*dCdX) + dLdC*dCdF*dFdX = dLdH*(1 - r + dHdR*dRdX + dHdC*dCdX) + dLdC*dCdX
+//     dLdX->assign((*dLdH) * (oneMinusR + dHdR * (*w)({{},{2*inSize, 3*inSize}}) + dHdC * dCdX) + (*dLdC) * dCdX);   
+// }
 
 //////////////////////////////////////////////////////////////////////////
 template <typename T>
