@@ -261,11 +261,11 @@ DECLARE_SHAPE_FN(sru) {
     const int time   = x->sizeAt(2);    
 
     // input shapes validation
-    REQUIRE_TRUE(w->rankOf()  == rank-1, 0, "SRU operation: wrong rank of weights array, expected is %i, but got %s instead !", rank-1, w->rankOf()); 
-    REQUIRE_TRUE(b->rankOf()  == 1,      0, "SRU operation: wrong rank of biases  array, expected is %i, but got %s instead !", 1, b->rankOf()); 
-    REQUIRE_TRUE(c0->rankOf() == rank-1, 0, "SRU operation: wrong rank of initial state array, expected is %i, but got %s instead !", rank-1, c0->rankOf()); 
+    REQUIRE_TRUE(w->rankOf()  == rank-1, 0, "SRU operation: wrong rank of weights array, expected is %i, but got %i instead !", rank-1, w->rankOf()); 
+    REQUIRE_TRUE(b->rankOf()  == 1,      0, "SRU operation: wrong rank of biases  array, expected is %i, but got %i instead !", 1, b->rankOf()); 
+    REQUIRE_TRUE(c0->rankOf() == rank-1, 0, "SRU operation: wrong rank of initial state array, expected is %i, but got %i instead !", rank-1, c0->rankOf()); 
     if(mask)
-        REQUIRE_TRUE(mask->rankOf() == rank-1, 0, "SRU operation: wrong rank of mask array, expected is %i, but got %s instead !", rank-1, mask->rankOf()); 
+        REQUIRE_TRUE(mask->rankOf() == rank-1, 0, "SRU operation: wrong rank of mask array, expected is %i, but got %i instead !", rank-1, mask->rankOf()); 
 
     const std::string wShape         = ShapeUtils<T>::shapeAsString(w); 
     const std::string wCorrectShape  = ShapeUtils<T>::shapeAsString({3*inSize, inSize}); 

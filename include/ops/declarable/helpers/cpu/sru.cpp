@@ -51,11 +51,12 @@ void sruCell(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T
     // reset gate = sigmoid(x*Wr + br)
     NDArray<T> r = sigmoid<T>(z({{},{2*inSize, 3*inSize}}) + (*b)({{inSize, 2*inSize}}));
 
-    // current sell state = f(*)c0 + (1 - f)(*)(x*Wc)
+    // ◦ means element-wise product or so called Hadamard product
+    // current sell state = f◦c0 + (1 - f)◦(x*Wc)
     c->assign( f*(*c0) + ((T)1. - f) * z({{},{0, inSize}}) );
     // *c = f*(*c0 - z({},{0, inSize})) + z({{},{0, inSize}});
 
-    // current cell output = r(*)activation(c) + (1 - r)(*)x
+    // current cell output = r◦activation(c) + (1 - r)◦x
     h->assign( r*activation<T>(*c) + ((T)1. - r) * (*x) );    
     // *h = r * (activation<T>(c) - *x) + *x;        
 }
@@ -89,8 +90,8 @@ void sruCell(const std::vector<NDArray<T>*>& inArrs, const std::vector<NDArray<T
 //     NDArray<T> r = sigmoid<T>(z({{},{2*inSize, 3*inSize}}) + (*b)({{inSize, 2*inSize}}));      // [bS, inSize]    
 //     NDArray<T> oneMinusR = 1. - r;
 
-//     // current sell state = f(*)c0 + (1 - f)(*)(x*Wc)             --->  c->assign( f*(*c0) + ((T)1. - f) * z({{},{0, inSize}}) );
-//     // current cell output = r(*)activation(c) + (1 - r)(*)x      --->  h->assign( r*activation<T>(*c) + ((T)1. - r) * (*x) );    
+//     // current sell state = f◦c0 + (1 - f)◦(x*Wc)             --->  c->assign( f*(*c0) + ((T)1. - f) * z({{},{0, inSize}}) );
+//     // current cell output = r◦activation(c) + (1 - r)◦x      --->  h->assign( r*activation<T>(*c) + ((T)1. - r) * (*x) );    
 
 
 //     //*********** back propagation ***********//
