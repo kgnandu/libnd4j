@@ -1,5 +1,5 @@
 //
-// created by Yurii Shyrma on 06.03.2018
+// @author Yurii Shyrma, created on 06.03.2018
 //
 
 #ifndef LIBND4J_CONVO_OPS_H
@@ -85,6 +85,7 @@ DECLARE_SHAPE_FN(conv2d) {
     REQUIRE_TRUE(expectedWeightsShape == ShapeUtils<T>::shapeAsString(weightsShapeInfo), 0, "CUSTOM CONV2D OP: wrong shape of weights array, expected is %s, but got %s instead !", expectedWeightsShape.c_str(), ShapeUtils<T>::shapeAsString(weightsShapeInfo).c_str());    
     if (biasShapeInfo) 
         REQUIRE_TRUE(biasShapeInfo[0] <= 2 && oC == shape::length(biasShapeInfo), 0, "CUSTOM CONV2D OP: wrong shape of array with biases, expected rank, length: <=2, %i, but got %i, %i instead !", oC, biasShapeInfo[0], shape::length(biasShapeInfo));
+    
     int* outputShapeInfo = nullptr;
     ALLOCATE(outputShapeInfo, block.getWorkspace(), shape::shapeInfoLength(rank), int);
 
