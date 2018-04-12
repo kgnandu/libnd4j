@@ -118,16 +118,14 @@ DECLARE_SHAPE_FN(conv3dnew) {
     int* outputShapeInfo = nullptr;
     ALLOCATE(outputShapeInfo, block.getWorkspace(), shape::shapeInfoLength(inputShapeInfo), int);
 
-    if (isNCDHW) {
-        outputShapeInfo[0] = 5;
-        outputShapeInfo[1] = bS;
+    outputShapeInfo[0] = rank;
+    outputShapeInfo[1] = bS;
+    if (isNCDHW) {        
         outputShapeInfo[2] = oC;
         outputShapeInfo[3] = oD;
         outputShapeInfo[4] = oH;
         outputShapeInfo[5] = oW;
     } else {
-        outputShapeInfo[0] = 5;
-        outputShapeInfo[1] = bS;
         outputShapeInfo[2] = oD;
         outputShapeInfo[3] = oH;
         outputShapeInfo[4] = oW;
