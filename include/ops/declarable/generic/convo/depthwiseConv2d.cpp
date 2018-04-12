@@ -17,10 +17,7 @@ CUSTOM_OP_IMPL(depthwise_conv2d, 2, 1, false, 0, 9) {
     NDArray<T> *input   = INPUT_VARIABLE(0);                                    // [bS, iH, iW, iC] (NHWC) or [bS, iC, iH, iW] (NCHW)
     NDArray<T> *weights = INPUT_VARIABLE(1);                                    // [kH, kW, iC, mC] (NHWC) or [mC, iC, kH, kW] (NCHW)
     NDArray<T> *bias    = block.width() > 2 ? INPUT_VARIABLE(2) : nullptr;      // [oC] = iC*mC
-    NDArray<T> *output  = OUTPUT_VARIABLE(0);                                   // [bS, oH, oW, iC*mC] (NHWC) or [bS, iC*mC, oH, oW] (NCHW)
-    
-    REQUIRE_TRUE(input->rankOf()   == 4, 0, "CUSTOM DEPTHWISECONV2D OP: rank of input array must be equal to 4, but got %i instead !", input->rankOf());
-    REQUIRE_TRUE(weights->rankOf() == 4, 0, "CUSTOM DEPTHWISECONV2D OP: rank of weights array must be equal to 4, but got %i instead !", weights->rankOf());
+    NDArray<T> *output  = OUTPUT_VARIABLE(0);                                   // [bS, oH, oW, iC*mC] (NHWC) or [bS, iC*mC, oH, oW] (NCHW)        
                                      
     int kH = INT_ARG(0);                                                        // filter(kernel) height
     int kW = INT_ARG(1);                                                        // filter(kernel) width
@@ -37,12 +34,6 @@ CUSTOM_OP_IMPL(depthwise_conv2d, 2, 1, false, 0, 9) {
     int indIOioC, indIiH, indWmC, indWiC, indWkH, indOoH;   // corresponding indexes
     ConvolutionUtils<T>::getSizesAndIndexesConv2d(isNCHW, *input, *output, bS, iC, iH, iW, oC, oH, oW, indIOioC, indIiH, indWiC, indWmC, indWkH, indOoH);    
     mC = weights->sizeAt(indWmC);                           // channels multiplier
-
-    std::string expectedWeightsShape = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({mC,iC,kH,kW,  indWmC,indWiC,indWkH,indWkH+1}));            
-    REQUIRE_TRUE(expectedWeightsShape == ShapeUtils<T>::shapeAsString(weights), 0, "CUSTOM DEPTHWISECONV2D OP: wrong shape of weights array, expected is %s, but got %s instead !", expectedWeightsShape.c_str(), ShapeUtils<T>::shapeAsString(weights).c_str());    
-    REQUIRE_TRUE(output->sizeAt(indIOioC) == iC*mC, 0, "CUSTOM DEPTHWISECONV2D OP: the output_channels must be equal to input_channels * channels_multiplier = %i !", iC*mC);
-    if (bias)
-        REQUIRE_TRUE(bias->rankOf() <= 2 && oC == bias->lengthOf(), 0, "CUSTOM DEPTHWISECONV2D OP: wrong shape of array with biases, expected rank, length: <=2, %i, but got %i, %i instead !", oC, bias->rankOf(), bias->lengthOf());
     
     std::vector<std::vector<int>> modifColumns = {{1,0,4,5,2,3}, {iC,bS*oH*oW,kH*kW}};  // [bS,iC,kH,kW,oH,oW] -> [iC,bS,oH,oW,kH,kW] -> [iC,bS*oH*oW,kH*kW]
     std::vector<std::vector<int>> modifWeights, modifOutput;
@@ -85,6 +76,14 @@ CUSTOM_OP_IMPL(depthwise_conv2d, 2, 1, false, 0, 9) {
 
 DECLARE_SHAPE_FN(depthwise_conv2d) {
 
+    int* inputShapeInfo   = inputShape->at(0);                                    // [bS, iH, iW, iC] (NHWC) or [bS, iC, iH, iW] (NCHW)
+    int* weightsShapeInfo = inputShape->at(1);                                    // [kH, kW, iC, mC] (NHWC) or [mC, iC, kH, kW] (NCHW)
+    int* biasShapeInfo    = block.width() > 2 ? inputShape->at(2) : nullptr;      // [oC] = iC*mC
+
+    const int rank = 4;
+    REQUIRE_TRUE(inputShapeInfo[0]   == rank, 0, "CUSTOM DEPTHWISECONV2D OP: rank of input array must be equal to %i, but got %i instead !", rank, inputShapeInfo[0]);
+    REQUIRE_TRUE(weightsShapeInfo[0] == rank, 0, "CUSTOM DEPTHWISECONV2D OP: rank of weights array must be equal to %i, but got %i instead !", rank, weightsShapeInfo[0]);
+
     int kH = INT_ARG(0);                                                        // filter(kernel) height
     int kW = INT_ARG(1);                                                        // filter(kernel) width
     int sH = INT_ARG(2);                                                        // strides height
@@ -96,20 +95,25 @@ DECLARE_SHAPE_FN(depthwise_conv2d) {
     int isSameMode = INT_ARG(8);                                                // 0-VALID, 1-SAME
     int isNCHW  = block.getIArguments()->size() > 9 ? !INT_ARG(9) : 1;          // 0-NDHWC, 1-NCDHW
 
-    int indIH = isNCHW == 1 ? 2 : 1;
-    int indIC = isNCHW == 1 ? 1 : 3;
-    int indOC = isNCHW == 1 ? 0 : 3;
+    int indIOioC, indIiH, indWkH, indWmC, indWiC;
+    if(!isNCHW) {
+        indIOioC = 3; indIiH = 1; indWkH = 0; indWmC = 3; indWiC = 2;
+    }
+    else {        
+        indIOioC = 1; indIiH = 2; indWkH = 2; indWmC = 0; indWiC = 1;              
+    }    
 
-    int* inputShapeInfo   = inputShape->at(0);
-    int* weightsShapeInfo = inputShape->at(1);
+    const int bS = inputShapeInfo[1];                            // batch size
+    const int iH = inputShapeInfo[indIiH+1];                     // input height
+    const int iW = inputShapeInfo[indIiH+2];                     // input width
+    const int iC = inputShapeInfo[indIOioC+1];                   // input channels        
+    const int mC = weightsShapeInfo[indWmC+1];                   // channels multiplier(oC = iC*mC)
+    const int oC = iC*mC;                                        // output channels
 
-    int bS = inputShapeInfo[1];                         // batch size
-    int iH = inputShapeInfo[indIH+1];                   // input height
-    int iW = inputShapeInfo[indIH+2];                   // input width
-    int iC = inputShapeInfo[indIC+1];                   // input channels        
-    int mC = weightsShapeInfo[indOC+1];                 // channel multiplier
-
-    int oC = iC * mC;                                   // output channels
+    std::string expectedWeightsShape = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({iC,mC,kH,kW,  indWiC,indWmC,indWkH,indWkH+1}));        
+    REQUIRE_TRUE(expectedWeightsShape == ShapeUtils<T>::shapeAsString(weightsShapeInfo), 0, "DEPTHWISECONV2D OP: wrong shape of weights array, expected is %s, but got %s instead !", expectedWeightsShape.c_str(), ShapeUtils<T>::shapeAsString(weightsShapeInfo).c_str());    
+    if (biasShapeInfo) 
+        REQUIRE_TRUE(biasShapeInfo[0] <= 2 && oC == shape::length(biasShapeInfo), 0, "DEPTHWISECONV2D OP: wrong shape of array with biases, expected rank, length: <=2, %i, but got %i, %i instead !", oC, biasShapeInfo[0], shape::length(biasShapeInfo));    
 
     int oH, oW;                                         // output height, width
     ConvolutionUtils<T>::calcOutSizePool2D(oH, oW, kH, kW, sH, sW, pH, pW, dH, dW, iH, iW, isSameMode);
@@ -117,7 +121,7 @@ DECLARE_SHAPE_FN(depthwise_conv2d) {
     int* outputShapeInfo = nullptr;
     ALLOCATE(outputShapeInfo, block.getWorkspace(), shape::shapeInfoLength(inputShapeInfo), int);
 
-    outputShapeInfo[0] = 4;
+    outputShapeInfo[0] = rank;
     outputShapeInfo[1] = bS;
 
     if (isNCHW) {
@@ -147,11 +151,7 @@ CUSTOM_OP_IMPL(depthwise_conv2d_bp, 3, 2, false, 0, 9) {
     
     NDArray<T> *gradI = OUTPUT_VARIABLE(0);                                                 // [bS, iH, iW, iC] (NDHWC) or [bS, iC, iH, iW] (NCDHW), epsilon
     NDArray<T> *gradW = OUTPUT_VARIABLE(1);                                                 // [kH, kW, iC, mC] (NDHWC) or [mC, iC, kH, kW] (NCDHW)
-    NDArray<T> *gradB = block.width() > 3 ? OUTPUT_VARIABLE(2) : nullptr;                   // [oC]
-    
-    REQUIRE_TRUE(input->rankOf()   == 4, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of input array must be equal to 4, but got %i instead !", input->rankOf());
-    REQUIRE_TRUE(weights->rankOf() == 4, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of weights array must be equal to 4, but got %i instead !", weights->rankOf());
-    REQUIRE_TRUE(gradO->rankOf() == 4, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of gradO array must be equal to 4, but got %i instead !", gradO->rankOf());
+    NDArray<T> *gradB = block.width() > 3 ? OUTPUT_VARIABLE(2) : nullptr;                   // [oC]        
                                      
     int kH = INT_ARG(0);                                                        // filter(kernel) height
     int kW = INT_ARG(1);                                                        // filter(kernel) width
@@ -167,17 +167,7 @@ CUSTOM_OP_IMPL(depthwise_conv2d_bp, 3, 2, false, 0, 9) {
     int bS, iC, iH, iW, mC, oC, oH, oW;                     // batch size, input channels, input height/width, channels multiplier(oC = iC*mC), output channels, output height/width
     int indIOioC, indIiH, indWmC, indWiC, indWkH, indOoH;   // corresponding indexes
     ConvolutionUtils<T>::getSizesAndIndexesConv2d(isNCHW, *input, *gradO, bS, iC, iH, iW, oC, oH, oW, indIOioC, indIiH, indWiC, indWmC, indWkH, indOoH);    
-    mC = weights->sizeAt(indWmC);                           // channels multiplier
-
-    int trueoH, trueoW;          // correct output height, width
-    ConvolutionUtils<T>::calcOutSizePool2D(trueoH, trueoW, kH, kW, sH, sW, pH, pW, dH, dW, iH, iW, isSameMode);
-
-    std::string expectedGradOShape   = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({bS,oC,trueoH,trueoW,  0,indIOioC,indOoH,indOoH+1}));            
-    std::string expectedWeightsShape = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({mC,iC,kH,kW,  indWmC,indWiC,indWkH,indWkH+1}));
-    REQUIRE_TRUE(expectedGradOShape == ShapeUtils<T>::shapeAsString(gradO), 0,  "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of gradient_output (next epsilon) array, expected is %s, but got %s instead !", expectedGradOShape.c_str(), ShapeUtils<T>::shapeAsString(gradO).c_str());
-    REQUIRE_TRUE(expectedWeightsShape == ShapeUtils<T>::shapeAsString(weights), 0, "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of weights array, expected is %s, but got %s instead !", expectedWeightsShape.c_str(), ShapeUtils<T>::shapeAsString(weights).c_str());    
-    if(bias)
-        REQUIRE_TRUE(bias->rankOf() <= 2 && oC == bias->lengthOf(), 0, "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of array with biases, expected rank, length: <=2, %i, but got %i, %i instead !", oC, bias->rankOf(), bias->lengthOf());        
+    mC = weights->sizeAt(indWmC);                           // channels multiplier    
 
     std::vector<std::vector<int>> modifColumns = {{1,2,3,0,4,5}, {iC, kH*kW, bS*oH*oW}};      // [bS,iC,kH,kW,oH,oW] -> [iC, kH*kW, bS*oH*oW]
     std::vector<std::vector<int>> modifGradW, modifGradO1, modifGradO2;
@@ -240,6 +230,48 @@ DECLARE_SHAPE_FN(depthwise_conv2d_bp) {
     int* inputShapeInfo   = inputShape->at(0);
     int* weightsShapeInfo = inputShape->at(1);
     int* biasShapeInfo    = block.width() > 3 ? inputShape->at(2) : nullptr;  
+    int* gradOShapeInfo   = block.width() > 3 ? inputShape->at(3) : inputShape->at(2);  
+
+    const int rank = 4;
+    REQUIRE_TRUE(inputShapeInfo[0]   == rank, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of input array must be equal to %i, but got %i instead !", rank, inputShapeInfo[0]);
+    REQUIRE_TRUE(weightsShapeInfo[0] == rank, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of weights array must be equal to %i, but got %i instead !", rank, weightsShapeInfo[0]);
+    REQUIRE_TRUE(gradOShapeInfo[0]   == rank, 0, "CUSTOM DEPTHWISECONV2D_BP OP: rank of gradO array must be equal to %i, but got %i instead !", rank, gradOShapeInfo[0]);
+
+    int kH = INT_ARG(0);                                                        // filter(kernel) height
+    int kW = INT_ARG(1);                                                        // filter(kernel) width
+    int sH = INT_ARG(2);                                                        // strides height
+    int sW = INT_ARG(3);                                                        // strides width
+    int pH = INT_ARG(4);                                                        // paddings height
+    int pW = INT_ARG(5);                                                        // paddings width
+    int dH = INT_ARG(6);                                                        // dilations height
+    int dW = INT_ARG(7);                                                        // dilations width
+    int isSameMode = INT_ARG(8);                                                // 0-VALID, 1-SAME
+    int isNCHW  = block.getIArguments()->size() > 9 ? !INT_ARG(9) : 1;          // 0-NHWC, 1-NCHW    
+
+    int indIOioC, indIiH, indWkH, indWmC, indWiC, indOoH;
+    if(!isNCHW) {
+        indIOioC = 3; indIiH = 1; indWkH = 0; indWmC = 3; indWiC = 2; 
+    }
+    else {        
+        indIOioC = 1; indIiH = 2; indWkH = 2; indWmC = 0; indWiC = 1;              
+    }    
+
+    const int bS = inputShapeInfo[1];                            // batch size
+    const int iH = inputShapeInfo[indIiH+1];                     // input height
+    const int iW = inputShapeInfo[indIiH+2];                     // input width
+    const int iC = inputShapeInfo[indIOioC+1];                   // input channels        
+    const int mC = weightsShapeInfo[indWmC+1];                   // channels multiplier(oC = iC*mC)
+    const int oC = iC*mC;                                        // output channels
+
+    int trueoH, trueoW;          // correct output height, width
+    ConvolutionUtils<T>::calcOutSizePool2D(trueoH, trueoW, kH, kW, sH, sW, pH, pW, dH, dW, iH, iW, isSameMode);
+
+    std::string expectedGradOShape   = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({bS,oC,trueoH,trueoW,  0,indIOioC,indIiH,indIiH+1}));            
+    std::string expectedWeightsShape = ShapeUtils<T>::shapeAsString(ShapeUtils<T>::composeShapeUsingDimsAndIdx({mC,iC,kH,kW,  indWmC,indWiC,indWkH,indWkH+1}));
+    REQUIRE_TRUE(expectedGradOShape == ShapeUtils<T>::shapeAsString(gradOShapeInfo), 0,  "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of gradient_output (next epsilon) array, expected is %s, but got %s instead !", expectedGradOShape.c_str(), ShapeUtils<T>::shapeAsString(gradOShapeInfo).c_str());
+    REQUIRE_TRUE(expectedWeightsShape == ShapeUtils<T>::shapeAsString(weightsShapeInfo), 0, "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of weights array, expected is %s, but got %s instead !", expectedWeightsShape.c_str(), ShapeUtils<T>::shapeAsString(weightsShapeInfo).c_str());    
+    if(biasShapeInfo)
+        REQUIRE_TRUE(biasShapeInfo[0] <= 2 && oC == shape::length(biasShapeInfo), 0, "CUSTOM DEPTHWISECONV2D_BP OP: wrong shape of array with biases, expected rank, length: <=2, %i, but got %i, %i instead !", oC, biasShapeInfo[0], shape::length(biasShapeInfo));        
 
     int* gradIshapeInfo(nullptr), *gradWshapeInfo(nullptr);
     COPY_SHAPE(inputShapeInfo, gradIshapeInfo);
