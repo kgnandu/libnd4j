@@ -1,6 +1,6 @@
 //
-// Created by raver119 on 29/10/17.
-// changed by Yurii Shyrma 20.03.2018
+// @author raver119, created on 29/10/17.
+// @author Yurii Shyrma, changed on 20.03.2018
 //
 
 #include <ops/declarable/CustomOperations.h>
