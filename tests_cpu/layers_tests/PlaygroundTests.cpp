@@ -142,6 +142,76 @@ TEST_F(PlaygroundTests, NoCacheTest_2) {
         delete v;
 }
 
+TEST_F(PlaygroundTests, FMA_Test_1) {
+    std::vector<NDArray<float> *> pool1(poolSize);
+    std::vector<NDArray<float> *> pool2(poolSize);
+    std::vector<NDArray<float> *> pool3(poolSize);
+    NDArray<float> source('c', {8192, 1024});
+    NDArrayFactory<float>::linspace(1, source);
+
+    for (int e = 0; e < pool1.size(); e++) {
+        pool1[e] = source.dup();
+        pool2[e] = source.dup();
+        pool3[e] = source.dup();
+    }
+
+    auto lambdaFMA = LAMBDA_FFF(_t, _u, _v) {
+        return _t * _u + _v;
+    };
+
+    auto lambdaM = LAMBDA_FF(_t, _u) {
+        return _t * _u;
+    };
+
+    auto lambdaA = LAMBDA_FF(_t, _u) {
+        return _t + _u;
+    };
+
+    auto timeStart = std::chrono::system_clock::now();
+    int cnt = 0; 
+    for (int e = 0; e < numIterations; e++) {
+        auto v1 = pool1[poolSize - 1 - cnt];
+        auto v2 = pool2[cnt++];
+        auto v3 = pool3[cnt++];
+        v1->applyTriplewiseLambda(v2, v3, lambdaFMA);
+
+        if (cnt == poolSize)
+            cnt = 0;
+    }
+
+    auto timeEnd = std::chrono::system_clock::now();
+
+    auto outerTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+
+    auto timeStartS = std::chrono::system_clock::now();
+    cnt = 0;
+    for (int e = 0; e < numIterations; e++) {
+        auto v1 = pool1[poolSize - 1 - cnt];
+        auto v2 = pool2[cnt++];
+        auto v3 = pool3[cnt++];
+        v1->applyPairwiseLambda(v2, lambdaM);
+        v1->applyPairwiseLambda(v3, lambdaA);
+
+        if (cnt == poolSize)
+            cnt = 0;
+    }
+
+    auto timeEndS = std::chrono::system_clock::now();
+
+    auto outerTimeS = std::chrono::duration_cast<std::chrono::microseconds> (timeEndS - timeStartS).count();
+
+    nd4j_printf("Non-cached FMA time %lld us\n", outerTime / numIterations);
+    nd4j_printf("Non-cached separate FMA time %lld us\n", outerTimeS / numIterations);
+
+    for (auto v: pool1)
+        delete v;
+
+    for (auto v: pool2)
+        delete v;
+
+    for (auto v: pool3)
+        delete v;
+}
 
 TEST_F(PlaygroundTests, ReductionTest_1) {
     std::vector<NDArray<float> *> pool1(poolSize);
