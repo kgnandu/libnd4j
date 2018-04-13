@@ -230,6 +230,33 @@ CUSTOM_OP_IMPL(sru, 5, 2, false, 0, 0) {
 
     NDArray<T>* h = OUTPUT_VARIABLE(0);                                     // cell outputs, [bS x inSize x time]
     NDArray<T>* c = OUTPUT_VARIABLE(1);                                     // cell states,  [bS x inSize x time]
+
+    const int rank   = x->rankOf();              // = 3
+    const int bS     = x->sizeAt(0);
+    const int inSize = x->sizeAt(1);
+    const int time   = x->sizeAt(2);    
+
+    // input shapes validation
+    REQUIRE_TRUE(w->rankOf()  == rank-1, 0, "SRU operation: wrong rank of weights array, expected is %i, but got %i instead !", rank-1, w->rankOf()); 
+    REQUIRE_TRUE(b->rankOf()  == 1,      0, "SRU operation: wrong rank of biases  array, expected is %i, but got %i instead !", 1, b->rankOf()); 
+    REQUIRE_TRUE(c0->rankOf() == rank-1, 0, "SRU operation: wrong rank of initial state array, expected is %i, but got %i instead !", rank-1, c0->rankOf()); 
+    if(mask)
+        REQUIRE_TRUE(mask->rankOf() == rank-1, 0, "SRU operation: wrong rank of mask array, expected is %i, but got %i instead !", rank-1, mask->rankOf()); 
+
+    const std::string wShape         = ShapeUtils<T>::shapeAsString(w); 
+    const std::string wCorrectShape  = ShapeUtils<T>::shapeAsString({3*inSize, inSize}); 
+    const std::string bShape         = ShapeUtils<T>::shapeAsString(b); 
+    const std::string bCorrectShape  = ShapeUtils<T>::shapeAsString({2*inSize});
+    const std::string c0Shape        = ShapeUtils<T>::shapeAsString(c0); 
+    const std::string c0CorrectShape = ShapeUtils<T>::shapeAsString({bS, inSize});
+    
+    REQUIRE_TRUE(wShape  == wCorrectShape,  0, "SRU operation: wrong shape of weights array, expected is %s, but got %s instead !", wCorrectShape.c_str(), wShape.c_str()); 
+    REQUIRE_TRUE(bShape  == bCorrectShape,  0, "SRU operation: wrong shape of biases  array, expected is %s, but got %s instead !", bCorrectShape.c_str(), bShape.c_str()); 
+    REQUIRE_TRUE(c0Shape == c0CorrectShape, 0, "SRU operation: wrong shape of initial state array, expected is %s, but got %s instead !", c0CorrectShape.c_str(), c0Shape.c_str()); 
+    if(mask) {
+        const std::string maskShape         = ShapeUtils<T>::shapeAsString(mask); 
+        REQUIRE_TRUE(maskShape == c0CorrectShape, 0, "SRU operation: wrong shape of mask array, expected is %s, but got %s instead !", c0CorrectShape.c_str(), maskShape.c_str()); 
+    }
         
     //  xm = x * mask
     NDArray<T>* xm = x;         

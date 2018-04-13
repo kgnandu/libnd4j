@@ -20,6 +20,23 @@ CUSTOM_OP_IMPL(sruCell, 4, 2, false, 0, 0) {
 
     NDArray<T>* ht   = OUTPUT_VARIABLE(0);              // current cell output [bS x inSize], that is at current time step t
     NDArray<T>* ct   = OUTPUT_VARIABLE(1);              // current cell state  [bS x inSize], that is at current time step t
+
+    const int rank   = xt->rankOf();
+    const int bS     = xt->sizeAt(0);    
+    const int inSize = xt->sizeAt(1);                   // inSize - number of features
+
+    // input shapes validation
+    const std::string ct_1Shape        = ShapeUtils<T>::shapeAsString(ct_1); 
+    const std::string correctCt_1Shape = ShapeUtils<T>::shapeAsString({bS, inSize});
+    const std::string WShape           = ShapeUtils<T>::shapeAsString(w); 
+    const std::string correctWShape    = ShapeUtils<T>::shapeAsString({inSize, 3*inSize});
+    const std::string bShape           = ShapeUtils<T>::shapeAsString(b); 
+    const std::string correctBShape    = ShapeUtils<T>::shapeAsString({2*inSize});
+
+    REQUIRE_TRUE(correctCt_1Shape == ct_1Shape, 0, "SRUCELL operation: wrong shape of previous cell state, expected is %s, but got %s instead !", correctCt_1Shape.c_str(), ct_1Shape.c_str()); 
+    REQUIRE_TRUE(correctWShape    == WShape,    0, "SRUCELL operation: wrong shape of weights, expected is %s, but got %s instead !", correctWShape.c_str(), WShape.c_str()); 
+    REQUIRE_TRUE(correctBShape    == bShape,    0, "SRUCELL operation: wrong shape of biases, expected is %s, but got %s instead !", correctBShape.c_str(), bShape.c_str()); 
+
             
     helpers::sruCell<T>({xt, ct_1, w, b}, {ht, ct});
     
