@@ -3273,7 +3273,7 @@ Nd4jStatus realExec(nd4j::ops::DeclarableOp<T>* op, Nd4jPointer* extraPointers, 
 
             if (tmp.lengthOf() != result->at(e)->lengthOf()) {
                 nd4j_printf("Provided output array for [%s] has length of %i, but actual result has length of %i\n", op->getOpName()->c_str(), tmp.lengthOf(), result->at(e)->lengthOf());
-                return ND4J_STATUS_BAD_OUTPUT;
+                throw std::invalid_argument("Provided output array size mismatch");
             }
 
             tmp.assign(result->at(e));
